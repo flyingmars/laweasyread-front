@@ -4,7 +4,7 @@
 
 可將網頁中的法規、條文、大法官解釋、判決字號均加上連結。使用方式有二：
 * Google 瀏覽器外掛，請至[Chrome 線上應用程式商店](https://chrome.google.com/webstore/detail/法規亦毒氣/iedodmlnmhobigohbkalkkjlbmdkjalj)安裝。
-* 網頁內嵌JavaScript，供網站或部落格以內嵌JavaScript（加上 &lt;script src&gt; ）的方式，[示範頁面](http://kong0107.github.io/zhLawEasyRead)。
+* 網頁內嵌JavaScript，供網站或部落格以內嵌JavaScript（加上 &lt;script src&gt; ）的方式，[示範頁面](http://g0v.github.io/laweasyread-front)（如已安裝瀏覽器外掛，需先停用或另開無痕視窗才看得出差別）。
 
 Google瀏覽器外掛，可於瀏覽網站時：
 * 網頁中提到法規名稱或是條文時：
@@ -41,14 +41,14 @@ Google瀏覽器外掛，可於瀏覽網站時：
 （網頁內嵌目前僅知Google Chrome 與 Mozilla Firefox 能運作。）
 在網頁HTML原始碼中的`</head>`前加入
 ```html
-<link href="http://kong0107.github.io/zhLawEasyRead/stylesheets/main.css" rel="stylesheet" type="text/css" />
-<script src="http://kong0107.github.io/zhLawEasyRead/javascripts/parseInt.js" type="text/javascript"></script>
-<script src="http://kong0107.github.io/zhLawEasyRead/javascripts/pcodes.js" type="text/javascript"></script>
-<script src="http://kong0107.github.io/zhLawEasyRead/javascripts/aliases.js" type="text/javascript"></script>
-<script src="http://kong0107.github.io/zhLawEasyRead/javascripts/lyIDs.js" type="text/javascript"></script>
-<script src="http://kong0107.github.io/zhLawEasyRead/javascripts/courts.js" type="text/javascript"></script>
-<script src="http://kong0107.github.io/zhLawEasyRead/javascripts/LER.js" type="text/javascript"></script>
-<script src="http://kong0107.github.io/zhLawEasyRead/javascripts/embedded2.js" type="text/javascript"></script>
+<link href="http://g0v.github.io/laweasyread-front/stylesheets/main.css" rel="stylesheet" type="text/css" />
+<script src="http://g0v.github.io/laweasyread-front/javascripts/parseInt.js" type="text/javascript"></script>
+<script src="http://g0v.github.io/laweasyread-front/javascripts/pcodes.js" type="text/javascript"></script>
+<script src="http://g0v.github.io/laweasyread-front/javascripts/aliases.js" type="text/javascript"></script>
+<script src="http://g0v.github.io/laweasyread-front/javascripts/lyIDs.js" type="text/javascript"></script>
+<script src="http://g0v.github.io/laweasyread-front/javascripts/courts.js" type="text/javascript"></script>
+<script src="http://g0v.github.io/laweasyread-front/javascripts/LER.js" type="text/javascript"></script>
+<script src="http://g0v.github.io/laweasyread-front/javascripts/embedded2.js" type="text/javascript"></script>
 ```
 
 # Disclaimer
@@ -64,51 +64,37 @@ Google瀏覽器外掛，可於瀏覽網站時：
 
 ## License Explanation
 * 於其軟體再版時，得變更議題與立場、連結。
-* 軟體之使用與修改者，無須同意原軟體授權條款中基於本規則而對特定議題表態之立場。
+* 軟體之使用與修改者，無須同意原軟體授權條款中，基於本規則而對特定議題表態之立場。
 
 # Notices
 * 全國法規資料庫有收錄的均會加上連結－－除非原本已經是連結。
 * 動態讀取的網頁－－如Facebook和[零時政府立法院](http://ly.g0v.tw.jit.su/)、[評律網](http://www.pingluweb.com/)）－－不會自動轉換，但是可以手動按下左下角的黑底文字再次分析內文。
-* 如為可編輯之純文字框，如 TEXTAREA ，即不會處理。列表見`LER.js`的`skippingTags`。
-* 「網站內嵌JavaScript」部分暫停開發，有興趣者請參考 `embedded.*`。
-* 在內嵌其他網域的框架時（如Facebook的留言或按讚外掛），會有瀏覽器警告。
-* Google說「需支付一次性的開發人員註冊費 US$5.00」，所以（還）沒有放在「Chrome 線上應用程式商店」。
+* 純文字元件如 `TEXTAREA` 等會跳過不處理，列表見`LER.js`的`skippingTags`。
+* 在內嵌其他網域的框架時（如Facebook的留言或按讚外掛），會有瀏覽器警告（似乎不影響運作）。
 
 # Bugs
 * 可能與WYSIWYG編輯器的相互干擾!!!!
 * 會發生「漩渦鳴人的 §8 尾巴出現了」和「我國的 §3 國道走山事件」
-* 未能妥善處理以換行字元或BR標籤來排版的網頁（如[全國法規資料庫](http://law.moj.gov.tw/)及[司法院裁判書查詢](http://jirs.judicial.gov.tw/FJUD/)）。
+* 未能妥善處理以換行字元或BR標籤來排版的網頁（如[司法院裁判書查詢](http://jirs.judicial.gov.tw/FJUD/)）。
 
 # Development
 
-## Javascript Prototype
-只要引入 `jsExt.js` ，就可以一行
-`document.body.replaceChildren(/第\s*(\d+)\s*條/, "§$1");`
-就把所有的條號都轉換掉。
-
-* 會把呼叫者的子節點（預設並含所有後代節點）中的 `ELEMENT_NODE` 中的 `TEXT_NODE` 都跑過
-    * 雖然 `BUTTON`, `TEXTAREA`, `PRE` 和 `SCRIPT` 都是這幾個在本專案中應該都不需要處理，但為了維持該函數的通用性， `Text.prototype.replace` 和 `Element.prototype.replaceChildren` 並不主動排除該些節點。若有需要，未來可以考慮多加參數處理「要處理／排除的標籤」，並為該參數設定預設值。
-* `Element.prototype.replaceChild` 亦被改寫。第一個引數不再必須是節點，亦可以是節點陣列。
-* `jsExt.js` 亦改寫 `parseInt` ，可將中文數字字串轉為整數。
-
-目前專案並無使用`jsExt.js`，不過若有上述需求者仍可參考。
-
 ## First Idea
-原本是以字串取代的方式去改變document.body.innerHTML（之前的0.1.8版即是如此），但發現有三個難處：
+原本是以字串取代的方式去改變`document.body.innerHTML`，但發現有三個難處：
 * 有（類似）onLoad function的網頁（如「全國法規資料庫」的首頁）即會無後續動作。
 * 不知道要怎麼樣避開HTML tag的屬性中的字串，特別是要提防屬性字串中又包含特殊字元的情形。
 * 不知道怎麼偵測「是否已在<a />中」，困境同上。
 
 ## Current Scheme
 用遞迴方式跑過整個HTML的DOM tree，抓出textNode來處理。
-因此，勢必得用document.createElement和appendChild等DOM方法，而不能修改innerHTML。
+因此，勢必得用`document.createElement`和`Node#appendChild`等DOM方法，而不能修改`Element#innerHTML`。
 
 ## Algorithm
 參閱`LER.js`，把每個「只含文字的節點」（`TEXT_NODE`)代換成一串新的節點。
 
 * `parseElement()`嘗試處理`document.body`的每一個child。
     * 把非純文字的child再丟給`parseElement()`去recursion；
-    * 把純文字的child代換為丟去`parseText()`而得的node array 
+    * 把純文字的child代換為丟去`parseText()`而得到的node array 
 * `parseText()`
     * 用規則一的正規表示式把字串分段，把不匹配的部份再丟給規則二
     * 規則二的正規表示式不匹配的部份，再丟給規則三
