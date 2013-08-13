@@ -1,0 +1,44 @@
+{
+  "author": "kong0107",
+  "status": "beta",
+  "thumbnail": "https://raw.github.com/g0v/laweasyread-front/master/icon.png",
+  "name": "lawEasyRead",
+  "name_zh": "法規亦毒氣",
+  "description": "Parse the contents of webpage to view Taiwan's law articles/websites easier.",
+  "description_zh": "將網頁中的法規、條文、大法官解釋、判決字號均加上連結。",
+  "homepage": "https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj",
+  "document": "http://g0v.github.io/laweasyread-front",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/g0v/laweasyread-front"
+  },
+  "licenses": [
+    {
+      "type": "modified MIT (see GitHub)"
+    }
+  ],
+  "keywords": [
+    "JavaScript",
+    "law",
+  ],
+  "audience": [
+    "public"
+  ],
+  "products": [
+    "browserext",
+    "XSS"
+  ],
+  "projects": [
+    "laweasyread"
+  ],
+  "contributors": [
+    "kong0107",
+    "czchen",
+    "kcliu"
+  ],
+  "needs": [
+    "designer",
+    "programmer",
+    "writer"
+  ]
+}
