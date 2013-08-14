@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <title>法規亦毒氣::輸入立即轉換</title>
+    <base target="_blank">
+    <link href="stylesheets/styles.css" rel="stylesheet" type="text/css">
+    <link href="stylesheets/main.css" rel="stylesheet" type="text/css">
+    <script src="javascripts/parseInt.js" type="text/javascript"></script>
+    <script src="javascripts/pcodes.js" type="text/javascript"></script>
+    <script src="javascripts/aliases.js" type="text/javascript"></script>
+    <script src="javascripts/lyIDs.js" type="text/javascript"></script>
+    <script src="javascripts/courts.js" type="text/javascript"></script>
+    <script src="javascripts/LER.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        function parse() {
+            document.getElementById("output").innerHTML = document.getElementById("input").value.replace(/\n/g, '<br />');
+            LER.parse(document.getElementById("output"));
+        }
+    </script>
+</head>
+<body>
+    <p>本頁面為【<a href="index.html">法規亦毒氣</a>】的應用，請在左方輸入或貼上法律相關文章（可複製自其它網頁或檔案），右方即會出現將法規名稱與條號加上連結的樣貌。</p>
+    <p>未完全支援IE瀏覽器（有一些<a href="https://github.com/g0v/laweasyread-front/issues/2">技術問題</a>尚待排除…）</p>
+    <div style="clear: both; height: 2em;"><button id="button" style="display: none;">隱藏輸入框</button></div>
+    <script type="text/javascript">
+        document.getElementById("button").onclick = function() {
+            var toHide = true;
+            return function() {
+                if(toHide) {
+                    document.getElementById("inputContainer").style.display = "none";
+                    document.getElementById("outputContainer").style.width = "95%";
+                    this.innerHTML = "顯示輸入框";
+                }
+                else {
+                    document.getElementById("inputContainer").style.display = "";
+                    document.getElementById("outputContainer").style.width = "45%";
+                    this.innerHTML = "隱藏輸入框";
+                }
+                toHide = !toHide;
+            };
+        }();
+    </script>
+    <fieldset id="inputContainer" style="float: left; width: 45%;">
+        <legend>輸入純文字</legend>
+        <div>
+            <label><input id="auto" type="checkbox" checked="checked" onclick="document.getElementById('manually').style.display = this.checked ? 'none' : '';" />自動轉換</label>
+            <button id="manually" style="display: none;" onclick="parse();">手動轉換</button>
+        </div>
+        <textarea id="input" style="width: 100%; background-color: #ccc;" onkeyup="
+            document.getElementById('button').style.display = '';
+            this.style.height = '0';
+            this.style.height = this.scrollHeight + 'px';
+            if(document.getElementById('auto').checked) parse();
+        "></textarea>
+    </fieldset>
+    <fieldset id="outputContainer" style="float: right; width: 45%;">
+        <legend>轉換結果</legend>
+        <div id="output"></div>
+    </fieldset>
+</body>
+</html>
