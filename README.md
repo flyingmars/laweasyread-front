@@ -1,24 +1,26 @@
 # Introduction
-* a client-side JavaScript for popular browsers and an extension for Google Chrome to parse the contents of webpage to view Taiwan's law articles/websites easier.
+* Parse the contents of webpages to view Taiwan's law articles/websites easier.
 * related with [g0v/laweasyread](https://github.com/g0v/laweasyread) but functions differently and not combined together yet.
 
 可將網頁中的法規、條文、大法官解釋、判決字號均加上連結。使用方式有二：
-* Google 瀏覽器外掛，請至[Chrome 線上應用程式商店](https://chrome.google.com/webstore/detail/法規亦毒氣/iedodmlnmhobigohbkalkkjlbmdkjalj)安裝。
-* 網頁內嵌JavaScript，供網站或部落格以內嵌JavaScript（加上 &lt;script src&gt; ）的方式，[示範頁面](http://g0v.github.io/laweasyread-front)（如已安裝瀏覽器外掛，需先停用或另開無痕視窗才看得出差別）。
+* 安裝為[Firefox](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/) 或 [Google瀏覽器](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)外掛（[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)）
+* 網頁內嵌JavaScript方式，以使未安裝瀏覽器外掛的網友亦能看到自動加上連結的法規和條文。（[示範頁](http://g0v.github.io/laweasyread-front/embed.html)；未支援IE）
 
-Google瀏覽器外掛，可於瀏覽網站時：
-* 網頁中提到法規名稱或是條文時：
-    * 將法規名稱加上連往[全國法規資料庫](http://law.moj.gov.tw/)看該法規全文的網頁連結，滑鼠移過去時可看其沿革（立法、修法史）。
-    * 將單一法條連向[立法院法律系統](http://lis.ly.gov.tw/lgcgi/lglaw)該條文與相關條文，滑鼠移過去時可看條文內容。
-    * 將多個法條連向[全國法規資料庫](http://law.moj.gov.tw/)看該些條文，滑鼠移過去時可看條文內容。
-* 亦能運作於[零時政府立法院](http://ly.g0v.tw.jit.su/)、[評律網](http://www.pingluweb.com/)等以AJAX機制更新的內容（需點選網址列的按鈕）。
+## Capability
+網頁中提到法規名稱或是條文時：
+* 將法規名稱加上連往[全國法規資料庫](http://law.moj.gov.tw/)看該法規全文的網頁連結。
+* 將法條連向[全國法規資料庫](http://law.moj.gov.tw/)看該些條文。
 * 提到大法官解釋時，即連向該號解釋的官方網頁。
+
+如使用[Google 瀏覽器外掛](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)，亦能：
+* 運作於Facebook、[零時政府立法院](http://ly.g0v.tw.jit.su/)、[評律網](http://www.pingluweb.com/)等動態更新的內容的網頁機制（需點選網址列的按鈕）。
+* 滑鼠移動到法規名稱上時，跳出浮動視窗顯示其沿革（立法、修法史）。
+* 滑鼠移動到條文號碼上方時，跳出浮動視窗顯示該條文內容。
 * 將下列網站稍做排版，使易於閱讀：
     * [大法官解釋](http://www.judicial.gov.tw/constitutionalcourt/p03.asp)
     * [立法院法律系統](http://lis.ly.gov.tw/lgcgi/lglaw)
     * [司法院裁判書查詢](http://jirs.judicial.gov.tw/FJUD/)
-    
-警告：部落客於編輯網誌時，請暫時關閉本外掛。
+* 自動送出裁判書查詢
 
 ## Examples
 * 大法官解釋（[範例網頁連結](http://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=617)）
@@ -29,16 +31,16 @@ Google瀏覽器外掛，可於瀏覽網站時：
 ![Laws & Regulations Database](https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-ash4/1014200_10152542008401393_14309567_n.jpg)
 
 # Installation
-警告：部落客於編輯網誌時，請暫時關閉本外掛。
 
-## Google Chrome Extension
-瀏覽器外掛請至[Chrome 線上應用程式商店](https://chrome.google.com/webstore/detail/法規亦毒氣/iedodmlnmhobigohbkalkkjlbmdkjalj)安裝。
-* 網址列右邊出現「§#」圖示的話就是成功了，按該圖示會有一些連結。
-* 瀏覽動態讀取的網頁（如Facebook、噗浪）時，可能須手動按右上角的「§#」圖示再按「轉換這個網頁」才會作用。
+## Browser Extension
+* Firefox 瀏覽器請至[Firefox 附加元件](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/)網站安裝。
+* Google 瀏覽器請至[Chrome 線上應用程式商店](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)安裝。
 
+可比對安裝前後[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)的顯示差異。
 
-## Embedded JavaScript for Websites and Blogs
-（網頁內嵌目前僅知Google Chrome 與 Mozilla Firefox 能運作。）
+## Embed JavaScript in websites or blogs
+[內嵌JavaScript 示範頁](http://g0v.github.io/laweasyread-front/embed.html)（目前僅知Google Chrome 與 Mozilla Firefox 能運作）。
+
 在網頁HTML原始碼中的`</head>`前加入
 ```html
 <link href="http://g0v.github.io/laweasyread-front/stylesheets/main.css" rel="stylesheet" type="text/css" />
@@ -50,6 +52,9 @@ Google瀏覽器外掛，可於瀏覽網站時：
 <script src="http://g0v.github.io/laweasyread-front/javascripts/LER.js" type="text/javascript"></script>
 <script src="http://g0v.github.io/laweasyread-front/javascripts/embedded2.js" type="text/javascript"></script>
 ```
+
+## Warning
+警告：部落客於編輯網誌時，請暫時關閉本外掛。
 
 # Disclaimer
 甚麼都不負責。
@@ -68,14 +73,13 @@ Google瀏覽器外掛，可於瀏覽網站時：
 
 # Notices
 * 全國法規資料庫有收錄的均會加上連結－－除非原本已經是連結。
-* 動態讀取的網頁－－如Facebook和[零時政府立法院](http://ly.g0v.tw.jit.su/)、[評律網](http://www.pingluweb.com/)）－－不會自動轉換，但是可以手動按下左下角的黑底文字再次分析內文。
 * 純文字元件如 `TEXTAREA` 等會跳過不處理，列表見`LER.js`的`skippingTags`。
 * 在內嵌其他網域的框架時（如Facebook的留言或按讚外掛），會有瀏覽器警告（似乎不影響運作）。
 
 # Bugs
 * 可能與WYSIWYG編輯器的相互干擾!!!!
 * 會發生「漩渦鳴人的 §8 尾巴出現了」和「我國的 §3 國道走山事件」
-* 未能妥善處理以換行字元或BR標籤來排版的網頁（如[司法院裁判書查詢](http://jirs.judicial.gov.tw/FJUD/)）。
+* 未能妥善處理以換行字元或`BR`標籤來排版的網頁（如[司法院裁判書查詢](http://jirs.judicial.gov.tw/FJUD/)）。
 
 # Development
 
