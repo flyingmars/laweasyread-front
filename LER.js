@@ -1,10 +1,16 @@
+if(!Array.indexOf) Array.prototype.indexOf = function(obj) {
+    for(var i = 0; i < this.length; ++i)
+        if(this[i] == obj) return i;
+    return -1;
+};
+
 LER = function(){
     var skippingTags = ["SCRIPT", "CODE", "TEXTAREA", "OPTION", "BUTTON"]; ///< 也許應該設計成CSS selector的機制
     var rules = [];
     var lawInfos = {};  ///< 法規資訊，包含暱稱資訊
     var counter = 0;
 
-    if(true) { ///< set to true to enable debug messages
+    if(true && typeof console != "undefined" && console.log) { ///< set to true to enable debug messages
         var debugStartTime = (new Date).getTime();
         var debugOldTime = debugStartTime;
         var debug = function(str) {
@@ -44,8 +50,8 @@ LER = function(){
         if(!tabInfos.length) return;
 
         /// 部落格內嵌模式時，尚不允許浮動視窗，因為沒能確認<iframe />會不會有 #16 的問題。
-        if(typeof chrome == "undefined") return; 
-        if(!chrome.runtime && !chrome.extension) return; 
+        if(typeof chrome == "undefined") return;
+        if(!chrome.runtime && !chrome.extension) return;
 
         var timerID;
         var popup;
@@ -171,7 +177,7 @@ LER = function(){
       */
     var parseElement = function(ele, inSpecial) {
         for(var next, child = ele.firstChild; child; child = next) {
-            if(ele.classList.contains("LER-defaultLaw")) inSpecial = "defaultLaw";
+            if(/(^| )LER-defaultLaw( |$)/.test(ele.className)) inSpecial = "defaultLaw";
             if(ele.tagName == 'A') inSpecial = 'A';
             next = child.nextSibling; ///< 因為ele.childNodes會變，所以得這樣
             switch(child.nodeType) {
@@ -329,7 +335,7 @@ LER = function(){
             node.setAttribute('title', lastFoundLaw.name);
             node.className = "LER-lawName-container";
             node.innerHTML = '<span class="LER-lawName">' + match[0] + '</span>';
-            
+
             if(lastFoundLaw.PCode) {
                 var catalog = 'http://law.moj.gov.tw/LawClass/LawAllPara.aspx?PCode=' + lastFoundLaw.PCode;
                 addPopup(node, [
@@ -776,7 +782,7 @@ LER = function(){
         },
         minLength: 4 ///< 最短的是「百分之一」
     });
-    
+
     /** 立法院法律系統的沿革日期的說明欄
       * 因為難以確認是哪個版本，故暫不加連結
       * 說明欄有些會被前面的規則先比對到了，因而呈現結果可能不一
