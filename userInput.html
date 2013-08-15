@@ -15,8 +15,16 @@
 
     <script type="text/javascript">
         function parse() {
-            document.getElementById("output").innerHTML = document.getElementById("input").value.replace(/\n/g, '<br />');
-            LER.parse(document.getElementById("output"));
+            var o = document.getElementById("output");
+            var h = document.getElementById("html");
+            var input = document.getElementById("input").value;
+            if(!document.getElementById("htmlspecialchars").checked) input = input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            if(document.getElementById("nl2br").checked) input = input.replace(/\n/g, "<br />\n");
+            o.innerHTML = input;
+            LER.parse(o);
+            h.value = o.innerHTML;
+            h.style.height = '0';
+            h.style.height = h.scrollHeight + 'px';
         }
     </script>
 </head>
@@ -44,20 +52,28 @@
     </script>
     <fieldset id="inputContainer" style="float: left; width: 45%;">
         <legend>輸入純文字</legend>
-        <div>
+        <fieldset>
+            <legend>轉換設定</legend>
             <label><input id="auto" type="checkbox" checked="checked" onclick="document.getElementById('manually').style.display = this.checked ? 'none' : '';" />自動轉換</label>
             <button id="manually" style="display: none;" onclick="parse();">手動轉換</button>
-        </div>
+            <br />
+            <label><input id="htmlspecialchars" type="checkbox" onclick="parse();" />解譯HTML碼</label>
+            <label><input id="nl2br" type="checkbox" checked="checked" onclick="parse();" />依原文換行處換行</label>
+        </fieldset>
         <textarea id="input" style="width: 100%; background-color: #ccc;" onkeyup="
             document.getElementById('button').style.display = '';
             this.style.height = '0';
             this.style.height = this.scrollHeight + 'px';
             if(document.getElementById('auto').checked) parse();
-        "></textarea>
+        ">（在這裡輸入文字）</textarea>
     </fieldset>
     <fieldset id="outputContainer" style="float: right; width: 45%;">
         <legend>轉換結果</legend>
         <div id="output"></div>
+    </fieldset>
+    <fieldset id="HTML" style="clear:both;">
+        <legend>HTML（可用於貼到部落格、支援HTML的留言版）</legend>
+        <textarea id="html" style="width: 100%; background-color: #ccc;"></textarea>
     </fieldset>
 </body>
 </html>
