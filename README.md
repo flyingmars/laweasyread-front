@@ -5,7 +5,7 @@
 可將網頁中的法規、條文、大法官解釋、判決字號均加上連結。使用方式有三：
 * 安裝為[Firefox](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/) 或 [Google瀏覽器](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)外掛（[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)）
 * 在[轉換頁面](http://g0v.github.io/laweasyread-front/userInput.html)貼上法律相關網頁或檔案的內容文章，可以立即將該文章顯示為有連結的樣貌。
-* 網頁內嵌JavaScript方式，以使未安裝瀏覽器外掛的網友亦能看到自動加上連結的法規和條文。（[示範頁](http://g0v.github.io/laweasyread-front/embed.html)；未支援IE）
+* 網頁內嵌JavaScript方式，以使未安裝瀏覽器外掛的網友亦能看到自動加上連結的法規和條文。（[示範頁](http://g0v.github.io/laweasyread-front/embed.html)）
 
 ## Capability
 網頁中提到法規名稱或是條文時：
@@ -40,7 +40,7 @@
 可比對安裝前後[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)的顯示差異。
 
 ## Embed JavaScript in websites or blogs
-[內嵌JavaScript 示範頁](http://g0v.github.io/laweasyread-front/embed.html)（目前僅知Google Chrome 與 Mozilla Firefox 能運作）。
+[內嵌JavaScript 示範頁](http://g0v.github.io/laweasyread-front/embed.html)。
 
 在網頁HTML原始碼中的`</head>`前加入
 ```html
@@ -99,7 +99,7 @@
 
 * `parseElement()`嘗試處理`document.body`的每一個child。
     * 把非純文字的child再丟給`parseElement()`去recursion；
-    * 把純文字的child代換為丟去`parseText()`而得到的node array 
+    * 把純文字的child代換為丟去`parseText()`而得到的node array
 * `parseText()`
     * 用規則一的正規表示式把字串分段，把不匹配的部份再丟給規則二
     * 規則二的正規表示式不匹配的部份，再丟給規則三
