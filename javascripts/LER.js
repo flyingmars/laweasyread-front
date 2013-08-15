@@ -405,7 +405,8 @@ LER = function(){
             for(var i = 0; i < parts.length; ++i) {
                 var scraps = parts[i].split(/第/g);        //#=> ["", "十八條之一", "一項", "九類"], ["", "二十六條", "二款"], ["", "四款"]
                 var single = ""; ///< 顯示於畫面的字串，包含"§"和項款目
-                for(var j = 1; j < scraps.length; ++j) {
+                for(var j = 0; j < scraps.length; ++j) {
+                    if(!scraps[j]) continue;    ///< IE中，scraps[0]不會是空字串。
                     rePart.lastIndex = 0;
                     var m = rePart.exec(scraps[j]);
                     var num1 = parseInt(m[1]);
