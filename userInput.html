@@ -23,6 +23,7 @@
             o.innerHTML = input;
             LER.parse(o);
             h.value = o.innerHTML;
+            if(typeof console != "undefined") h.style.height = "";
             h.style.height = h.scrollHeight + 'px';
         }
     </script>
@@ -60,6 +61,7 @@
         </fieldset>
         <textarea id="input" style="width: 100%; background-color: #ccc;" onkeyup="
             document.getElementById('button').style.display = '';
+            if(typeof console != 'undefined') this.style.height = '';
             this.style.height = this.scrollHeight + 'px';
             if(document.getElementById('auto').checked) parse();
         ">（在這裡輸入文字）</textarea>
