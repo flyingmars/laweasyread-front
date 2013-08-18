@@ -3,7 +3,8 @@
 * related with [g0v/laweasyread](https://github.com/g0v/laweasyread) but functions differently and not combined together yet.
 
 可將網頁中的法規、條文、大法官解釋、判決字號均加上連結。使用方式有三：
-* 安裝為[Firefox](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/) 或 [Google瀏覽器](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)外掛（[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)）
+* 安裝為 Firefox 或 [Google瀏覽器](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)外掛（[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)）
+    * [Firefox](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/)外掛因不符合 Mozilla 規範而被下架，參閱 [issue #4](https://github.com/g0v/laweasyread-front/issues/4) ，現正搶修中。
 * 在[轉換頁面](http://g0v.github.io/laweasyread-front/userInput.html)貼上法律相關網頁或檔案的內容文章，可以立即將該文章顯示為有連結的樣貌。
 * 網頁內嵌JavaScript方式，以使未安裝瀏覽器外掛的網友亦能看到自動加上連結的法規和條文。（[示範頁](http://g0v.github.io/laweasyread-front/embed.html)）
 
@@ -34,7 +35,7 @@
 # Installation
 
 ## Browser Extension
-* Firefox 瀏覽器請至[Firefox 附加元件](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/)網站安裝。
+* Firefox 瀏覽器暫時不能從[Firefox 附加元件](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/)網站安裝，參閱 [issue #4](https://github.com/g0v/laweasyread-front/issues/4) 。
 * Google 瀏覽器請至[Chrome 線上應用程式商店](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)安裝。
 
 可比對安裝前後[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)的顯示差異。

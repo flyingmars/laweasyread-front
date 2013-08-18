@@ -29,6 +29,34 @@ LER = function(){
         return num;
     }
 
+    /** 把 JSON 做成 DOM
+      * 因為 Firefox 外掛不能用 innerHTML
+      * * 除了文字節點外，均必須有`tag`屬性。
+      * * 如果元件的子節點只有一個文字節點，可將內文指定在`text`屬性中；否則均需包成 Array 置於`children`屬性中
+      * * 其餘屬性均當作是HTML標籤的屬性。
+      */
+    var json2dom = function(obj) {
+        if(typeof obj == "string") obj = JSON.parse(obj);
+        if(!obj.tag) return document.createTextNode(obj.text);
+        var result = document.createElement(obj.tag);
+        for(var attr in obj) {
+            switch(attr) {
+            case "tag": break;
+            case "text":
+                result.appendChild(document.createTextNode(obj.text));
+                break;
+            case "children":
+                for(var i = 0; i < obj.children.length; ++i)
+                    result.appendChild(json2dom(obj.children[i]));
+                break;
+            default:
+                if(typeof obj[attr] == "function") result[attr] = obj[attr];
+                else result.setAttribute(attr, obj[attr]);
+            }
+        }
+        return result;
+    };
+
     /** 加上浮動視窗
       * 供轉換規則中的replace呼叫
       * \param tabInfos Object with members:
@@ -67,60 +95,91 @@ LER = function(){
             if(timerID) clearTimeout(timerID);
             timerID = setTimeout(function() {
                 if(popupFirstShow) {
-                    popup = document.createElement("DIV");
-                    popup.className = "LER-popup";
-                    popup.onmouseout = function(event) {
-                        var e = event.toElement || event.relatedTarget;
-                        if(isPinned || !e || e == self || e.parentNode == self) return;
-                        for(var cur = e; cur.nodeType == 1; cur = cur.parentNode)
-                            if(cur == this) return;
-                        this.style.display = "none";
-                    };
-                    popup.innerHTML = '<div class="LER-popup-head"></div>'
-                        + '<div class="LER-popup-body">'
-                            + '<label class="LER-popup-pin"><input type="checkbox" />釘住視窗</label>'
-                            + '<ul class="LER-popup-tabs"></ul>'
-                            + '<div class="LER-popup-contents"></div>'
-                        + '</div>'
-                    ;
-                    var checkbox = popup.getElementsByTagName("INPUT")[0];
-                    checkbox.onchange = function() {isPinned = this.checked;};
+                    popup = json2dom({
+                        tag: "DIV",
+                        class: "LER-popup",
+                        onmouseout: function(event) {
+                            var e = event.toElement || event.relatedTarget;
+                            if(isPinned || !e || e == self || e.parentNode == self) return;
+                            for(var cur = e; cur.nodeType == 1; cur = cur.parentNode)
+                                if(cur == this) return;
+                            this.style.display = "none";
+                        },
+                        children: [
+                            {   tag: "DIV",
+                                class: "LER-popup-head"
+                            },
+                            {   tag: "DIV",
+                                class: "LER-popup-body",
+                                children: [
+                                    {   tag: "LABEL",
+                                        class: "LER-popup-pin",
+                                        children: [
+                                            {   tag: "INPUT",
+                                                type: "checkbox",
+                                                onchange: function() {isPinned = this.checked;}
+                                            },
+                                            {text: "釘住視窗"}
+                                        ]
+                                    },
+                                    {   tag: "UL",
+                                        class: "LER-popup-tabs"
+                                    },
+                                    {   tag: "DIV",
+                                        class: "LER-popup-contents"
+                                    }
+                                ]
+                            }
+                        ]
+                    });
                     var tabs = popup.childNodes[1].childNodes[1];
                     var contents = popup.childNodes[1].childNodes[2];
+
                     for(var i = 0; i < tabInfos.length; ++i) {
-                        var li = document.createElement("LI");
-                        li.innerHTML = '<span>' + tabInfos[i].title + '</span>';
-                        if(tabInfos[i].link)
-                            li.innerHTML += '\n<a title="開新視窗" target="_blank" href="' + tabInfos[i].link + '">+</a>';
-                        li.firstChild.onclick = function() {
-                            var tabInfo = tabInfos[i];
-                            var tabFirstShow = true;
-                            return function() {
-                                for(var j = 0; j < tabs.childNodes.length; ++j) {
-                                    var t = tabs.childNodes[j];
-                                    var c = contents.childNodes[j];
-                                    if(t.firstChild != this) {
-                                        t.style.fontWeight = "";
-                                        t.style.borderBottomColor = "";
-                                        c.style.display = "none";
-                                    }
-                                    else { /// 該顯示的那個
-                                        t.style.fontWeight = "bold";
-                                        t.style.borderBottomColor = "transparent";
-                                        c.style.display = "";
-                                        if(tabFirstShow) {
-                                            c.innerHTML = tabInfo.content;
-                                            if(tabInfo.onFirstShow) tabInfo.onFirstShow(c);
-                                            tabFirstShow = false;
+                        var li = json2dom({
+                            tag: "LI",
+                            children: [{
+                                tag: "SPAN",
+                                text: tabInfos[i].title,
+                                onclick: (function() {
+                                    var tabInfo = tabInfos[i];
+                                    var tabFirstShow = true;
+                                    return function() {
+                                        for(var j = 0; j < tabs.childNodes.length; ++j) {
+                                            var t = tabs.childNodes[j];
+                                            var c = contents.childNodes[j];
+                                            if(t.firstChild != this) {
+                                                t.style.fontWeight = "";
+                                                t.style.borderBottomColor = "";
+                                                c.style.display = "none";
+                                            }
+                                            else { /// 該顯示的那個
+                                                t.style.fontWeight = "bold";
+                                                t.style.borderBottomColor = "transparent";
+                                                c.style.display = "";
+                                                if(tabFirstShow) {
+                                                    if(typeof tabInfo.content == "string")
+                                                        c.innerHTML = tabInfo.content;
+                                                    else c.appendChild(tabInfo.content);
+                                                    if(tabInfo.onFirstShow) tabInfo.onFirstShow(c);
+                                                    tabFirstShow = false;
+                                                }
+                                            }
                                         }
-                                    }
-                                }
-                            };
-                        }();
+                                    };
+                                })()
+                            }]
+                        });
+                        if(tabInfos[i].link) li.appendChild(json2dom({
+                            tag: "A",
+                            text: "+",
+                            title: "開新視窗",
+                            href: tabInfos[i].link,
+                            target: "_blank"
+                        }));
                         tabs.appendChild(li);
 
-                        var div = document.createElement("DIV");
-                        contents.appendChild(div);
+                        contents.appendChild(document.createElement("DIV"));
                     }
                     tabs.childNodes[defaultTab].firstChild.onclick();
                     document.body.appendChild(popup);
@@ -159,10 +218,10 @@ LER = function(){
             xhr.open("GET", url, true);
             xhr.onreadystatechange = function() {
                 if(xhr.readyState != 4) return;
-                node.innerHTML = (xhr.responseText.indexOf("history.go(-1);") < 0)
-                    ? '<iframe src="' + url + '"></iframe>'
-                    : "查無資料"
-                ;
+                while(node.hasChildNodes()) node.removeChild(node.lastChild);
+                if(xhr.responseText.indexOf("history.go(-1);") < 0)
+                    node.appendChild(document.createElement("IFRAME")).src = url;
+                else node.appendChild(document.createTextNode("查無資料"));
             };
             xhr.send();
         };
@@ -334,7 +393,9 @@ LER = function(){
             else node = document.createElement("SPAN");
             node.setAttribute('title', lastFoundLaw.name);
             node.className = "LER-lawName-container";
-            node.innerHTML = '<span class="LER-lawName">' + match[0] + '</span>';
+            var lawName = node.appendChild(document.createElement("SPAN"));
+            lawName.className = "LER-lawName";
+            lawName.appendChild(document.createTextNode(match[0]));
 
             if(lastFoundLaw.PCode) {
                 var catalog = 'http://law.moj.gov.tw/LawClass/LawAllPara.aspx?PCode=' + lastFoundLaw.PCode;
@@ -342,17 +403,33 @@ LER = function(){
                     {
                         title: "法規沿革",
                         link: 'http://law.moj.gov.tw/LawClass/LawHistory.aspx?PCode=' + lastFoundLaw.PCode,
-                        content: '<iframe src="http://law.moj.gov.tw/LawClass/LawHistory.aspx?PCode=' + lastFoundLaw.PCode + '"></iframe>'
+                        content: (function(){
+                            var iframe = document.createElement("IFRAME");
+                            iframe.src = "http://law.moj.gov.tw/LawClass/LawHistory.aspx?PCode=" + lastFoundLaw.PCode;
+                            return iframe;
+                        })()
                     },
                     {
                         title: "編章節",
                         link: catalog,
-                        content: "讀取中",
+                        content: document.createTextNode("讀取中"),
                         onFirstShow: addPopupMojChecker(catalog)
                     },
                     {
                         title: "外部連結",
-                        content: '<ul>'
+                        content: (function(){
+                            var ul = document.createElement("UL");
+                            var li = ul.appendChild(document.createElement("LI"));
+                            li.appendChild(document.createTextNode("全國法規資料庫"));
+                            var ul_0 = li.appendChild(document.createElement("UL"));
+                            var a = ul_0.appendChild(document.createElement("LI")).appendChild(document.createElement("A"));
+                            a.appendChild(document.createTextNode("所有條文"));
+                            a.target = "_blank";
+                            a.href = "http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + lastFoundLaw.PCode;
+                            return ul;
+                        })()
+
+                        /*'<ul>'
                             + '<li>全國法規資料庫<ul>'
                                 + '<li><a target="_blank" href="http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=' + lastFoundLaw.PCode + '">所有條文</a></li>'
                             + '</ul></li>'
@@ -360,7 +437,7 @@ LER = function(){
                                 ? ''
                                 : ''
                             )
-                            + '</ul>'
+                            + '</ul>'*/
                     }
                 ]);
             }
@@ -597,13 +674,26 @@ LER = function(){
                 node.appendChild(document.createTextNode("#" + num));
                 addPopup(node, [{
                     title: "解釋文",
-                    content: '<iframe src="' + href + '"></iframe>'
+                    content: (function(){
+                        var iframe = document.createElement("IFRAME");
+                        iframe.src = href;
+                        return iframe;
+                    })()
                 }, {
                     title: "其他連結",
                     content: '<dl>'
                         + '<dt><a target="_blank" href="http://law.moj.gov.tw/LawClass/ExContent.aspx?ty=C&CC=D&CNO=' + num + '">全國法規資料庫的<span class="LER-jyi-container">釋#' + num + '</span>專頁</a></dt>'
                         + '<dd>可以一次列出意見書和聲請書全文。</dd>'
                         + '</dl>'
+                        /*(function(){
+                        var dl = document.createElement("DL");
+                        var dt = dl.appendChild(document.createElement("DT"));
+                        var a = dt.appendChild(document.createElement("A"));
+                        //<a target="_blank" href="http://law.moj.gov.tw/LawClass/ExContent.aspx?ty=C&CC=D&CNO=' + num + '">全國法規資料庫的<span class="LER-jyi-container">釋#' + num + '</span>專頁</a>
+
+                        dl.appendChild(document.createElement("DD")).appendChild(document.createTextNode("可以一次列出意見書和聲請書全文。"));
+                        return dl;
+                    })()*/
                 }]);
                 container.appendChild(node);
             }
@@ -807,7 +897,6 @@ LER = function(){
             debug(num);
         },
         setAutoParse: function(node) {this.autoParse = node;},
-        debug: function(varName) {return eval(varName);},
         debugTime: function(str) {debug(str);}
     };
 }();
