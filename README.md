@@ -34,7 +34,7 @@
 # Installation
 
 ## Browser Extension
-* Firefox 瀏覽器請安裝[XPI 檔案]((http://g0v.github.io/laweasyread-front/laweasyread.xpi)。
+* Firefox 瀏覽器請安裝[XPI 檔案](http://g0v.github.io/laweasyread-front/laweasyread.xpi)。
     * 因 Mozilla 規範較嚴謹，而未能於[Firefox 附加元件](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/)網站安裝，參閱 [issue #4](https://github.com/g0v/laweasyread-front/issues/4) ，現正搶修中。
 * Google 瀏覽器請至[Chrome 線上應用程式商店](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)安裝。
 
