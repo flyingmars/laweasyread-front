@@ -159,8 +159,8 @@ LER = function(){
                                                 c.style.display = "";
                                                 if(tabFirstShow) {
                                                     if(typeof tabInfo.content == "string")
-                                                        c.innerHTML = tabInfo.content;
-                                                    else c.appendChild(tabInfo.content);
+                                                        tabInfo.content = document.createTextNode(tabInfo.content);
+                                                    c.appendChild(tabInfo.content);
                                                     if(tabInfo.onFirstShow) tabInfo.onFirstShow(c);
                                                     tabFirstShow = false;
                                                 }
