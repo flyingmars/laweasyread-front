@@ -1,10 +1,12 @@
 {
   "author": "kong0107",
-  "name": "laweasyread-front",
+  "name": "laweasyread",
   "description": "an extension for browsers to view Taiwan's law articles/websites easier",
   "keywords": [
-    "law", "Taiwan",
-    "browser extension", "XSS"
+    "law",
+    "Taiwan",
+    "browser extension",
+    "XSS"
   ],
   "version": "0.4.4",
   "homepage": "http://g0v.github.io/laweasyread-front",
@@ -16,6 +18,8 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-uglify": "~0.2.2"
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-compress": "~0.5.2",
+    "grunt-contrib-copy": "~0.4.1"
   }
 }

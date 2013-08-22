@@ -3,7 +3,7 @@
 * related with [g0v/laweasyread](https://github.com/g0v/laweasyread) but functions differently and not combined together yet.
 
 可將網頁中的法規、條文、大法官解釋、判決字號均加上連結。使用方式有三：
-* 安裝為 [Firefox](http://g0v.github.io/laweasyread-front/laweasyread.xpi) 或 [Google瀏覽器](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)外掛（[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)）
+* 安裝為 [Firefox](http://g0v.github.io/laweasyread-front/dist/laweasyread.xpi) 或 [Google瀏覽器](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)外掛（[測試頁面](http://g0v.github.io/laweasyread-front/browser.html)）
 * 在[轉換頁面](http://g0v.github.io/laweasyread-front/userInput.html)貼上法律相關網頁或檔案的內容文章，可以立即將該文章顯示為有連結的樣貌。
 * 網頁內嵌JavaScript方式，以使未安裝瀏覽器外掛的網友亦能看到自動加上連結的法規和條文。（[示範頁](http://g0v.github.io/laweasyread-front/embed.html)）
 
@@ -34,7 +34,7 @@
 # Installation
 
 ## Browser Extension
-* Firefox 瀏覽器請安裝[XPI 檔案](http://g0v.github.io/laweasyread-front/laweasyread.xpi)。
+* Firefox 瀏覽器請安裝[XPI 檔案](http://g0v.github.io/laweasyread-front/dist/laweasyread.xpi)。
     * 因 Mozilla 規範較嚴謹，而未能於[Firefox 附加元件](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/)網站安裝，參閱 [issue #4](https://github.com/g0v/laweasyread-front/issues/4) ，現正搶修中。
 * Google 瀏覽器請至[Chrome 線上應用程式商店](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)安裝。
 
@@ -46,12 +46,7 @@
 在網頁HTML原始碼中的`</head>`前加入
 ```html
 <link href="http://g0v.github.io/laweasyread-front/stylesheets/main.css" rel="stylesheet" type="text/css" />
-<script src="http://g0v.github.io/laweasyread-front/javascripts/parseInt.js" type="text/javascript"></script>
-<script src="http://g0v.github.io/laweasyread-front/javascripts/pcodes.js" type="text/javascript"></script>
-<script src="http://g0v.github.io/laweasyread-front/javascripts/aliases.js" type="text/javascript"></script>
-<script src="http://g0v.github.io/laweasyread-front/javascripts/lyIDs.js" type="text/javascript"></script>
-<script src="http://g0v.github.io/laweasyread-front/javascripts/courts.js" type="text/javascript"></script>
-<script src="http://g0v.github.io/laweasyread-front/javascripts/LER.js" type="text/javascript"></script>
+<script src="http://g0v.github.io/laweasyread-front/dist/laweasyread.js" type="text/javascript"></script>
 <script src="http://g0v.github.io/laweasyread-front/javascripts/embedded2.js" type="text/javascript"></script>
 ```
 
