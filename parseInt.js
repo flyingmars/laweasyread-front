@@ -44,7 +44,27 @@
                 }
                 return orig(str, 10);
             }
-            /// 若有零到九以外的文字，才處理這裡
+
+            /// 若有零到九以外的文字，才處理這裡。
+
+            /*
+            var result = 0;
+            var negative = /^負/.test(str);
+            if(negative) str = str.substr(1);       //#=>    "十三兆零二十四萬二千"
+            var parts = str.split(reWans);          //#=>   ["十三", "零二十四", "二千"]
+            var glues = str.match(reWans);          //#=>   [     "兆",       "萬"     ]
+            for(var i = 0; i < parts.length; ++i) {
+                var partialSum = 0;
+                var scraps = parts[i].split(reTens);//#=>   ["", "三"], ["零二", "四"], ["二"]   ///< 糟了，IE
+                var tenths = parts[i].match(reTens);//#=>   ["十"],          ["十"],     null
+                for(var j = 0; j < scraps.length; ++j) {
+                    var
+                }
+            }
+            if(negative) result *= -1;
+            return result;
+            */
+
             reOnes.lastIndex = reTens.lastIndex = reWans.lastIndex = 0;
             rePreOne.lastIndex = reInnerOne.lastIndex = 0;
             str = str.replace(rePreOne, "一$1").replace(reInnerOne, "$1一$2");
