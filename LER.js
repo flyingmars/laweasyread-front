@@ -403,41 +403,42 @@ LER = function(){
                     {
                         title: "法規沿革",
                         link: 'http://law.moj.gov.tw/LawClass/LawHistory.aspx?PCode=' + lastFoundLaw.PCode,
-                        content: (function(){
-                            var iframe = document.createElement("IFRAME");
-                            iframe.src = "http://law.moj.gov.tw/LawClass/LawHistory.aspx?PCode=" + lastFoundLaw.PCode;
-                            return iframe;
-                        })()
+                        content: json2dom({
+                            tag: "IFRAME",
+                            src: "http://law.moj.gov.tw/LawClass/LawHistory.aspx?PCode=" + lastFoundLaw.PCode
+                        })
                     },
                     {
                         title: "編章節",
                         link: catalog,
-                        content: document.createTextNode("讀取中"),
+                        content: "讀取中",
                         onFirstShow: addPopupMojChecker(catalog)
                     },
                     {
                         title: "外部連結",
-                        content: (function(){
-                            var ul = document.createElement("UL");
-                            var li = ul.appendChild(document.createElement("LI"));
-                            li.appendChild(document.createTextNode("全國法規資料庫"));
-                            var ul_0 = li.appendChild(document.createElement("UL"));
-                            var a = ul_0.appendChild(document.createElement("LI")).appendChild(document.createElement("A"));
-                            a.appendChild(document.createTextNode("所有條文"));
-                            a.target = "_blank";
-                            a.href = "http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + lastFoundLaw.PCode;
-                            return ul;
-                        })()
-
-                        /*'<ul>'
-                            + '<li>全國法規資料庫<ul>'
-                                + '<li><a target="_blank" href="http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=' + lastFoundLaw.PCode + '">所有條文</a></li>'
-                            + '</ul></li>'
-                            + (lastFoundLaw.lyID    ///< 還沒想好該怎麼做，且還得轉成大五碼!?
-                                ? ''
-                                : ''
-                            )
-                            + '</ul>'*/
+                        content: json2dom({
+                            tag: "UL",
+                            children: [
+                                {   tag: "LI",
+                                    children: [
+                                        {text: "全國法規資料庫"},
+                                        {   tag: "UL",
+                                            children: [
+                                                {   tag: "LI",
+                                                    children: [
+                                                        {   tag: "A",
+                                                            target: "_blank",
+                                                            href: "http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + lastFoundLaw.PCode,
+                                                            text: "所有條文"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        })
                     }
                 ]);
             }
@@ -471,7 +472,7 @@ LER = function(){
 
         var replace = function(match, inSpecial) {
             ++counter;
-            var html = "";  ///< 待會直接用innerHTML
+            var nodeJSON = {children: []};  ///< 待會用 json2dom
             var SNo = "";   ///< 用於多條文連結
             var nums;       ///< 記錄最後一個條文
             reSplitter.lastIndex = 0;
@@ -504,10 +505,14 @@ LER = function(){
                         nums[1] = num2;
                     }
                 }
-                html += '<span class="LER-artNum">' + single + '</span>';
+                nodeJSON.children.push({
+                    tag: "SPAN",
+                    class: "LER-artNum",
+                    text: single
+                });
 
                 if(i == parts.length - 1) break;    ///< 處理連接詞
-                html += ((glues[i] == ",") ? "" : " ") + glues[i] + " ";
+                nodeJSON.children.push({text: ((glues[i] == ",") ? "" : " ") + glues[i] + " "});
             }
             /// 處理預設法規。機制參閱此處變數宣告之處
             var law = (isImmediateAfterLaw && match.index == 0 || !defaultLaw) ? lastFoundLaw : defaultLaw;
@@ -520,22 +525,30 @@ LER = function(){
                     href += "SearchNo.aspx?PC=" + law.PCode + "&SNo=" + SNo;
                     tabs.push({
                         title: "說明",
-                        content: '<ul>'
-                            + '<li>目前僅支援在「法律」層級的「單一」條文提供連往立法院法律系統的「相關法條」頁面的標籤。</li>'
-                            + '<li>可以先點選單一條文的連結，再到該新視窗／分頁查看相關條文。</li>'
-                            + '</ul>'
+                        content: json2dom({
+                            tag: "UL",
+                            children: [
+                                {   tag: "LI",
+                                    text: "目前僅支援在「法律」層級的「單一」條文提供連往立法院法律系統的「相關法條」頁面的標籤。"
+                                },
+                                {   tag: "LI",
+                                    text: "如果需要查閱單一特定條文的相關法規，請先點選浮動視窗中該條文的連結，再到開出的新分頁查看。"
+                                }
+                            ]
+                        })
                     });
                 }
                 else {  /// 單一條文
                     href += "Single.aspx?Pcode=" + law.PCode + "&FLNO=" + nums.join("-");
-                    /** 全國法規資料庫的「相關法條」
-                      * 還沒想到要怎麼避免該頁面43行的`alert('查無資料');history.go(-1);`
-                      * 見 issue # 16
-                      */
-                    /*tabs.push({
-                        title: "相關法條（法務部）",
-                        content: '<iframe src="http://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=' + law.PCode + '&FLNO=' + flno + '"></iframe>'
-                    });*/
+
+                    /// 浮動視窗
+                    var contentRela = "http://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=" + law.PCode + "&FLNO=" + nums.join("-");
+                    tabs.push({
+                        title: "相關法規",
+                        link: contentRela,
+                        content: "讀取中",
+                        onFirstShow: addPopupMojChecker(contentRela)
+                    });
                     if(law.lyID) {
                         var url = "http://lis.ly.gov.tw/lghtml/lawstat/relarti/{lyID}/{lyID}{ArticleNumber}{SubNumber}.htm"
                             .replace(/{lyID}/g, law.lyID)
@@ -545,17 +558,15 @@ LER = function(){
                         tabs.push({
                             title: "相關法條",
                             link: url,
-                            content: '<iframe src="' + url + '"></iframe>'
+                            content: json2dom({
+                                tag: "IFRAME",
+                                src: url
+                            })
                         });
                     }
                     tabs.push({
                         title: "說明",
-                        content: '<ul>'
-                            + '<li>目前僅支援在「法律」層級的「單一」條文提供連往立法院法律系統的「相關法條」頁面的標籤。</li>'
-                            + '<li>全國法規資料庫在單一條文下方已有「相關法條」的按鈕。如果不能按，即表示該系統中沒有該頁面（也因此而有<a target="_blank" href="https://github.com/kong0107/zhLawEasyRead/issues/16">技術上的困難</a>而尚未將之做為頁籤。）</li>'
-                            + '<li>不是每個法條都有相關法條的頁面，亦即可能出現錯誤訊息。（嗯，也是<a target="_blank" href="https://github.com/kong0107/zhLawEasyRead/issues/20">技術問題</a>）</li>'
-                            + '<li>全國法規資料庫和立法院法律系統列出的條文不盡相同，後者不會包含命令層級的法規。</li>'
-                            + '</ul>'
+                        content: "目前僅支援在「法律」層級的「單一」條文提供「相關法規」與「相關法條」標籤。前者連向全國法規資料庫，包含命令層級（通常是行政院發布）的法規；後者連向立法院法律系統，僅包含法律層級（立法院三讀通過）的法律。"
                     });
                 }
                 tabs.unshift({ ///< 要放最前面
@@ -566,19 +577,18 @@ LER = function(){
                 });
             }
 
-            var node;
             if(inSpecial != 'A' && href) {  ///< 如果是「前條第一款」，那就還不會加上連結
-                node = document.createElement('A');
-                node.setAttribute('target', '_blank');
-                node.setAttribute('href', href);
-                node.setAttribute('title', law.name + "\n" + match[0]);
+                nodeJSON.tag = "A";
+                nodeJSON.target = "_blank";
+                nodeJSON.href = href;
+                nodeJSON.title = law.name + "\n" + match[0];
             }
             else {
-                node = document.createElement("SPAN");
-                node.setAttribute('title', match[0]);
+                nodeJSON.tag = "SPAN";
+                nodeJSON.title = match[0];
             }
-            node.className = "LER-artNum-container";
-            node.innerHTML = html;
+            nodeJSON.class = "LER-artNum-container";
+            var node = json2dom(nodeJSON);
             addPopup(node, tabs);
             return node;
         };
@@ -598,13 +608,18 @@ LER = function(){
             }
             /// 處理預設法規。機制參閱此處變數宣告之處
             var law = (isImmediateAfterLaw && match.index == 0 || !defaultLaw) ? lastFoundLaw : defaultLaw;
-            var node = document.createElement("SPAN");
-            node.className = "LER-artNum-container";
-            var html = ' class="LER-artNum" title="' + match[0] + '">' + text + '</';
             var href, tabs = [];
             if(law && law.PCode) {
                 href = 'http://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=' + law.PCode + '&FLNO=' + text.substr(1);
-                /// 還有全國法規資料庫的，見上面那個規則
+
+                /// 浮動視窗
+                var contentRela = "http://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=" + law.PCode + "&FLNO=" + text.substr(1);
+                tabs.push({
+                    title: "相關法規",
+                    link: contentRela,
+                    content: "讀取中",
+                    onFirstShow: addPopupMojChecker(contentRela)
+                });
                 if(law.lyID) {
                     var url = "http://lis.ly.gov.tw/lghtml/lawstat/relarti/{lyID}/{lyID}{ArticleNumber}{SubNumber}.htm"
                         .replace(/{lyID}/g, law.lyID)
@@ -613,17 +628,16 @@ LER = function(){
                     ;
                     tabs.push({
                         title: "相關法條",
-                        content: '<iframe src="' + url + '"></iframe>'
+                        link: url,
+                        content: json2dom({
+                            tag: "IFRAME",
+                            src: url
+                        })
                     });
                 }
                 tabs.push({
                     title: "說明",
-                    content: '<ul>'
-                        + '<li>目前僅支援在「法律」層級的「單一」條文提供連往立法院法律系統的「相關法條」頁面的標籤。</li>'
-                        + '<li>全國法規資料庫在單一條文下方已有「相關法條」的按鈕。如果不能按，即表示該系統中沒有該頁面（也因此而有<a target="_blank" href="https://github.com/kong0107/zhLawEasyRead/issues/16">技術上的困難</a>而尚未將之做為頁籤。）</li>'
-                        + '<li>不是每個法條都有相關法條的頁面，亦即可能出現錯誤訊息。（嗯，也是<a target="_blank" href="https://github.com/kong0107/zhLawEasyRead/issues/20">技術問題</a>）</li>'
-                        + '<li>全國法規資料庫和立法院法律系統列出的條文不盡相同，後者不會包含命令層級的法規。</li>'
-                        + '</ul>'
+                    content: "目前僅支援在「法律」層級的「單一」條文提供「相關法規」與「相關法條」標籤。前者連向全國法規資料庫，包含命令層級（通常是行政院發布）的法規；後者連向立法院法律系統，僅包含法律層級（立法院三讀通過）的法律。"
                 });
                 tabs.unshift({
                     title: "條文內容",
@@ -632,10 +646,21 @@ LER = function(){
                     onFirstShow: addPopupMojChecker(href)
                 });
             }
-            node.innerHTML = (inSpecial != 'A' && href)
-                ? '<a target="_blank" href="' + href + '"' + html + 'a>'
-                : '<span' + html + 'span>'
+            var childJSON = (inSpecial != 'A' && href)
+                ? { tag: "A",
+                    target: "_blank",
+                    href: href
+                }
+                : { tag: "SPAN" }
             ;
+            childJSON.class = "LER-artNum";
+            childJSON.title = match[0];
+            childJSON.text = text;
+            var node = json2dom({
+                tag: "SPAN",
+                class: "LER-artNum-container",
+                children: [childJSON]
+            });
             addPopup(node, tabs);
             return node;
         };
@@ -651,14 +676,15 @@ LER = function(){
         reNumber = new RegExp(reNumber, 'g');
         var replace = function(match, inSpecial) {
             ++counter;
-            var container = document.createElement("SPAN");
-            container.setAttribute("title", match[0]);
-            container.className = "LER-jyi-container";
+            var container = json2dom({
+                tag: "SPAN",
+                class: "LER-jyi-container",
+                title: match[0],
+                text: "釋"
+            });
 
             reNumber.lastIndex = 0;
             var matches = match[0].match(reNumber);
-
-            container.innerHTML = "釋";
             for(var i = 0; i < matches.length; ++i) {
                 var num = parseInt(matches[i]);
                 var href = "http://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=" + num;
@@ -674,26 +700,36 @@ LER = function(){
                 node.appendChild(document.createTextNode("#" + num));
                 addPopup(node, [{
                     title: "解釋文",
-                    content: (function(){
-                        var iframe = document.createElement("IFRAME");
-                        iframe.src = href;
-                        return iframe;
-                    })()
+                    content: json2dom({
+                        tag: "IFRAME",
+                        src: href
+                    })
                 }, {
                     title: "其他連結",
-                    content: '<dl>'
-                        + '<dt><a target="_blank" href="http://law.moj.gov.tw/LawClass/ExContent.aspx?ty=C&CC=D&CNO=' + num + '">全國法規資料庫的<span class="LER-jyi-container">釋#' + num + '</span>專頁</a></dt>'
-                        + '<dd>可以一次列出意見書和聲請書全文。</dd>'
-                        + '</dl>'
-                        /*(function(){
-                        var dl = document.createElement("DL");
-                        var dt = dl.appendChild(document.createElement("DT"));
-                        var a = dt.appendChild(document.createElement("A"));
-                        //<a target="_blank" href="http://law.moj.gov.tw/LawClass/ExContent.aspx?ty=C&CC=D&CNO=' + num + '">全國法規資料庫的<span class="LER-jyi-container">釋#' + num + '</span>專頁</a>
-
-                        dl.appendChild(document.createElement("DD")).appendChild(document.createTextNode("可以一次列出意見書和聲請書全文。"));
-                        return dl;
-                    })()*/
+                    content: json2dom({
+                        tag: "DL",
+                        chidren: [
+                            {   tag: "DT",
+                                children: [
+                                    {   tag: "A",
+                                        target: "_blank",
+                                        href: "http://law.moj.gov.tw/LawClass/ExContent.aspx?ty=C&CC=D&CNO=" + num,
+                                        children: [
+                                            {text: "全國法規資料庫的"},
+                                            {   tag: "SPAN",
+                                                class: "LER-jyi-container",
+                                                text: "釋#" + num
+                                            },
+                                            {text: "專頁"}
+                                        ]
+                                    }
+                                ]
+                            },
+                            {   tag: "DD",
+                                text: "可以一次列出所有大法官意見書，以及釋憲聲請書全文。"
+                            }
+                        ]
+                    })
                 }]);
                 container.appendChild(node);
             }
