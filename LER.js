@@ -30,7 +30,7 @@ LER = function(){
     }
 
     /** 把 JSON 做成 DOM
-      * 因為 Firefox 外掛不能用 innerHTML
+      * 因為 Firefox 外掛不能用 inner HTML
       * * 除了文字節點外，均必須有`tag`屬性。
       * * 如果元件的子節點只有一個文字節點，可將內文指定在`text`屬性中；否則均需包成 Array 置於`children`屬性中
       * * 其餘屬性均當作是HTML標籤的屬性。
