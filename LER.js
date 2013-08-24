@@ -21,6 +21,10 @@ LER = function(){
         };
     }
     else var debug = function(){};
+    if(window.innerHeight < 50 || window.innerWidth < 100) {
+        debug("window too small, ignored.");
+        return;
+    }
 
     /// 數字補零（其實不是數字也沒關係）
     var zeroFill = function(num, strlen){
@@ -193,6 +197,10 @@ LER = function(){
                     : (document.body.offsetWidth - popup.offsetWidth)
                 ;
                 s.left = left + "px";
+                /* See #9
+                for(var p = self; p != document.body; p = p.parentNode)
+                    s.zIndex = Math.max(s.zIndex, p.style.zIndex);
+                */
                 var arrow = popup.firstChild;
                 arrow.style.marginLeft = x - left - (arrow.offsetWidth / 2) + "px";
             }, 350);
@@ -936,4 +944,4 @@ LER = function(){
         debugTime: function(str) {debug(str);}
     };
 }();
-LER.debugTime("initialization");
+if(typeof LER == "object" && LER.debugTime) LER.debugTime("initialization");
