@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementsByTagName("BUTTON")[0].onclick = function() {
         chrome.tabs.getSelected(null, function(tab) {
             console.log("button clicked on tab " + tab.id);
-            chrome.tabs.sendMessage(tab.id, {greeting: "hello"}, function(response) {
+            chrome.tabs.sendMessage(tab.id, {method: "parse"}, function(response) {
                 console.log(response);
             });
         });
