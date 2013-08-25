@@ -555,6 +555,61 @@ LER = function(){
 
         return {pattern: pattern, replace: replace, minLength: 2}; ///< 最短的是「民法」
     }());
+    
+    
+    /** 醞釀中的條號比對函數
+      * #### 寫好後外面再用 rules.push() 包起來即可 ####
+      * 有可能這一個即可打遍中華天下!?
+      * 考量的情形有：
+      * * 中文數字與空白字元（含全形）：在數字部分解決
+      * * 「之」字的位置（即"第三條之一"或"第3-1條"）
+      * * 連接詞的位置（即"第7條, 第9條"或"第7, 9條"）
+      * * 「第」字的省略
+      *
+      * 因為空白全部被忽略，所以省略「第」字而「之」又在「條」字之後的，即可能會出錯。
+      * 例如文章若想用換行或全形空白隔開而成「五條之一　三項」，不知會如何。
+      */
+    /*rules.push*/(function() {
+        var reDigit = "\\d";
+        var map = parseInt(); ///< 改寫的`parseInt`的
+        for(var i in map) reDigit += i;
+        
+        var reNumber = "[　\\s]*[%Digit%][　\\s%Digit%]*".replace(/%Digit%/g, reDigit);// 如「五　十」
+        var reNumPair = "%Number%([-－－之]%Number%)?".replace(/%Number%/g, reNumber); // 如「五之一」
+        var reType = "[條項類款目]";
+        var reConj = "[、,或及和與~～至到]";
+        var rePart = "第?%NumPair%(%Conj%%NumPair%)*%Type%[　\\s]*(之%Number%)?"
+            .replace(/%NumPair%/g, reNumPair)
+            .replace(/%Conj%/, reConj)
+            .replace(/%Type%/, reType)
+            .replace(/%Number%/, reNumber)
+        ;   // 如「第五之一條」、「五條之一」
+        var pattern = "(%Part%)+(%Conj%[\\s　]*(%Part%)+)*"
+            .replace(/%Part%/g, rePart)
+            .replace(/%Conj%/, reConj);
+        ;
+        
+        reDigit = new RegExp(reDigit, 'g');
+        reNumber = new RegExp(reNumber, 'g');
+        reNumPair = new RegExp(reNumPair, 'g');
+        reType = new RegExp(reType, 'g');
+        reConj = new RegExp(reConj, 'g');
+        rePart = new RegExp(rePart, 'g');
+        pattern = new RegExp(pattern, 'g');
+        
+        var replace = function(match, inSpecial) {
+            ++counter;
+            console.log(match);
+            return json2dom({
+                tag: "SPAN",
+                class: "LER-artNum-container",
+                title: match[0],
+                text: match[0].replace(/\s/g, "")
+            });
+        }
+        
+        return {pattern: pattern, replace: replace, minLength: 3}; ///< 不打算允許「五條」
+    }());
 
 
     /** 條號比對－－支援多條文
@@ -645,12 +700,16 @@ LER = function(){
         return {pattern: pattern, replace: replace, minLength: 3}; ///< 最短的是「第一條」
     }());
 
-    /** 處理全國法規資料庫的 "第 15-1 條"
+    /** 處理 "第X-Y條" 和 "A條B項C款" 的格式
+      * 最常見的即全國法規資料庫 "第 15-1 條"
+      * 因為不會比對到 "第X條之Y" ，所以必須放在前面那個規則的後面。
       */
     rules.push(function() {
         var pattern = /第?\s*(\d+)(-(\d+))?\s*條(\s*第?\d+[項類款目])*/g;
         var replace = function(match, inSpecial) {
             ++counter;
+            
+            // 如果沒有「第」字而前方又不是接著法條名稱，那就當作一般文章。
             if(match[0].charAt(0) != "第" && !isImmediateAfterLaw)
                 return document.createTextNode(match[0]);
 
