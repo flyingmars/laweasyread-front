@@ -34,7 +34,10 @@ LER = function(){
     }
 
     /** 把 JSON 做成 DOM
-      * 因為 Firefox 外掛不能用 inner HTML
+      * 因為 Firefox 外掛不能動態指派 innerHTML ，
+      * 而 Chrome 的 DOMParser#parseFromString 又不支援轉換 "text/html" ，雖然支援轉換 "text/xml" 但不支援用類似 onclick="func();" 的方式指派 eventListener ，故宣告此。
+      *
+      * \param obj
       * * 除了文字節點外，均必須有`tag`屬性。
       * * 如果元件的子節點只有一個文字節點，可將內文指定在`text`屬性中；否則均需包成 Array 置於`children`屬性中
       * * 其餘屬性均當作是HTML標籤的屬性。
@@ -233,6 +236,107 @@ LER = function(){
             };
             xhr.send();
         };
+    };
+
+    /** 轉換條號的格式
+      */
+    var parseArtNum = function(num, glue) {
+        if(!glue) glue = "-";
+        var num2 = num % 100;
+        var num1 = ((num - num2) / 100).toFixed();
+        return num1 + (num2 ? glue + num2 : "");
+    }
+
+    /** 創建條號的節點
+      * 因為偵測條號的規則有兩條以上，故把生成節點的函數另外寫出來。
+      * \param law
+      * \param items 例如 [ {"條": 7719, "款": 2, to: {"款": 5}}, "條": 33300 ]
+      * \param inSpecial
+      */
+    var createArtNumContainer = function(law, items, inSpecial) {
+        if(typeof law == "string") law = lawInfos[law];
+        if(!law || !law.PCode || typeof items[0]["條"] == "undefined")
+            return json2dom({tag: "SPAN", class: "LER-artNum-container"});
+
+        var tabs = [];
+        var href = "http://law.moj.gov.tw/LawClass/Law";
+        if(items.length == 1 && !(items[0].to && items[0].to["條"])) { // 單一條文
+            var FLNO = parseArtNum(items[0]["條"]);
+            href +=  "Single.aspx?Pcode=" + law.PCode + "&FLNO=" + FLNO;
+
+            /// 全國法規資料庫的「相關法條」
+            var contentRela = "http://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=" + law.PCode + "&FLNO=" + FLNO;
+            tabs.push({
+                title: "相關法規",
+                link: contentRela,
+                content: "讀取中",
+                onFirstShow: addPopupMojChecker(contentRela)
+            });
+
+            /// 立法院法律系統的「相關條文」
+            if(law.lyID) {
+                var url = "http://lis.ly.gov.tw/lghtml/lawstat/relarti/{lyID}/{lyID}{ArtNum}.htm"
+                    .replace(/{lyID}/g, law.lyID)
+                    .replace("{ArtNum}", zeroFill(items[0]["條"], 6))
+                ;
+                tabs.push({
+                    title: "相關法條",
+                    link: url,
+                    content: json2dom({ tag: "IFRAME", src: url})
+                });
+            }
+
+            tabs.push({
+                title: "說明",
+                content: json2dom({
+                    tag: "UL",
+                    children: [
+                        { tag: "LI", text: "「相關法規」連向全國法規資料庫，包含命令層級（通常是行政院發布）的法規。" },
+                        { tag: "LI", text: "「相關法條」連向立法院法律系統，僅包含法律層級（立法院三讀通過）的法律。" },
+                        { tag: "LI", text: "如果顯示「查無資料」，表示該條文在該系統中沒有相關條文的資料。" }
+                    ]
+                })
+            });
+        }
+        else { // 多個條文
+            var SNo = ""
+            for(var i = 0; i < items.length; ++i) {
+                if(typeof items[i]["條"] == "undefined") continue;
+                if(SNo.length) SNo += ","
+                SNo += parseArtNum(items[i]["條"], ".");
+                if(items[i].to && items[i].to["條"])
+                    SNo += "-" + parseArtNum(items[i]["條"].to["條"], ".");
+            }
+            href += "SearchNo.aspx?PC=" + law.PCode + "&SNo=" + SNo;
+
+            tabs.push({
+                title: "說明",
+                content: json2dom({
+                    tag: "UL",
+                    children: [
+                        { tag: "LI", text: "僅「單一」條文支援「相關條文」標籤。" },
+                        { tag: "LI", text: "如果需要查閱特定條文的相關法規，請先點選浮動視窗中該條文的連結，再到開出的新分頁查看。" }
+                    ]
+                })
+            });
+        }
+        tabs.unshift({ ///< 要放最前面
+            title: "條文內容",
+            link: href,
+            content: '讀取中',
+            onFirstShow: addPopupMojChecker(href)
+        });
+        var result = json2dom(
+            inSpecial == 'A'
+            ? { tag: "SPAN" }
+            : { tag: "A",
+                href: href,
+                target: "_blank"
+            }
+        );
+        result.className = "LER-artNum-container";
+        addPopup(result, tabs);
+        return result;
     };
 
 
@@ -480,9 +584,9 @@ LER = function(){
 
         var replace = function(match, inSpecial) {
             ++counter;
-            var nodeJSON = {children: []};  ///< 待會用 json2dom
-            var SNo = "";   ///< 用於多條文連結
+            var children = [];  ///< 待會用 json2dom
             var nums;       ///< 記錄最後一個條文
+            var items = []; ///< 用於createArtNumContainer
             reSplitter.lastIndex = 0;
 
             // 例如比對到 "第十八條之一第一項第九類、第二十六條第二款至第四款"，其執行結果為
@@ -491,6 +595,7 @@ LER = function(){
             for(var i = 0; i < parts.length; ++i) {
                 var scraps = parts[i].split(/第/g);        //#=> ["", "十八條之一", "一項", "九類"], ["", "二十六條", "二款"], ["", "四款"]
                 var single = ""; ///< 顯示於畫面的字串，包含"§"和項款目
+                var item = {};
                 for(var j = 0; j < scraps.length; ++j) {
                     if(!scraps[j]) continue;    ///< IE中，scraps[0]不會是空字串。
                     rePart.lastIndex = 0;
@@ -499,105 +604,44 @@ LER = function(){
                     switch(m[2]) {
                     case "條":
                         single = "§" + num1;
-                        if(i) SNo += (glues[i-1] == "至") ? "-" : ",";   ///< 處理連接詞
-                        SNo += num1;
                         nums = [num1];  ///< 只記錄最後一條
+                        item["條"] = num1 * 100;
                         break;
                     default:    ///< 之後要處理簡稱，例如「項」是簡記為羅馬數字，但也要允許使用者選擇喜歡的簡記方式
                         single += "第" + num1 + m[2];
+                        item[m[2]] = num1;
                     }
-                    if(m[3]) {  ///< 理論上只在「條」的情況出現
+                    if(m[3]) {
                         var num2 = parseInt(m[4]);
-                        single += "-" + num2;
-                        SNo += "." + num2;
-                        nums[1] = num2;
+                        if(typeof nums != "undefined") { ///< 「條」的情況
+                            single += "-" + num2;
+                            nums[1] = num2;
+                            item["條"] += num2;
+                        }
+                        else {  ///< 多條的分區也會有這個，例如民訴2編1章3節5-1目
+                            single += "之" + num2;
+                            // 暫未能處理 item
+                        }
                     }
                 }
-                nodeJSON.children.push({
+                items.push(item);
+                children.push({
                     tag: "SPAN",
                     class: "LER-artNum",
                     text: single
                 });
 
                 if(i == parts.length - 1) break;    ///< 處理連接詞
-                nodeJSON.children.push({text: ((glues[i] == ",") ? "" : " ") + glues[i] + " "});
+                children.push({text: ((glues[i] == ",") ? "" : " ") + glues[i] + " "});
             }
             /// 處理預設法規。機制參閱此處變數宣告之處
             var law = (isImmediateAfterLaw && match.index == 0 || !defaultLaw) ? lastFoundLaw : defaultLaw;
             isImmediateAfterLaw = false;
 
-            var href, tabs = [];
-            if(law && SNo && law.PCode) {
-                href = "http://law.moj.gov.tw/LawClass/Law";
-                if(/[,-]/.test(SNo)) { /// 多個條文
-                    href += "SearchNo.aspx?PC=" + law.PCode + "&SNo=" + SNo;
-                    tabs.push({
-                        title: "說明",
-                        content: json2dom({
-                            tag: "UL",
-                            children: [
-                                {   tag: "LI",
-                                    text: "目前僅支援在「法律」層級的「單一」條文提供連往立法院法律系統的「相關法條」頁面的標籤。"
-                                },
-                                {   tag: "LI",
-                                    text: "如果需要查閱單一特定條文的相關法規，請先點選浮動視窗中該條文的連結，再到開出的新分頁查看。"
-                                }
-                            ]
-                        })
-                    });
-                }
-                else {  /// 單一條文
-                    href += "Single.aspx?Pcode=" + law.PCode + "&FLNO=" + nums.join("-");
-
-                    /// 浮動視窗
-                    var contentRela = "http://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=" + law.PCode + "&FLNO=" + nums.join("-");
-                    tabs.push({
-                        title: "相關法規",
-                        link: contentRela,
-                        content: "讀取中",
-                        onFirstShow: addPopupMojChecker(contentRela)
-                    });
-                    if(law.lyID) {
-                        var url = "http://lis.ly.gov.tw/lghtml/lawstat/relarti/{lyID}/{lyID}{ArticleNumber}{SubNumber}.htm"
-                            .replace(/{lyID}/g, law.lyID)
-                            .replace("{ArticleNumber}", zeroFill(nums[0], 4))
-                            .replace("{SubNumber}", zeroFill(nums[1], 2))
-                        ;
-                        tabs.push({
-                            title: "相關法條",
-                            link: url,
-                            content: json2dom({
-                                tag: "IFRAME",
-                                src: url
-                            })
-                        });
-                    }
-                    tabs.push({
-                        title: "說明",
-                        content: "目前僅支援在「法律」層級的「單一」條文提供「相關法規」與「相關法條」標籤。前者連向全國法規資料庫，包含命令層級（通常是行政院發布）的法規；後者連向立法院法律系統，僅包含法律層級（立法院三讀通過）的法律。"
-                    });
-                }
-                tabs.unshift({ ///< 要放最前面
-                    title: "條文內容",
-                    link: href,
-                    content: '讀取中',
-                    onFirstShow: addPopupMojChecker(href)
-                });
-            }
-
-            if(inSpecial != 'A' && href) {  ///< 如果是「前條第一款」，那就還不會加上連結
-                nodeJSON.tag = "A";
-                nodeJSON.target = "_blank";
-                nodeJSON.href = href;
-                nodeJSON.title = law.name + "\n" + match[0];
-            }
-            else {
-                nodeJSON.tag = "SPAN";
-                nodeJSON.title = match[0];
-            }
-            nodeJSON.class = "LER-artNum-container";
-            var node = json2dom(nodeJSON);
-            addPopup(node, tabs);
+            var node = createArtNumContainer(law, items, inSpecial);
+            for(var i = 0; i < children.length; ++i)
+                node.appendChild(json2dom(children[i]));
+            node.title = (law ? law.name + "\n" : "") + match[0];
             return node;
         };
         return {pattern: pattern, replace: replace, minLength: 3}; ///< 最短的是「第一條」
@@ -616,60 +660,19 @@ LER = function(){
             }
             /// 處理預設法規。機制參閱此處變數宣告之處
             var law = (isImmediateAfterLaw && match.index == 0 || !defaultLaw) ? lastFoundLaw : defaultLaw;
-            var href, tabs = [];
-            if(law && law.PCode) {
-                href = 'http://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=' + law.PCode + '&FLNO=' + text.substr(1);
+            isImmediateAfterLaw = false;
 
-                /// 浮動視窗
-                var contentRela = "http://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=" + law.PCode + "&FLNO=" + text.substr(1);
-                tabs.push({
-                    title: "相關法規",
-                    link: contentRela,
-                    content: "讀取中",
-                    onFirstShow: addPopupMojChecker(contentRela)
-                });
-                if(law.lyID) {
-                    var url = "http://lis.ly.gov.tw/lghtml/lawstat/relarti/{lyID}/{lyID}{ArticleNumber}{SubNumber}.htm"
-                        .replace(/{lyID}/g, law.lyID)
-                        .replace("{ArticleNumber}", zeroFill(match[1], 4))
-                        .replace("{SubNumber}", zeroFill(match[3], 2))
-                    ;
-                    tabs.push({
-                        title: "相關法條",
-                        link: url,
-                        content: json2dom({
-                            tag: "IFRAME",
-                            src: url
-                        })
-                    });
-                }
-                tabs.push({
-                    title: "說明",
-                    content: "目前僅支援在「法律」層級的「單一」條文提供「相關法規」與「相關法條」標籤。前者連向全國法規資料庫，包含命令層級（通常是行政院發布）的法規；後者連向立法院法律系統，僅包含法律層級（立法院三讀通過）的法律。"
-                });
-                tabs.unshift({
-                    title: "條文內容",
-                    link: href,
-                    content: '讀取中',
-                    onFirstShow: addPopupMojChecker(href)
-                });
-            }
-            var childJSON = (inSpecial != 'A' && href)
-                ? { tag: "A",
-                    target: "_blank",
-                    href: href
-                }
-                : { tag: "SPAN" }
-            ;
-            childJSON.class = "LER-artNum";
-            childJSON.title = match[0];
-            childJSON.text = text;
-            var node = json2dom({
+            var node = createArtNumContainer(
+                law,
+                [{ "條": num1 * 100 + (match[3] ? parseInt(match[3]) : 0) }],
+                inSpecial
+            );
+            node.appendChild(json2dom({
                 tag: "SPAN",
-                class: "LER-artNum-container",
-                children: [childJSON]
-            });
-            addPopup(node, tabs);
+                class: "LER-artNum",
+                title: match[0],
+                text: text
+            }));
             return node;
         };
         return {pattern: pattern, replace: replace, minLength: 3}; ///< 最短的是「第1條」
