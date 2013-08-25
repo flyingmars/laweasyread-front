@@ -32,10 +32,16 @@
         base.target = "_blank";
     }
 
-    /** 利用條文表格左方的空間
-      */
     var tla = document.querySelector(".TableLawAll");
     if(tla) {
+        /** 把每個條號的<a href>都加上 name 屬性
+          */
+        var as = tla.getElementsByTagName("A");
+        for(var i = 0; i < as.length; ++i)
+            as[i].name = "article_" + as[i].href.substr(as[i].href.indexOf("FLNO=")+5);
+
+        /** 利用條文表格左方的空間
+          */
         tla = tla.parentNode.parentNode;
         if(tla.childElementCount > 1) {
             tla.removeChild(tla.firstElementChild);

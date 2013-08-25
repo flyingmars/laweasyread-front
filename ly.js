@@ -68,14 +68,27 @@ function parseNodesWithLawTexts(nodes) {
     }
   }
 }
-
 parseNodesWithLawTexts(document.getElementsByTagName('TD'));
+
+/** 把條號加上<a name />，便於跳到指定位置
+  */
+var fonts = document.querySelectorAll("font[color]");
+for(var i = 0; i < fonts.length; ++i) {
+    if(fonts[i].color != "C000FF" && fonts[i].color != "8000ff") continue;
+    var match = fonts[i].innerText.match(/第(.+)條( 之(.+))?/);
+    if(!match) continue;
+    var a = fonts[i].appendChild(document.createElement("A"));
+    a.name = "article_" + parseInt(match[1]) + (
+        match[2] ? parseInt(match[3]) : ""
+    );
+}
+
 
 /** popup.html的法律搜尋框送出後只會跑到首頁
   * 用此來強迫其送出
   */
 if(document.referrer.indexOf("http://lis.ly.gov.tw/")
-    && document.location.pathname == "/lgcgi/lglaw" 
+    && document.location.pathname == "/lgcgi/lglaw"
     && document.getElementsByName('LW').length
     && document.getElementsByName('LW')[0].value.replace(/\w|\s/g, '').length
 ) document.getElementsByTagName('FORM')[0].submit();
@@ -83,15 +96,15 @@ if(document.referrer.indexOf("http://lis.ly.gov.tw/")
 
 (function(){
     if(typeof LER != "object" || !LER.setDefaultLaw) return;
-    
+
     /// 判斷「預設法規」
     var title = document.querySelector("font[size]");
     if(!title) return;
     if(title.size != 5 && title.size != 4) return;
     /// 把後面的法規號碼拿掉。「立法理由」那頁沒有lyID，就用正規表示式解決吧～
-    title = title.innerText.replace(/[\s\d\(\)]/g, '');  
+    title = title.innerText.replace(/[\s\d\(\)]/g, '');
     if(title) LER.setDefaultLaw(title);
-    
+
     /** 處理「相關條文」頁面的其他法規
       * 可參考社維§91-1的該頁：http://lis.ly.gov.tw/lghtml/lawstat/relarti/01183/01183009101.htm
       */
