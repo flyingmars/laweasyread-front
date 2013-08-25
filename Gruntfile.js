@@ -40,7 +40,8 @@ module.exports = function(grunt) {
           var result = [
             'manifest.json',
             'options.*',
-            'popup*.*' // There's a `popup_big5ForLy.html`.
+            'popup*.*', // There's a `popup_big5ForLy.html`.
+            'background.*'
           ];
           for(var i in chrome.icons) result.push(chrome.icons[i]);
           for(var i = 0; i < chrome.content_scripts.length; ++i) {
