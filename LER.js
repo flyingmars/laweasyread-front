@@ -33,9 +33,25 @@ LER = function(){
         return num;
     }
 
+    /** 把HTML 轉成 DOM
+      * 因為 Firefox 外掛不能動態指派 innerHTML
+      * 注意 Chrome 的 DOMParser#parseFromString
+      * * 支援轉換 "text/xml"
+      * * 不支援轉換 "text/html"
+      * * 不支援用類似 onclick="func();" 的方式指派 event listener
+      *
+      * \param html 僅有恰好一個根節點的 XHTML
+      * \return 可直接被 `appendChild` 使用的節點
+      */
+    var html2dom = function() {
+        var domParser = new DOMParser();
+        return function(html) {
+            return domParser.parseFromString(html, "text/xml").lastChild;
+        }
+    }();
+
     /** 把 JSON 做成 DOM
-      * 因為 Firefox 外掛不能動態指派 innerHTML ，
-      * 而 Chrome 的 DOMParser#parseFromString 又不支援轉換 "text/html" ，雖然支援轉換 "text/xml" 但不支援用類似 onclick="func();" 的方式指派 eventListener ，故宣告此。
+      * 適用於需要指派 event listener 的元件。
       *
       * \param obj
       * * 除了文字節點外，均必須有`tag`屬性。
@@ -305,7 +321,7 @@ LER = function(){
                 if(SNo.length) SNo += ","
                 SNo += parseArtNum(items[i]["條"], ".");
                 if(items[i].to && items[i].to["條"])
-                    SNo += "-" + parseArtNum(items[i]["條"].to["條"], ".");
+                    SNo += "-" + parseArtNum(items[i].to["條"], ".");
             }
             href += "SearchNo.aspx?PC=" + law.PCode + "&SNo=" + SNo;
 
@@ -528,29 +544,9 @@ LER = function(){
                     },
                     {
                         title: "外部連結",
-                        content: json2dom({
-                            tag: "UL",
-                            children: [
-                                {   tag: "LI",
-                                    children: [
-                                        {text: "全國法規資料庫"},
-                                        {   tag: "UL",
-                                            children: [
-                                                {   tag: "LI",
-                                                    children: [
-                                                        {   tag: "A",
-                                                            target: "_blank",
-                                                            href: "http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + lastFoundLaw.PCode,
-                                                            text: "所有條文"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        })
+                        content: html2dom(
+                            '<ul><li>全國法規資料庫<ul><li><a target="_blank" href="http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=' + lastFoundLaw.PCode + '">所有條文</a></li></ul></li></ul>'
+                        )
                     }
                 ]);
             }
@@ -572,7 +568,7 @@ LER = function(){
     rules.push(function() {
         var reNumber = "\\s*[\\d零０一二三四五六七八九十百千]+\\s*";
         var reTypes = "[條項類款目]";
-        var reSplitter = "[、,或及至]";
+        var reSplitter = "[、,或及和與至到]";
         var rePart = "(%number%)(%type%)(\\s*之(%number%))?".replace(/%number%/g, reNumber).replace(/%type%/, reTypes);
         var pattern = "(第" + rePart + ")+";
         pattern = pattern  + "(" + reSplitter + pattern + ")*";
@@ -624,7 +620,9 @@ LER = function(){
                         }
                     }
                 }
-                items.push(item);
+                if(i && (glues[i-1] == "至" || glues[i-1] == "到"))
+                    items[items.length - 1].to = item;
+                else items.push(item);
                 children.push({
                     tag: "SPAN",
                     class: "LER-artNum",
@@ -650,14 +648,19 @@ LER = function(){
     /** 處理全國法規資料庫的 "第 15-1 條"
       */
     rules.push(function() {
-        var pattern = /第\s*(\d+)(-(\d+))?\s*條/g;
+        var pattern = /第?\s*(\d+)(-(\d+))?\s*條(\s*第?\d+[項類款目])*/g;
         var replace = function(match, inSpecial) {
             ++counter;
+            if(match[0].charAt(0) != "第" && !isImmediateAfterLaw)
+                return document.createTextNode(match[0]);
+
             var num1 = parseInt(match[1]);
             var text = "§" + num1;
             if(match[3]) {    /// 處理全國法規資料庫的「第 15-1 條」，不會是中文數字
                 text += match[2];
             }
+            if(match[4]) text += match[4];
+
             /// 處理預設法規。機制參閱此處變數宣告之處
             var law = (isImmediateAfterLaw && match.index == 0 || !defaultLaw) ? lastFoundLaw : defaultLaw;
             isImmediateAfterLaw = false;
