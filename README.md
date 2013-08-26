@@ -30,6 +30,8 @@
 ![Legislative Yuan](http://images.plurk.com/kAGZ-5bvO4HGPifAXwkDU9CAs3y.jpg)
 * 全國法規資料庫（[範例網頁連結](http://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=B0000001&SNo=1079.4,1079.5)）
 ![Laws & Regulations Database](https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-ash4/1014200_10152542008401393_14309567_n.jpg)
+* 0.4.6 版新增（僅Chrome支援）
+![0.4.6版截圖](https://f.cloud.github.com/assets/4002443/1027780/1cc38ae8-0e78-11e3-85c9-794224fed793.jpg)
 
 # Installation
 

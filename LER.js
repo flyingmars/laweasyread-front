@@ -724,7 +724,7 @@ LER = function(){
             if(match[3]) {    /// 處理全國法規資料庫的「第 15-1 條」，不會是中文數字
                 text += match[2];
             }
-            if(match[4]) text += match[4];
+            if(match[4]) text += " " + match[4];
 
             /// 處理預設法規。機制參閱此處變數宣告之處
             var law = (isImmediateAfterLaw && match.index == 0 || !defaultLaw) ? lastFoundLaw : defaultLaw;
