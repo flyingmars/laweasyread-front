@@ -26,16 +26,22 @@
         <section>
             <h1>例外路徑</h1>
             <dl>
-                <dt>新增例外路徑</dt>
-                <dd><input type="text" id="exclude_input" size="60" /><input type="button" id="exclude_add" value="新增" /></dd>
+                <dt>新增例外路徑<span class="ps">（僅需輸入網址的一部份）</span></dt>
+                <dd><input type="text" id="exclude_input" size="60" spellcheck="false" /><input type="button" id="exclude_add" value="新增" /></dd>
                 <dt>例外路徑列表</dt>
-                <dd><input type="button" id="exclude_edit" value="手動修改" /><br /><textarea id="exclude_matches" cols="60" disabled></textarea></dd>
+                <dd>
+                    <input type="button" id="exclude_edit" value="手動修改" />
+                    <span class="ps">（一行即一規則；使用正規表示式）</span>
+                    <br />
+                    <textarea id="exclude_matches" cols="60" spellcheck="false" disabled></textarea>
+                </dd>
             </dl>
         </section>
     </form>
+    
+    <div id="status"></div>
 
     <button id="save">儲存</button>
-    <div id="status"></div>
 
     <footer>
         <ul>

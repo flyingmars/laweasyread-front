@@ -9,6 +9,7 @@ LER = function(){
     var rules = [];
     var lawInfos = {};  ///< 法規資訊，包含暱稱資訊
     var counter = 0;
+    var popupEnable = true;   ///< 是否加上浮動視窗
 
     if(true && typeof console != "undefined" && console.log) { ///< set to true to enable debug messages
         var debugStartTime = (new Date).getTime();
@@ -21,8 +22,10 @@ LER = function(){
         };
     }
     else var debug = function(){};
-    if(window.innerHeight < 50 || window.innerWidth < 100) {
-        debug("window too small, ignored.");
+    if( (window.innerHeight < 50 || window.innerWidth < 100)
+        && !/^chrome-extension:/.test(document.location.href)
+    ) {
+        debug("window size " + window.innerHeight + "x" + window.innerWidth + " is too small, ignored.");
         return;
     }
 
@@ -97,8 +100,11 @@ LER = function(){
           * 主要是不想讓iframe中又有iframe，但又要允許如司法院裁判書查詢系統那種有用frame的網站
           * 未確認評律網
           */
-        if(window.innerHeight < 300 || window.innerWidth < 400) return;
-        if(!tabInfos.length) return;
+        if( !popupEnable
+            || !tabInfos.length
+            || window.innerHeight < 300
+            || window.innerWidth < 400
+        ) return;
 
         /// 部落格內嵌模式時，尚不允許浮動視窗，因為沒能確認<iframe />會不會有 #16 的問題。
         if(typeof chrome == "undefined") return;
@@ -555,8 +561,8 @@ LER = function(){
 
         return {pattern: pattern, replace: replace, minLength: 2}; ///< 最短的是「民法」
     }());
-    
-    
+
+
     /** 醞釀中的條號比對函數
       * #### 寫好後外面再用 rules.push() 包起來即可 ####
       * 有可能這一個即可打遍中華天下!?
@@ -573,7 +579,7 @@ LER = function(){
         var reDigit = "\\d";
         var map = parseInt(); ///< 改寫的`parseInt`的
         for(var i in map) reDigit += i;
-        
+
         var reNumber = "[　\\s]*[%Digit%][　\\s%Digit%]*".replace(/%Digit%/g, reDigit);// 如「五　十」
         var reNumPair = "%Number%([-－－之]%Number%)?".replace(/%Number%/g, reNumber); // 如「五之一」
         var reType = "[條項類款目]";
@@ -588,7 +594,7 @@ LER = function(){
             .replace(/%Part%/g, rePart)
             .replace(/%Conj%/, reConj);
         ;
-        
+
         reDigit = new RegExp(reDigit, 'g');
         reNumber = new RegExp(reNumber, 'g');
         reNumPair = new RegExp(reNumPair, 'g');
@@ -596,7 +602,7 @@ LER = function(){
         reConj = new RegExp(reConj, 'g');
         rePart = new RegExp(rePart, 'g');
         pattern = new RegExp(pattern, 'g');
-        
+
         var replace = function(match, inSpecial) {
             ++counter;
             console.log(match);
@@ -607,7 +613,7 @@ LER = function(){
                 text: match[0].replace(/\s/g, "")
             });
         }
-        
+
         return {pattern: pattern, replace: replace, minLength: 3}; ///< 不打算允許「五條」
     }());
 
@@ -708,7 +714,7 @@ LER = function(){
         var pattern = /第?\s*(\d+)(-(\d+))?\s*條(\s*第?\d+[項類款目])*/g;
         var replace = function(match, inSpecial) {
             ++counter;
-            
+
             // 如果沒有「第」字而前方又不是接著法條名稱，那就當作一般文章。
             if(match[0].charAt(0) != "第" && !isImmediateAfterLaw)
                 return document.createTextNode(match[0]);
@@ -1002,9 +1008,7 @@ LER = function(){
         },
         setDefaultLaw: setDefaultLaw,
         autoParse: document.body,
-        showJYI: function(num) {
-            debug(num);
-        },
+        setPopupEnable: function(b) { popupEnable = b; },
         setAutoParse: function(node) {this.autoParse = node;},
         debugTime: function(str) {debug(str);}
     };

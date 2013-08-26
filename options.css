@@ -35,3 +35,14 @@ nav li, footer li {
 nav a, footer a {
     text-decoration: none;
 }
+
+#status {
+    min-height: 1em;
+    font-weight: bold;
+    color: #f00;
+}
+
+.ps {
+    font-size: small;
+    color: #666;
+}

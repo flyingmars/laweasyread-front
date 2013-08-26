@@ -1,38 +1,73 @@
 <!doctype html>
 <html lang="zh-TW">
-  <head>
+<head>
     <meta charset="utf-8">
-    <base target="_blank" />
-    <!-- JavaScript and HTML must be in separate files for security. -->
+    <title>快捷頁 :: 法規亦毒氣</title>
+    <base target="_blank">
     <script src="popup.js"></script>
-  </head>
-  <body>
-    <ul>
-      <li><button>轉換這個網頁</button></li>
-      <li><a href="http://g0v.github.io/laweasyread-front/userInput.html">手動輸入其他文字</a></li>
-      <li>
-        <a href="http://law.moj.gov.tw/">[法務部]全國法規資料庫</a>
-        <form method="get" action="http://law.moj.gov.tw/Law/LawSearchResult.aspx">
-          <input type="text" name="k1" />
-          <input type="hidden" name="p" value="A" />
-          <input type="hidden" name="t" value="E1F1A1A2" />
-          <input type="submit" value="蒐法規" />
-        </form>
-      </li>
-      <li><a href="http://jirs.judicial.gov.tw/">[司法院]法學資料檢索</a></li>
-      <li>
-        <a href="http://www.judicial.gov.tw/constitutionalcourt/p03.asp">[司法院]大法官解釋</a>
-        <form method="get" action="http://www.judicial.gov.tw/constitutionalcourt/p03_01.asp">
-          釋字第<input type="text" name="expno" size="4" />號
-          <input type="submit" value="前往" />
-        </form>
-      </li>
-      <li>
-        <a href="http://lis.ly.gov.tw/lgcgi/lglaw">[立法院]法律系統</a>
-        <iframe style="height: 1.5em; border: 0;" src="./popup_big5ForLy.html"></iframe>
-      </li>
-      <li><a href="http://npl.ly.gov.tw/do/www/lawTrack">[立法院]法案追蹤</a></li>
-      <li><a href="http://www.president.gov.tw/Default.aspx?tabid=84">[總統府]公報</a></li>
-    </ul>
-  </body>
+    <script src="parseInt.js"></script>
+    <script src="pcodes.js"></script>
+    <script src="aliases.js"></script>
+    <script src="lyIDs.js"></script>
+    <script src="courts.js"></script>
+    <script src="LER.js"></script>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+    <nav><a href="options.html">其他選項</a></nav>
+    <section>
+        <ul>
+            <li><label title="即使取消勾選，也仍然可以手動觸發轉換。"><input id="auto" type="checkbox" checked />自動轉換</label></li>
+            <li><button id="reParse">轉換本頁中的法規、條文</button></li>
+            <li><button id="addExclude">將本頁加入例外網站...</button></li>
+        </ul>
+    </section>
+    <section>
+        <button id="closeLinkList" title="關閉連結列表。適用於需要在「隨打隨轉」輸入較多文字時。">✖</button>
+        <ul id="outLinkList">
+            <li>
+                [<a href="http://www.moj.gov.tw/">法務部</a>]
+                <a href="http://law.moj.gov.tw/">全國法規資料庫</a>
+                <form method="get" action="http://law.moj.gov.tw/Law/LawSearchResult.aspx">
+                    <input type="text" name="k1" size="16" />
+                    <input type="hidden" name="p" value="A" />
+                    <input type="hidden" name="t" value="E1F1A1A2" />
+                    <input type="submit" value="法規檢索" />
+                    <label title="如果勾選，則不會檢索到已廢止的法規。"><input type="checkbox" name="fei" value="0" />限施行中</label>
+                </form>
+            </li>
+            <li>
+                [<a href="http://www.judicial.gov.tw/">司法院</a>]
+                <a href="http://jirs.judicial.gov.tw/">法學資料檢索</a>
+            </li>
+            <li>
+                <form method="get" action="http://www.judicial.gov.tw/constitutionalcourt/p03_01.asp">
+                    [<a href="http://www.judicial.gov.tw/">司法院</a>]
+                    <a href="http://www.judicial.gov.tw/constitutionalcourt/p03.asp">大法官解釋</a>
+                    第<input type="text" name="expno" size="2" />號
+                    <input type="submit" value="查閱" />
+                </form>
+            </li>
+            <li>
+                [<a href="http://www.ly.gov.tw/">立法院</a>]
+                <a href="http://lis.ly.gov.tw/lgcgi/lglaw">法律系統</a>
+                <iframe src="./popup_big5ForLy.html"></iframe>
+            </li>
+            <li>
+                [<a href="http://www.ly.gov.tw/">立法院</a>]
+                <a href="http://npl.ly.gov.tw/do/www/lawTrack">法案追蹤</a>
+            </li>
+            <li>
+                [<a href="http://www.president.gov.tw/">總統府</a>]
+                <a href="http://www.president.gov.tw/Default.aspx?tabid=84">公報</a>
+            </li>
+        </ul>
+    </section>
+    <section>
+        <div id="ghost">隨打隨轉</div>
+        <textarea id="input"></textarea>
+        <div id="output"></div>
+    </section>
+</body>
 </html>
