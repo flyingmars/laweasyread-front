@@ -11,7 +11,7 @@
     "browser extension",
     "XSS"
   ],
-  "version": "0.4.6.1",
+  "version": "0.4.6.2",
   "homepage": "http://g0v.github.io/laweasyread-front",
   "repository": {
     "type": "git",

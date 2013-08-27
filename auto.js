@@ -6,7 +6,11 @@ if(typeof LER == "object") (function(){
         (chrome.runtime.sendMessage
             ? chrome.runtime.sendMessage
             : chrome.extension.sendRequest
-        )({method: "getLocalStorage"/*, key: "exclude_matches"*/}, function(response) {
+        )({method: "getLocalStorage"}, function(response) {
+            if(typeof response == "undefined") {
+                LER.parse(LER.autoParse);
+                return;
+            }
             // 如果自動轉換被關閉了，那就不用處理
             if(typeof response.auto != "undefined" && !JSON.parse(response.auto)) return;
             // 如果是在例外清單中，也不用處理

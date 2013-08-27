@@ -30,10 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 從`localStorage`取出資料並顯示
     ge("exclude_matches").value = localStorage["exclude_matches"]
-        ? localStorage["exclude_matches"].replace(/(\r?\n\r?)+/g, "\n")
+        ? localStorage["exclude_matches"].trim().replace(/(\r?\n\r?)+/g, "\n")
         : ""
-    ;    
-    
+    ;
+
     /** 事件：從popup.html的「將本頁加入例外網站」過來
       * 截取
       */
@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
         ge("exclude_input").focus();
         document.location.hash = "";
         ge("status").innerHTML = "請編輯路徑後（或直接）按下「新增」。";
-    }    
-    
+    }
+
     for(var i = 0; i < tas.length; ++i) tas[i].onkeyup();
 });
 
