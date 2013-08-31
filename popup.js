@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     };
 
-    auto.checked = (typeof localStorage["auto"] != "undefined") && JSON.parse(localStorage["auto"]);
+    auto.checked = JSON.parse(localStorage["auto"]);
     auto.onclick = function() {
         localStorage["auto"] = JSON.stringify(this.checked);
         if(this.checked) reParse.onclick();

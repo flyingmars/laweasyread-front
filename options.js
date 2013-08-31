@@ -29,9 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
     ge("save").style.display = "none";
 
     // 從`localStorage`取出資料並顯示
-    ge("exclude_matches").value = localStorage["exclude_matches"]
-        ? localStorage["exclude_matches"].trim().replace(/(\r?\n\r?)+/g, "\n")
-        : ""
+    ge("exclude_matches").value =
+        localStorage["exclude_matches"].trim().replace(/(\r?\n\r?)+/g, "\n")
     ;
 
     /** 事件：從popup.html的「將本頁加入例外網站」過來
