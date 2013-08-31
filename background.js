@@ -1,7 +1,18 @@
 var init = {
-    "auto": true,
-    "exclude_matches": "https?:\\/\\/([\\w_-]+\\.)?hackpad.com\\/*"
+    version: "0.4.6.5",
+    auto: true,
+    exclude_matches: [
+        "^https?://([\\w_-]+\\.)?hackpad\\.com/",
+        "^http://law\\.moj\\.gov\\.tw/Eng/",
+        "^http://law\\.moj\\.gov\\.tw/LawClass/ExContent_print\\.aspx",
+        "^http://jirs\\.judicial\\.gov\\.tw/FJUD/PrintFJUD03_0\\.aspx",
+        "^https?://drive\\.google\\.com/keep",
+        "^https?://docs\\.google\\.com/"
+    ].join("\n")
 };
+if(typeof localStorage.version == "undefined"
+    && typeof localStorage.exclude_matches == "string"
+) localStorage.exclude_matches += "\n" + init.exclude_matches;
 for(var key in init)
     if(typeof localStorage[key] == "undefined")
         localStorage[key] = typeof init[key] == "string"
