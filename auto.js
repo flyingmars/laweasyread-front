@@ -12,7 +12,7 @@ if(typeof LER == "object") (function(){
                 return;
             }
             // 如果自動轉換被關閉了，那就不用處理
-            if(typeof response.auto != "undefined" && !JSON.parse(response.auto)) return;
+            if(!JSON.parse(response.auto)) return;
             // 如果是在例外清單中，也不用處理
             if(response.exclude_matches && response.exclude_matches.trim()) {
                 var rules = response.exclude_matches.trim().split(/\s+/g);
@@ -20,6 +20,11 @@ if(typeof LER == "object") (function(){
                     var r = new RegExp(rules[i]);
                     if(r.test(document.location.href)) {
                         console.log("pattern " + rules[i] + " matched.");
+                        // 把icon換掉
+                        (chrome.runtime.sendMessage
+                            ? chrome.runtime.sendMessage
+                            : chrome.extension.sendRequest
+                        )({method: "setStatus", status: "excluded"});
                         return;
                     }
                 }

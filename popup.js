@@ -16,6 +16,9 @@ document.addEventListener("DOMContentLoaded", function() {
     auto.checked = JSON.parse(localStorage["auto"]);
     auto.onclick = function() {
         localStorage["auto"] = JSON.stringify(this.checked);
+        chrome.browserAction.setIcon({
+            path: this.checked ? "icon.png" : "icon_disabled.png"
+        });
         if(this.checked) reParse.onclick();
     };
 
