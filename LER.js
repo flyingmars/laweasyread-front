@@ -565,7 +565,7 @@ LER = function(){
 
     /** 醞釀中的條號比對函數
       * #### 寫好後外面再用 rules.push() 包起來即可 ####
-      * 有可能這一個即可打遍中華天下!?
+      * 有可能這一個即可打遍中華天下？不行，因為還有 "§5 IV (3)" 的格式。
       * 考量的情形有：
       * * 中文數字與空白字元（含全形）：在數字部分解決
       * * 「之」字的位置（即"第三條之一"或"第3-1條"）
@@ -577,11 +577,11 @@ LER = function(){
       */
     /*rules.push*/(function() {
         var reDigit = "\\d";
-        var map = parseInt(); ///< 改寫的`parseInt`的
-        for(var i in map) reDigit += i;
+        var map = parseInt(); ///< 改寫`parseInt`，這樣會把支援的中文數字吐出來
+        for(var i in map) if(map[i] <= 1e+4) reDigit += i;
 
         var reNumber = "[　\\s]*[%Digit%][　\\s%Digit%]*".replace(/%Digit%/g, reDigit);// 如「五　十」
-        var reNumPair = "%Number%([-－－之]%Number%)?".replace(/%Number%/g, reNumber); // 如「五之一」
+        var reNumPair = "%Number%([-－之]%Number%)?".replace(/%Number%/g, reNumber); // 如「五之一」
         var reType = "[條項類款目]";
         var reConj = "[、,或及和與~～至到]";
         var rePart = "第?%NumPair%(%Conj%%NumPair%)*%Type%[　\\s]*(之%Number%)?"
@@ -589,7 +589,7 @@ LER = function(){
             .replace(/%Conj%/, reConj)
             .replace(/%Type%/, reType)
             .replace(/%Number%/, reNumber)
-        ;   // 如「第五之一條」、「五條之一」
+        ;   // 如「第五之一、七之二條」、「五至七條之一」
         var pattern = "(%Part%)+(%Conj%[\\s　]*(%Part%)+)*"
             .replace(/%Part%/g, rePart)
             .replace(/%Conj%/, reConj);
@@ -605,12 +605,13 @@ LER = function(){
 
         var replace = function(match, inSpecial) {
             ++counter;
-            console.log(match);
+            var text = match[0].replace(/[　\s]/g, "");
+            //return text;
             return json2dom({
                 tag: "SPAN",
                 class: "LER-artNum-container",
                 title: match[0],
-                text: match[0].replace(/\s/g, "")
+                text: text//match[0].replace(/\s/g, "")
             });
         }
 
