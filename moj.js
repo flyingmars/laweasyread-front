@@ -3,33 +3,24 @@
 
     /// 判斷「預設法規」
     var pages = ["All", "Single", "ParaDeatil", "SearchNo", "SearchContent", "History"];
-    var match = document.location.pathname.match(/^\/LawClass\/Law(\w+)(_print)?.aspx/);
+    var match = document.location.pathname.match(
+	    new RegExp("^\/LawClass\/Law(" + pages.join('|') + ")(_print|If)?\.aspx")
+	);
     if(match && pages.indexOf(match[1]) >= 0)
         try {
-            LER.setDefaultLaw(document.getElementById("Content").getElementsByTagName('A')[1].lastChild.data.replace(/\s/g, ''));
+			var c = document.getElementById((match[2] == "If") ? "Content2" : "Content");
+            LER.setDefaultLaw(c.getElementsByTagName('TD')[1].firstElementChild.lastChild.data);
         } catch(e) {
             console.log("`#Content a` doesn't seem to exist.");
         }
 
-    /** 在法規名稱處加上一個anchor
-      * 以找「第一個TH標籤」實作，後續或許可以有其他應用。
-      */
-    var firstTH = document.getElementsByTagName("TH")[0];
-    if(firstTH)
-        firstTH.innerHTML = '<a name="firstTH">' + firstTH.innerText + '</a>';
-
-    /** 內嵌時，把header/footer拿掉
-      * 但應該要留下<form />
-      */
+    /** 內嵌時，將頁面跳轉均預設為新視窗，這是為了讓各連結與其浮出視窗維持一致。
+	  * 雖然會影響了全國法規資料庫自身原本的運作方式（把預設為開在原本的內嵌視窗中的內容，改在新分頁開），不過影響應該不大…
+	  */
     if(window != top) {
-        var main = document.getElementById("main");
-        if(main) main.parentNode.replaceChild(document.getElementById("mainFrame_body"), main);
-        var base = document.getElementsByTagName("BASE")[0];
-        if(!base) {
-            base = document.createElement("BASE");
-            document.head.appendChild(base);
-        }
+        var base = document.createElement("BASE");
         base.target = "_blank";
+        document.head.appendChild(base);
     }
 
     var tla = document.querySelector(".TableLawAll");
@@ -40,7 +31,7 @@
         for(var i = 0; i < as.length; ++i)
             as[i].name = "article_" + as[i].href.substr(as[i].href.indexOf("FLNO=")+5);
 
-        /** 利用條文表格左方的空間
+        /** 單條顯示時，條文表格左方有一個沒用到的 <th /> 空間可以利用。
           */
         tla = tla.parentNode.parentNode;
         if(tla.childElementCount > 1) {

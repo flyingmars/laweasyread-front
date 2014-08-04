@@ -2,8 +2,13 @@
 "manifest_version": 2,
 "name": "法規亦毒氣",
 "description": "將網頁中的法規與條號都轉變成連結，讓您快速查閱指定條文。",
-"version": "0.4.6.6",
-"permissions": [ "tabs" ],
+"version": "0.4.7",
+"permissions": [
+	"tabs",
+    "webRequest",
+	"webRequestBlocking",
+	"http://law.moj.gov.tw/"
+],
 "author": "kong0107",
 "homepage_url": "http://g0v.github.io/laweasyread-front/",
 "icons" : {"128": "icon.png"},
@@ -15,7 +20,7 @@
 },
 "background": {
     "scripts": ["background.js"],
-    "persistent": false
+	"persistent": true
 },
 "content_scripts": [
     {

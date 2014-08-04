@@ -215,7 +215,7 @@ LER = function(){
                     popupFirstShow = false;
                 }
                 var s = popup.style;
-                s.top = y + "px";
+                s.top = (y + 2) + "px";
                 s.display = ""; ///< 如果正在{display: none;}的狀態，offsetWidth似乎不會正確
                 var left = (x + popup.offsetWidth < document.body.offsetWidth)
                     ? ((x < 100) ? 0 : x - 100)
@@ -284,9 +284,10 @@ LER = function(){
         var href = "http://law.moj.gov.tw/LawClass/Law";
         if(items.length == 1 && !(items[0].to && items[0].to["條"])) { // 單一條文
             var FLNO = parseArtNum(items[0]["條"]);
-            href +=  "Single.aspx?Pcode=" + law.PCode + "&FLNO=" + FLNO;
+            href +=  "SingleIf.aspx?Pcode=" + law.PCode + "&FLNO=" + FLNO;
 
-            /// 全國法規資料庫的「相關法條」
+            /// 全國法規資料庫的「相關法規」；似乎改成用 POST 方式取得的了…
+			/*
             var contentRela = "http://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=" + law.PCode + "&FLNO=" + FLNO;
             tabs.push({
                 title: "相關法規",
@@ -294,6 +295,7 @@ LER = function(){
                 content: "讀取中",
                 onFirstShow: addPopupMojChecker(contentRela)
             });
+			*/
 
             /// 立法院法律系統的「相關條文」
             if(law.lyID) {
@@ -313,7 +315,7 @@ LER = function(){
                 content: json2dom({
                     tag: "UL",
                     children: [
-                        { tag: "LI", text: "「相關法規」連向全國法規資料庫，包含命令層級（通常是行政院發布）的法規。" },
+                        //{ tag: "LI", text: "「相關法規」連向全國法規資料庫，包含命令層級（通常是行政院發布）的法規。" },
                         { tag: "LI", text: "「相關法條」連向立法院法律系統，僅包含法律層級（立法院三讀通過）的法律。" },
                         { tag: "LI", text: "如果顯示「查無資料」，表示該條文在該系統中沒有相關條文的資料。" }
                     ]
@@ -329,7 +331,7 @@ LER = function(){
                 if(items[i].to && items[i].to["條"])
                     SNo += "-" + parseArtNum(items[i].to["條"], ".");
             }
-            href += "SearchNo.aspx?PC=" + law.PCode + "&SNo=" + SNo;
+            href += "SearchNoIf.aspx?PC=" + law.PCode + "&SNo=" + SNo;
 
             tabs.push({
                 title: "說明",
@@ -522,7 +524,7 @@ LER = function(){
             if(inSpecial != 'A' && lastFoundLaw.PCode) {
                 node = document.createElement('A');
                 node.setAttribute('target', '_blank');
-                node.setAttribute('href', "http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + lastFoundLaw.PCode);
+                node.setAttribute('href', "http://law.moj.gov.tw/LawClass/LawAllIf.aspx?PCode=" + lastFoundLaw.PCode);
             }
             else node = document.createElement("SPAN");
             node.setAttribute('title', lastFoundLaw.name);
@@ -532,14 +534,14 @@ LER = function(){
             lawName.appendChild(document.createTextNode(match[0]));
 
             if(lastFoundLaw.PCode) {
-                var catalog = 'http://law.moj.gov.tw/LawClass/LawAllPara.aspx?PCode=' + lastFoundLaw.PCode;
+                var catalog = 'http://law.moj.gov.tw/LawClass/LawAllParaIf.aspx?PCode=' + lastFoundLaw.PCode;
                 addPopup(node, [
                     {
                         title: "法規沿革",
-                        link: 'http://law.moj.gov.tw/LawClass/LawHistory.aspx?PCode=' + lastFoundLaw.PCode,
+                        link: 'http://law.moj.gov.tw/LawClass/LawHistoryIf.aspx?PCode=' + lastFoundLaw.PCode,
                         content: json2dom({
                             tag: "IFRAME",
-                            src: "http://law.moj.gov.tw/LawClass/LawHistory.aspx?PCode=" + lastFoundLaw.PCode
+                            src: "http://law.moj.gov.tw/LawClass/LawHistoryIf.aspx?PCode=" + lastFoundLaw.PCode
                         })
                     },
                     {
@@ -551,7 +553,7 @@ LER = function(){
                     {
                         title: "外部連結",
                         content: html2dom(
-                            '<ul><li>全國法規資料庫<ul><li><a target="_blank" href="http://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=' + lastFoundLaw.PCode + '">所有條文</a></li></ul></li></ul>'
+                            '<ul><li>全國法規資料庫<ul><li><a target="_blank" href="http://law.moj.gov.tw/LawClass/LawAllIf.aspx?PCode=' + lastFoundLaw.PCode + '">所有條文</a></li></ul></li></ul>'
                         )
                     }
                 ]);
