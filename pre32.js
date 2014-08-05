@@ -98,7 +98,7 @@ for(var i = 0; i < pres.length;) {
             }
             if(lines[j] && stratum >= 0) html += "<li>"; ///< 如果是末行的空白就不用加了
         }            
-        html += lines[j].replace(/^\s+/, '');
+        html += lines[j].trim();	///< 有些條文在冒號後還會有空白，例如民訴§§307,541
     }
     var list = document.createElement("OL"); 
     list.innerHTML = html;
