@@ -82,17 +82,17 @@ module.exports = function(grunt) {
         command: (
           (require('os').type().indexOf("Windows") == 0)
           ? [
-            '"e:\\Program Files\\addon-sdk-1.14\\bin\\activate"', /* !!EDIT!! */
+            '"????:\\Program Files\\addon-sdk-1.14\\bin\\activate"', ///< !!EDIT!!
             'cfx xpi',
             'move <%= pkg.name %>.xpi dist',
             'copy dist\\<%= pkg.name %>.xpi dist\\<%= pkg.version %>\\<%= pkg.name %>-<%= pkg.version %>.xpi',
-            'rmdir data /S /Q' /* !!CHECK!! */
+            'rmdir data /S /Q' ///< !!CHECK!!
           ] : [
-            '"/**/addon-sdk*/bin/activate"', /* !!EDIT!! */
+            '"/????/addon-sdk-????/bin/activate"', ///< !!EDIT!!
             'cfx xpi',
             'mv <%= pkg.name %>.xpi dist',
             'cp dist/<%= pkg.name %>.xpi dist/<%= pkg.version %>/<%= pkg.name %>-<%= pkg.version %>.xpi',
-            'rm -rf data' /* !!CHECK!! */
+            'rm -rf data' ///< !!CHECK!!
           ]
         ).join('&&')
       }
@@ -106,4 +106,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
 
   grunt.registerTask('default', ['concat', 'uglify', 'compress', 'copy', 'shell']);
+  grunt.registerTask('chrome', ['concat', 'uglify', 'compress', 'copy:chrome']);
+  grunt.registerTask('firefox', ['copy:firefox', 'shell']);
 };
