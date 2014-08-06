@@ -32,6 +32,7 @@
             var result = orig.apply(this, arguments);
             if(!isNaN(result)) return result;   ///< 如果是舊函數已支援的情形，那就回傳舊函數的結果
             if(!arguments.length) return chars; ///< 互動用。把對照表取回，可用於另做支援比對的RegExp
+            if(undefined === arguments[0]) return NaN; ///< mimic original parseInt()
 
             var str = arguments[0].toString().replace(/[\s　]/g, "");
             var negative = /^[負负-]/.test(str);
