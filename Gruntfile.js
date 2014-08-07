@@ -15,12 +15,12 @@ module.exports = function(grunt) {
           'courts.js',
           'LER.js'
         ],
-        dest: 'dist/<%= pkg.version %>/<%= pkg.name %>-<%= pkg.version %>.js'
+        dest: 'dist/<%= chrome.version %>/<%= pkg.name %>-<%= chrome.version %>.js'
       }
     },
     uglify: {
       options: {
-        banner: '/*! <%= pkg.name %> <%= pkg.version %> */\n'
+        banner: '/*! <%= pkg.name %> <%= chrome.version %> */\n'
       },
       embed: {
         src: '<%= concat.embed.dest %>',

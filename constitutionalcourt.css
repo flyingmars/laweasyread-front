@@ -1,9 +1,11 @@
-a.LER_artName, .LER_artNum  {
+.contentTable a {
   font-size: inherit;
+  color: #000;
 }
 
-.t1 { /* 區塊內文 */
-  line-height: 175%;
+.t1, p.jyi-reasoning { /* 區塊內文 */
+  color: #000;
+  line-height: 150%;
   text-indent: 2em;
   margin-bottom: 0.5em;
 }

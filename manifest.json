@@ -2,7 +2,7 @@
 "manifest_version": 2,
 "name": "法規亦毒氣",
 "description": "將網頁中的法規與條號都轉變成連結，讓您快速查閱指定條文。",
-"version": "0.4.7.2",
+"version": "0.4.7.4",
 "permissions": [
 	"tabs",
     "webRequest",
@@ -38,7 +38,7 @@
         "all_frames": true
     },
     {
-        "matches": ["http://www.judicial.gov.tw/constitutionalcourt/p03_01.asp*"],
+        "matches": ["http://www.judicial.gov.tw/constitutionalcourt/p03_0*.asp?expno=*"],
         "css": ["constitutionalcourt.css"],
         "js": ["constitutionalcourt.js"],
         "run_at": "document_end",
