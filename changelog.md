@@ -1,3 +1,7 @@
+# 0.4.7.5
+* 更新法規名稱資料庫（執行 laweasyread-data 的 `crawler/pcode_crawler.ls` 和 `parser/pcode_parser.ls` ）
+* 撰寫 `createLawInfos.js` 和 `aliases.json` ，著手修改（但尚未實作）關於法規名稱比對機制的 RegExp 。下載 laweasyread-data 後，執行 `node createLawInfos.js` 即可生成 `lawInfos.json`, `lawNamePattern.js`, `nameMap.js` 。
+
 # 0.4.7.4
 * 修正司法院大法官的釋字頁面排版。
 * 移除轉換後強制加框的 CSS 設定。

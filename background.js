@@ -1,5 +1,5 @@
 var init = {
-    version: "0.4.7.4",
+    version: "0.4.7.5",
     auto: true,
     exclude_matches: [
         "^https?://([\\w_-]+\\.)?hackpad\\.com/",
@@ -20,6 +20,7 @@ for(var key in init)
             : JSON.stringify(init[key])
         ;
 
+/// 繞開全國法規資料庫把 X-FRAME-OPTIONS 設為 SAMEORIGIN 的問題。 See #25
 chrome.webRequest.onHeadersReceived.addListener(
     function(info) {
         var headers = info.responseHeaders;
