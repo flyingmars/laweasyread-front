@@ -7,7 +7,7 @@ if(!Array.indexOf) Array.prototype.indexOf = function(obj) {
 LER = function(){
     var skippingTags = ["SCRIPT", "CODE", "TEXTAREA", "OPTION", "BUTTON"]; ///< 也許應該設計成CSS selector的機制
     var rules = [];
-    var lawInfos = {};  ///< 法規資訊，包含暱稱資訊
+    var lawInfos = nameMap;  ///< 法規資訊，包含暱稱資訊
     var counter = 0;
     var popupEnable = true;   ///< 是否加上浮動視窗
 
@@ -457,64 +457,6 @@ LER = function(){
       */
     /// 法規名稱比對
     rules.push(function() {
-        /** 讀取法規資訊，包含暱稱
-          * 標點符號的略去還頗令人困擾，因為有些想留下的如：
-          * * 總統副總統選舉罷免法（新 84.08.09 制定）
-          * * 省（市）政府建設公債發行條例
-          * * 國軍陣（死）亡官兵遺骸安葬及遺物處理辦法
-          * * 高級中等以下學校及幼兒（稚）園教師資格檢定辦法
-          * * 財政部與所屬國家行局公司董（理）事會暨總經理（局長）權責劃分辦法
-          * * 中央銀行及中央存款保險股份有限公司現職金融檢查人員轉任行政院金融監督管理委員會及所屬機關比照改任官職等級及退撫事項辦法
-          *
-          * 偏偏也有一些不想留下的，例如：
-          * * 中華民國與美利堅合眾國關於四十七年四月十八日、四十八年六月九日、四十九年八月三十日及五十年七月二十一日等次農業品協定之換文
-          * * 核能研究所（中華民國的非營利機構）、芝加哥大學（美國阿崗國家實驗室運轉機構）及日本中央電力產業研究所三方合作交換計畫協議書（中譯本）
-          * * 駐美國臺北經濟文化代表處與美國在台協會技術合作發展，發射並操作氣象，電離層及氣候之衛星星系觀測系統協議書第一號執行協定第二號修訂
-          * * 駐美國台北經濟文化代表處與美國在台協會氣象預報系統發展技術合作協議第十七號執行辦法持續發展區域分析及預測系統及預警決策支援系統
-          *
-          * 但是，也許有使用者就是需要那些我不想留下的？
-          */
-        var lawNames = [];  ///< 生成比對用的表達式之用，用畢可刪
-        for(var i = 0; i < pcodes.length; ++i) {
-            var name = pcodes[i].name;
-            if(name.length > 64) continue;
-            if(/[A-Za-z，、「」]/.test(name)) continue;
-            lawInfos[name] = pcodes[i]; ///< 理想上只需要編號，但是為了在遇到暱稱時也能顯示全名..
-            lawNames.push(name.replace(/([\.\(\)])/g, "\$1")); ///< 加上脫逸字，因需轉成RegExp
-        }
-        for(var lyID in lyIDs) {   ///< 唔，目前是用Object的方式，不能像array那樣做
-            var name = lyIDs[lyID];
-            if(lawInfos[name]) lawInfos[name].lyID = lyID;
-            else lawInfos[name] = {name: name, lyID: lyID};
-            lawNames.push(name);
-        }
-        for(var nick in aliases) {
-            var name = aliases[nick];
-            if(typeof lawInfos[name] == "undefined")
-                throw new ReferenceError("law name " + name + " doesn't exist.");
-            lawInfos[nick] = lawInfos[name]; ///< 指到同一個物件
-            lawNames.push(nick);
-
-            /// 加上施行法、施行細則
-            if(typeof lawInfos[name + "施行法"] != "undefined") {
-                lawInfos[nick + "施行法"] = lawInfos[name + "施行法"];
-                lawNames.push(nick + "施行法");
-            }
-            if(typeof lawInfos[name + "施行細則"] != "undefined") {
-                lawInfos[nick + "施行細則"] = lawInfos[name + "施行細則"];
-                lawNames.push(nick + "施行細則");
-                lawInfos[nick + "細則"] = lawInfos[name + "施行細則"];
-                lawNames.push(nick + "細則");
-            }
-
-            /// 之後也許可以用暱稱來做點什麼...
-            //if(!lawInfos[name].nicks) lawInfos[name].nicks = [];
-            //lawInfos[name].nicks.push(nick);
-        }
-        /// 由長至短排列（以避免遇到「刑法施行法」卻比對到「刑法」）
-        lawNames.sort(function(a,b){return b.length-a.length});
-        var pattern = new RegExp(lawNames.join('|'), 'g');
-
         var replace = function(match, inSpecial) {
             ++counter;
             lastFoundLaw = lawInfos[match[0]];
@@ -561,7 +503,7 @@ LER = function(){
             return node;
         };
 
-        return {pattern: pattern, replace: replace, minLength: 2}; ///< 最短的是「民法」
+        return {pattern: lawNamePattern, replace: replace, minLength: 2}; ///< 最短的是「民法」
     }());
 
 

@@ -14,9 +14,8 @@ require("sdk/page-mod").PageMod({
   include: "*",
   contentScriptFile: [
     data.url("parseInt.js"),
-    data.url("pcodes.js"),
-    data.url("aliases.js"),
-    data.url("lyIDs.js"),
+    data.url("lawNamePattern.js"),
+    data.url("nameMap.js"),
     data.url("courts.js"),
     data.url("LER.js")
   ],

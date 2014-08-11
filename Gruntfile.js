@@ -9,9 +9,8 @@ module.exports = function(grunt) {
       embed: {
         src: [
           'parseInt.js',
-          'pcodes.js',
-          'aliases.js',
-          'lyIDs.js',
+		  'lawNamePattern.js',
+		  'nameMap.js',
           'courts.js',
           'LER.js'
         ],
@@ -63,9 +62,8 @@ module.exports = function(grunt) {
           "icon.png",
           "main.css",
           "parseInt.js",
-          "pcodes.js",
-          "aliases.js",
-          "lyIDs.js",
+		  "lawNamePattern.js",
+		  "nameMap.js",
           "courts.js",
           "LER.js"
         ],

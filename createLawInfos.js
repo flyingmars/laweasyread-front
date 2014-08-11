@@ -100,7 +100,8 @@ for(var full in aliases) {
 		continue;
 	}
 	nameMap[full].names = nameMap[full].names.concat(aliases[full]);
-	nameMap[aliases[full]] = nameMap[full];
+	for(var j = 0; j < aliases[full].length; ++j)
+		nameMap[aliases[full][j]] = nameMap[full];
 	lawNames = lawNames.concat(aliases[full]);
 
 	/// 加上施行法、施行細則
