@@ -87,11 +87,13 @@ for(var i = 0; i < fonts.length; ++i) {
 /** popup.html的法律搜尋框送出後只會跑到首頁
   * 用此來強迫其送出
   */
-if(document.referrer.indexOf("http://lis.ly.gov.tw/")
-    && document.location.pathname == "/lgcgi/lglaw"
-    && document.getElementsByName('LW').length
-    && document.getElementsByName('LW')[0].value.replace(/\w|\s/g, '').length
-) document.getElementsByTagName('FORM')[0].submit();
+if(!location.href.indexOf("http://lis.ly.gov.tw/lglawc/lglawkm")) {
+	(function() {
+		var searchInput = document.querySelector("input[name=_1_5_T]");
+		if(searchInput && searchInput.value) 
+			document.querySelector("input[name=_IMG_檢索]").dispatchEvent(new Event("click"));
+	})();
+}
 
 
 (function(){
