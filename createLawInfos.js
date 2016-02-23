@@ -1,5 +1,9 @@
-var dataDir = '../laweasyread-data/data/';
+/**
+ * @file Create `lawInfos.json`, `lawNamePattern.js`, and `nameMap.js`.
+ */
 var fs = require('fs');
+var lawEasyReadDataDir = '../laweasyread-data/data/law/';
+var mojLawSplitJsonDir = '../mojLawSplit/json/'; // @see https://github.com/kong0107/mojLawSplitJSON
 
 var lawInfos = [];
 var lawNames = [];
@@ -27,10 +31,10 @@ var bugs = { /// See g0v/laweasyread-data#14
 	'05177': null,	///< 沒資料
 	'90033': ['船舶無線電台條例', '船舶無綫電台條例'/*, '船舶無&#32171;電台條例'*/]		///< 順序與編碼問題
 };
-var lyIDs = fs.readdirSync(dataDir + 'law');
+var lyIDs = fs.readdirSync(lawEasyReadDataDir);
 for(var i = 0; i < lyIDs.length; ++i) {
 	var id = lyIDs[i];
-	var statute = JSON.parse(fs.readFileSync(dataDir + 'law/' + id + '/statute.json'));
+	var statute = JSON.parse(fs.readFileSync(lawEasyReadDataDir + id + '/statute.json'));
 	delete statute.history;
 
 	if(bugs.hasOwnProperty(id)) {
@@ -58,39 +62,40 @@ console.log(lawNames.length + " full names in " + lawInfos.length + " laws.");
   * 也有「情報機關派遣駐外或各省（市）縣（市）情報人員待遇支給標準」，
   * 因此[\s\.（）]是不宜跳過的。
   */
-console.log("Parse `pcode.json`");
-var pcodes = JSON.parse(fs.readFileSync(dataDir + 'pcode.json'));
-for(var i = 0; i < pcodes.length; ++i) {
-	var regulation = pcodes[i];
-	if(pcodes[i].PCode.charAt(0) == 'Y') continue;	///< 排除國際法
-	/// 用名稱來挑選／排除
-	/*
-	if(!/((法|律|條例|通則)|(規程|規則|細則|辦法|綱要|標準|準則)|(令|編|登記))(（.+）)?$/.test(pcodes[i].name)
-		&& ['中華民國憲法增修條文', '宣告動員戡亂時期終止', '動員戡亂時期臨時條款', '憲法實施之準備程序', '海關進口稅則'].indexOf(pcodes[i].name) == -1
-	) {
-		if(!/[條合專契公]約|(協議|協定|議定|計畫|瞭解|意向|意願)書?|修正案?|備忘錄|議事錄|換文|換函|綱領|宣言|事宜|原則|紀要|意見|合作|照會|協會$/.test(pcodes[i].name))
-			console.log(pcodeArr[i].PCode + ' has unrecognized name format:\n' + pcodes[i].name);
-		continue;
-	}*/
-	if(pcodeMap.hasOwnProperty(regulation.PCode)) {
-		if(pcodeMap[regulation.PCode].names.indexOf(regulation.name) == -1) {
-			lawNames.push(regulation.name);
-			nameMap[regulation.name] = pcodeMap[regulation.PCode];
-			pcodeMap[regulation.PCode].names.push(regulation.name);
-		}
+console.log("Parse `mojLawSplitJSON/index.json`");
+var pcodes = JSON.parse(fs.readFileSync(mojLawSplitJsonDir + 'index.json'));
+pcodes.forEach(function(reg) {
+	if(reg.PCode.charAt(0) === 'Y') return; ///< 排除國際法
+	delete reg.english;
+	delete reg.updates;
+
+	var names = [reg.name].concat(reg.oldNames || []);
+	if(pcodeMap[reg.PCode]) {
+		var obj = pcodeMap[reg.PCode];
+		names.forEach(function(name) {
+			if(obj.names.indexOf(name) == -1) {
+				lawNames.push(name);
+				nameMap[name] = obj;
+				obj.names.push(name);
+				obj.lastUpdate = reg.lastUpdate;
+			}
+		});
 	}
 	else {
-		var obj = {PCode: regulation.PCode, names: [regulation.name]};
-		lawInfos.push(obj);
-		lawNames.push(regulation.name);
-		nameMap[regulation.name] = obj;
-		pcodeMap[regulation.PCode] = obj;
+		delete reg.name;
+		lawInfos.push(reg);
+		names.forEach(function(name) {
+			lawNames.push(name);
+			nameMap[name] = reg;
+			pcodeMap[reg.PCode] = reg;
+		});
 	}
-}
+	delete reg.oldNames;
+});
 console.log(lawNames.length + " full names in " + lawInfos.length + " statutes.");
 
 /** 處理暱稱
-  * 這個就不是 laweasyread-data 的檔案，而是本專案的檔案了。
+  * 這個就本專案的檔案了。
   */
 console.log("Parse `aliases.json`");
 var aliases = JSON.parse(fs.readFileSync('aliases.json'));

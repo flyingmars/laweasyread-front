@@ -8,16 +8,16 @@
   "keywords": [
     "law",
     "Taiwan",
-    "browser extension",
-    "XSS"
+    "Chrome extension",
+    "Firefox add-on"
   ],
-  "version": "0.4.7",
+  "version": "0.4.8",
   "homepage": "http://g0v.github.io/laweasyread-front",
   "repository": {
     "type": "git",
     "url": "https://github.com/g0v/laweasyread-front"
   },
-  "license": "modified MIT",
+  "license": "MIT",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
