@@ -1,5 +1,6 @@
 # 0.4.8
 2016-02-23
+* 將 PCode 對應改為讀取 `mojLawSplitJSON` 專案的 `index.json` 。
 
 # 0.4.7.7
 2016-01-09

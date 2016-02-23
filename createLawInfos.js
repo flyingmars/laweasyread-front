@@ -68,29 +68,29 @@ pcodes.forEach(function(reg) {
 	if(reg.PCode.charAt(0) === 'Y') return; ///< 排除國際法
 	delete reg.english;
 	delete reg.updates;
+	delete reg.lastUpdate;
 
-	var names = [reg.name].concat(reg.oldNames || []);
+	reg.names = [reg.name].concat(reg.oldNames || []);
+	delete reg.name;
+	delete reg.oldNames;
+	
 	if(pcodeMap[reg.PCode]) {
 		var obj = pcodeMap[reg.PCode];
-		names.forEach(function(name) {
-			if(obj.names.indexOf(name) == -1) {
-				lawNames.push(name);
-				nameMap[name] = obj;
-				obj.names.push(name);
-				obj.lastUpdate = reg.lastUpdate;
-			}
+		reg.names.forEach(function(name) {
+			if(obj.names.indexOf(name) != -1) return;
+			lawNames.push(name);
+			nameMap[name] = obj;
+			obj.names.push(name);
 		});
 	}
 	else {
-		delete reg.name;
 		lawInfos.push(reg);
-		names.forEach(function(name) {
+		reg.names.forEach(function(name) {
 			lawNames.push(name);
 			nameMap[name] = reg;
 			pcodeMap[reg.PCode] = reg;
 		});
 	}
-	delete reg.oldNames;
 });
 console.log(lawNames.length + " full names in " + lawInfos.length + " statutes.");
 
