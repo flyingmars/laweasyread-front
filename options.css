@@ -4,11 +4,14 @@ body {
 h1 {
     margin-bottom: 0;
 }
-body > h1 {
-    background: url(icon.png) no-repeat 0 50%;
-    background-size: 48px 48px;
+body > h1::before {
+    background-image: url(icon.png);
+    background-size: 48px;
+    width: 48px;
+    height: 48px;
+    display: inline-block;
     vertical-align: middle;
-    padding-left: 48px;
+    content: "";
 }
 header p {
     margin-top: 0;
@@ -30,7 +33,10 @@ nav, footer {
 nav li, footer li {
     display: inline;
     border: 1px solid #ccc;
-    padding: 0 0.25em;
+    padding: 0.10em 0.25em;
+}
+nav li img {
+    vertical-align: bottom;
 }
 nav a, footer a {
     text-decoration: none;
