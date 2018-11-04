@@ -104,6 +104,7 @@ LER = function(){
             || !tabInfos.length
             || window.innerHeight < 300
             || window.innerWidth < 400
+            || location.host != "law.moj.gov.tw"
         ) return;
 
         /// 部落格內嵌模式時，尚不允許浮動視窗，因為沒能確認<iframe />會不會有 #16 的問題。
@@ -316,6 +317,7 @@ LER = function(){
                     tag: "UL",
                     children: [
                         //{ tag: "LI", text: "「相關法規」連向全國法規資料庫，包含命令層級（通常是行政院發布）的法規。" },
+                        { tag: "LI", text: "僅在「全國法規資料庫」支援此浮動視窗。" },
                         { tag: "LI", text: "「相關法條」連向立法院法律系統，僅包含法律層級（立法院三讀通過）的法律。" },
                         { tag: "LI", text: "如果顯示「查無資料」，表示該條文在該系統中沒有相關條文的資料。" }
                     ]
