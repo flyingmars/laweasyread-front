@@ -2,12 +2,12 @@
 "manifest_version": 2,
 "name": "法規亦毒氣",
 "description": "將網頁中的法規與條號都轉變成連結，讓您快速查閱指定條文。",
-"version": "0.4.8",
+"version": "0.4.9",
 "permissions": [
 	"tabs",
     "webRequest",
 	"webRequestBlocking",
-	"http://law.moj.gov.tw/"
+	"*://law.moj.gov.tw/"
 ],
 "author": "kong0107",
 "homepage_url": "http://g0v.github.io/laweasyread-front/",
@@ -37,31 +37,31 @@
         "all_frames": true
     },
     {
-        "matches": ["http://www.judicial.gov.tw/constitutionalcourt/p03_0*.asp?expno=*"],
+        "matches": ["*://www.judicial.gov.tw/constitutionalcourt/p03_0*.asp?expno=*"],
         "css": ["constitutionalcourt.css"],
         "js": ["constitutionalcourt.js"],
         "run_at": "document_end",
         "all_frames": true
     },
     {
-        "matches": ["http://jirs.judicial.gov.tw/*"],
+        "matches": ["*://jirs.judicial.gov.tw/*"],
         "css": ["jirs.css"],
         "js": ["jirs.js"]
     },
     {
-        "matches": ["http://lis.ly.gov.tw/*"],
+        "matches": ["*://lis.ly.gov.tw/*"],
         "css": ["ly.css"],
         "js": ["ly.js"],
         "run_at": "document_end",
         "all_frames": true
     },
     {
-        "matches": ["http://lci.ly.gov.tw/*"],
+        "matches": ["*://lci.ly.gov.tw/*"],
         "js": ["ly.lci.js"]
     },
     {
-        "matches": ["http://law.moj.gov.tw/*"],
-        "exclude_matches": ["http://law.moj.gov.tw/Eng/*"],
+        "matches": ["*://law.moj.gov.tw/*"],
+        "exclude_matches": ["*://law.moj.gov.tw/Eng/*"],
         "css": ["moj.css"],
         "js": [
             "moj.js",
@@ -72,8 +72,8 @@
     },
     {
         "matches": [
-            "http://db.lawbank.com.tw/FLAW/FLAW*",
-            "http://db.lawbank.com.tw/FLAW/PrintFLAW*"
+            "*://db.lawbank.com.tw/FLAW/FLAW*",
+            "*://db.lawbank.com.tw/FLAW/PrintFLAW*"
         ],
         "css": ["lawbank.css"],
         "js": [

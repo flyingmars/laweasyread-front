@@ -281,14 +281,14 @@ LER = function(){
             return json2dom({tag: "SPAN", class: "LER-artNum-container"});
 
         var tabs = [];
-        var href = "http://law.moj.gov.tw/LawClass/Law";
+        var href = "https://law.moj.gov.tw/LawClass/Law";
         if(items.length == 1 && !(items[0].to && items[0].to["條"])) { // 單一條文
             var FLNO = parseArtNum(items[0]["條"]);
             href +=  "SingleIf.aspx?Pcode=" + law.PCode + "&FLNO=" + FLNO;
 
             /// 全國法規資料庫的「相關法規」；似乎改成用 POST 方式取得的了…
 			/*
-            var contentRela = "http://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=" + law.PCode + "&FLNO=" + FLNO;
+            var contentRela = "https://law.moj.gov.tw/LawClass/ExContentRela.aspx?TY=L&PCode=" + law.PCode + "&FLNO=" + FLNO;
             tabs.push({
                 title: "相關法規",
                 link: contentRela,
@@ -299,7 +299,7 @@ LER = function(){
 
             /// 立法院法律系統的「相關條文」
             if(law.lyID) {
-                var url = "http://lis.ly.gov.tw/lghtml/lawstat/relarti/{lyID}/{lyID}{ArtNum}.htm"
+                var url = "https://lis.ly.gov.tw/lghtml/lawstat/relarti/{lyID}/{lyID}{ArtNum}.htm"
                     .replace(/{lyID}/g, law.lyID)
                     .replace("{ArtNum}", zeroFill(items[0]["條"], 6))
                 ;
@@ -466,7 +466,7 @@ LER = function(){
             if(inSpecial != 'A' && lastFoundLaw.PCode) {
                 node = document.createElement('A');
                 node.setAttribute('target', '_blank');
-                node.setAttribute('href', "http://law.moj.gov.tw/LawClass/LawAllIf.aspx?PCode=" + lastFoundLaw.PCode);
+                node.setAttribute('href', "https://law.moj.gov.tw/LawClass/LawAllIf.aspx?PCode=" + lastFoundLaw.PCode);
             }
             else node = document.createElement("SPAN");
             node.setAttribute('title', lastFoundLaw.name);
@@ -476,14 +476,14 @@ LER = function(){
             lawName.appendChild(document.createTextNode(match[0]));
 
             if(lastFoundLaw.PCode) {
-                var catalog = 'http://law.moj.gov.tw/LawClass/LawAllParaIf.aspx?PCode=' + lastFoundLaw.PCode;
+                var catalog = 'https://law.moj.gov.tw/LawClass/LawAllParaIf.aspx?PCode=' + lastFoundLaw.PCode;
                 addPopup(node, [
                     {
                         title: "法規沿革",
-                        link: 'http://law.moj.gov.tw/LawClass/LawHistoryIf.aspx?PCode=' + lastFoundLaw.PCode,
+                        link: 'https://law.moj.gov.tw/LawClass/LawHistoryIf.aspx?PCode=' + lastFoundLaw.PCode,
                         content: json2dom({
                             tag: "IFRAME",
-                            src: "http://law.moj.gov.tw/LawClass/LawHistoryIf.aspx?PCode=" + lastFoundLaw.PCode
+                            src: "https://law.moj.gov.tw/LawClass/LawHistoryIf.aspx?PCode=" + lastFoundLaw.PCode
                         })
                     },
                     {
@@ -495,7 +495,7 @@ LER = function(){
                     {
                         title: "外部連結",
                         content: html2dom(
-                            '<ul><li>全國法規資料庫<ul><li><a target="_blank" href="http://law.moj.gov.tw/LawClass/LawAllIf.aspx?PCode=' + lastFoundLaw.PCode + '">所有條文</a></li></ul></li></ul>'
+                            '<ul><li>全國法規資料庫<ul><li><a target="_blank" href="https://law.moj.gov.tw/LawClass/LawAllIf.aspx?PCode=' + lastFoundLaw.PCode + '">所有條文</a></li></ul></li></ul>'
                         )
                     }
                 ]);
@@ -711,7 +711,7 @@ LER = function(){
             var matches = match[0].match(reNumber);
             for(var i = 0; i < matches.length; ++i) {
                 var num = parseInt(matches[i]);
-                var href = "http://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=" + num;
+                var href = "https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=" + num;
                 if(i) container.appendChild(document.createTextNode(", "));
                 var node;
                 if(inSpecial != "A") {
@@ -737,7 +737,7 @@ LER = function(){
                                 children: [
                                     {   tag: "A",
                                         target: "_blank",
-                                        href: "http://law.moj.gov.tw/LawClass/ExContent.aspx?ty=C&CC=D&CNO=" + num,
+                                        href: "https://law.moj.gov.tw/LawClass/ExContent.aspx?ty=C&CC=D&CNO=" + num,
                                         children: [
                                             {text: "全國法規資料庫的"},
                                             {   tag: "SPAN",
