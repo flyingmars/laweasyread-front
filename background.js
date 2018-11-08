@@ -1,5 +1,5 @@
 var init = {
-    version: "0.4.8",
+    version: "0.4.10",
     auto: true,
     exclude_matches: [
         "^https?://([\\w_-]+\\.)?hackpad\\.com/",
