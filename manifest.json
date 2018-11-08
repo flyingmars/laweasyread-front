@@ -2,92 +2,19 @@
 "manifest_version": 2,
 "name": "法規亦毒氣",
 "description": "將網頁中的法規與條號都轉變成連結，讓您快速查閱指定條文。",
-"version": "0.4.10",
-"permissions": [
-	"tabs",
-    "webRequest",
-	"webRequestBlocking",
-	"*://law.moj.gov.tw/"
-],
+"version": "1.0.0",
+"permissions": [],
 "author": "kong0107",
-"homepage_url": "http://g0v.github.io/laweasyread-front/",
+"homepage_url": "https://g0v.github.io/laweasyread-front/",
 "icons" : {"128": "icon.png"},
-"options_page": "options.html",
-"browser_action": {
-    "default_icon": "icon.png",
-    "default_title": "法規亦毒氣",
-    "default_popup": "popup.html"
-},
-"background": {
-    "scripts": ["background.js"],
-	"persistent": true
-},
 "content_scripts": [
     {
         "matches": ["<all_urls>"],
-        "css": ["main.css"],
+        "css": [],
         "js": [
-            "3rdParty/react.production.min.js",
-            "3rdParty/react-dom.production.min.js",
-            "parseInt.js",
-            "lawNamePattern.js",
-            "nameMap.js",
-            "courts.js",
             "LER.js"
         ],
         "run_at": "document_end",
-        "all_frames": true
-    },
-    {
-        "matches": ["*://www.judicial.gov.tw/constitutionalcourt/p03_0*.asp?expno=*"],
-        "css": ["constitutionalcourt.css"],
-        "js": ["constitutionalcourt.js"],
-        "run_at": "document_end",
-        "all_frames": true
-    },
-    {
-        "matches": ["*://jirs.judicial.gov.tw/*"],
-        "css": ["jirs.css"],
-        "js": ["jirs.js"]
-    },
-    {
-        "matches": ["*://lis.ly.gov.tw/*"],
-        "css": ["ly.css"],
-        "js": ["ly.js"],
-        "run_at": "document_end",
-        "all_frames": true
-    },
-    {
-        "matches": ["*://lci.ly.gov.tw/*"],
-        "js": ["ly.lci.js"]
-    },
-    {
-        "matches": ["*://law.moj.gov.tw/LawClass/*"],
-        "exclude_matches": ["*://law.moj.gov.tw/Eng/*"],
-        "css": ["moj.css"],
-        "js": [
-            "moj.js",
-            "pre32.js"
-        ],
-        "run_at": "document_end",
-        "all_frames": true
-    },
-    {
-        "matches": [
-            "*://db.lawbank.com.tw/FLAW/FLAW*",
-            "*://db.lawbank.com.tw/FLAW/PrintFLAW*"
-        ],
-        "css": ["lawbank.css"],
-        "js": [
-            "lawbank.js",
-            "pre32.js"
-        ],
-        "run_at": "document_end"
-    },
-    {
-        "matches": ["<all_urls>"],
-        "js": ["auto.js"],
-        "run_at": "document_idle",
         "all_frames": true
     }
 ]
