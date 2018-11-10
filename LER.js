@@ -1,3 +1,4 @@
+"use strict";
 if(typeof LER == "undefined") LER = {};
 LER.parse = (()=>{
     const debug = {
@@ -12,11 +13,7 @@ LER.parse = (()=>{
         },
         laws: LER.laws
     };
-    let container = document.body;
     const skippableTags = "TEXTAREA,STYLE,SCRIPT,CODE,A,BUTTON,SELECT,SUMMARY,TEMPLATE".split(",");
-
-    /*const re = new RegExp("(" + LER.laws.map(law=>law.name).join("|") + ")", "g");
-    const getLawByName = name => LER.laws.find(law => law.name == name);*/
 
     /**
      * 仿照 React.createElement
@@ -28,6 +25,22 @@ LER.parse = (()=>{
         return elem;
     };
 
+    /**
+     * 建立法規的超連結元素
+     */
+    const createLawLink = (law, text) => createElement("a", {
+        target: "_blank",
+        href: "https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + law.PCode,
+        title: law.name
+    }, text || law.name);
+
+    /**
+     * 取得所有 TEXT_NODE
+     *
+     * 遞迴函式，所以會是 DFS 、符合 DOM 中的順序。
+     * 會跳過 `skippableTags` 的。
+     * TODO: 應該再加上用 CSS 選擇器來排除的機制。
+     */
     const getTextNodes = elem => {
         var textNodes = [];
         elem.childNodes.forEach(child => {
@@ -38,14 +51,10 @@ LER.parse = (()=>{
         return textNodes;
     };
 
-    const createLawLink = (law, text) => createElement("a", {
-        target: "_blank",
-        href: "https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + law.PCode,
-        title: law.name
-    }, text || law.name);
-
     /**
      * 用字串長度找到需要開始比對的法條的索引值
+     *
+     * 利於跳過那些太長的法規名稱。
      */
     const getIndex = length => {
         const li = LER.lengthIndex;
@@ -61,20 +70,21 @@ LER.parse = (()=>{
     };
 
     /**
+     * 偵測單一文字結點中要轉換的字串，並將結點替換成轉換結果
+     *
+     * 主程式
      */
     const parseText = textNode => {
         const text = textNode.textContent;
 
+        // 可以跳過的就跳過
         if(text.length < 2) return;
-        if(/^[\x20-\xff]*$/.test(text)) return debug.counter.ascii++; ///< 如果只有字母 ASCII
-        if(!/[\u4E00-\u9FFF]/.test(text)) return debug.counter.nonCJK++; ///< 如果完全沒有「中日韓統一表意文字」
+        if(/^[\x20-\xff]*$/.test(text)) return debug.counter.ascii++; //< 如果只有字母 ASCII
+        if(!/[\u4E00-\u9FFF]/.test(text)) return debug.counter.nonCJK++; //< 如果完全沒有「中日韓統一表意文字」
         debug.counter.CJK++;
 
-        // 嗯…舊版那種超長的正規表達式果然較慢
-        /*const splitted = text.split(re).map((part, index) =>
-            (index % 2) ? createLawLink(getLawByName(part)) : part
-        );*/
 
+        // 用各個法規名稱把字串切斷，再逐一塞入各法規的超連結
         let splitted = [text];
         for(let index = getIndex(text.length); index < LER.laws.length; ++index) {
             const law = LER.laws[index];
@@ -87,38 +97,19 @@ LER.parse = (()=>{
                 if(debris.length == 1) continue;
                 debug.counter.match++;
 
-                // 自己塞反而比較慢呢
-                /*const tail = splitted.slice(i + 1);
-                splitted.splice(i, Infinity);
-                debris.forEach((d, j) => {
-                    if(j) splitted.push(createLawLink(law));
-                    if(d) splitted.push(d);
-                });
-                splitted = splitted.concat(tail);*/
-
                 for(let j = debris.length - 1; j > 0; --j) debris.splice(j, 0, createLawLink(law));
                 splitted.splice(i, 1, ...debris);
             }
 
-            /*const wow = splitted.map(item => {
-                if(typeof item != "string" || item.length < law.name.length) return [item];
-                const arr = item.split(law.name);
-                for(let i = arr.length - 1; i > 0; --i) arr.splice(i, 0, createLawLink(law));
-                return arr;
-            });
-            splitted = wow.reduce((acc, val) => acc.concat(val));*/
-            //splitted = [].concat.apply([], wow);    ///< 比上面用 Array#reduce 慢
-            //splitted = wow.flat(1); ///< 比上面只用 Array#concat 慢
-
         }
+
+        // 只在曾經有比對到的情形改變 DOM
         if(splitted.length == 1) return debug.counter.noMatch++;
-        //splitted = splitted.filter(item => (typeof item != "string") || item.length);
         textNode.replaceWith(...splitted);
     };
 
     return elem => {
         const start = new Date;
-        container = elem;
         getTextNodes(elem).forEach(parseText);
         console.log("LER spent " + ((new Date) - start) + " ms.");
         console.log(debug.counter);

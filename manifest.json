@@ -9,6 +9,12 @@
 "icons" : {"128": "icon.png"},
 "content_scripts": [
     {
+        "matches": ["*://law.moj.gov.tw/LawClass/*"],
+        "js": ["moj.js"],
+        "run_at": "document_end",
+        "all_frames": true
+    },
+    {
         "matches": ["<all_urls>"],
         "css": [],
         "js": [
