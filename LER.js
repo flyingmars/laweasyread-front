@@ -16,19 +16,9 @@ LER.parse = (()=>{
     const skippableTags = "TEXTAREA,STYLE,SCRIPT,CODE,A,BUTTON,SELECT,SUMMARY,TEMPLATE".split(",");
 
     /**
-     * 仿照 React.createElement
-     */
-    const createElement = (type, props, ...children) => {
-        const elem = document.createElement(type);
-        for(let attr in props) elem.setAttribute(attr, props[attr]);
-        elem.append(...children);
-        return elem;
-    };
-
-    /**
      * 建立法規的超連結元素
      */
-    const createLawLink = (law, text) => createElement("a", {
+    const createLawLink = (law, text) => LER.createElement("a", {
         target: "_blank",
         href: "https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + law.PCode,
         title: law.name
@@ -115,5 +105,3 @@ LER.parse = (()=>{
         console.log(debug.counter);
     };
 })();
-
-LER.parse(document.body);

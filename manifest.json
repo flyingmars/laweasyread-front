@@ -9,19 +9,30 @@
 "icons" : {"128": "icon.png"},
 "content_scripts": [
     {
+        "matches": ["<all_urls>"],
+        "js": [
+            "data.js",
+            "functions.js",
+            "LER.js"
+        ],
+        "run_at": "document_idle",
+        "all_frames": true
+    },
+    {
         "matches": ["*://law.moj.gov.tw/LawClass/*"],
-        "js": ["moj.js"],
-        "run_at": "document_end",
+        "exclude_matches": ["*://*/LawClass/LawHistory.aspx*"],
+        "js": [
+            "lawtext2obj/lawtext2obj.js",
+            "moj.js"
+        ],
+        "css": ["moj.css"],
+        "run_at": "document_idle",
         "all_frames": true
     },
     {
         "matches": ["<all_urls>"],
-        "css": [],
-        "js": [
-            "data.js",
-            "LER.js"
-        ],
-        "run_at": "document_end",
+        "js": ["exec.js"],
+        "run_at": "document_idle",
         "all_frames": true
     }
 ]
