@@ -15,6 +15,7 @@
             "functions.js",
             "LER.js"
         ],
+        "css": ["main.css"],
         "run_at": "document_idle",
         "all_frames": true
     },
@@ -26,6 +27,13 @@
             "moj.js"
         ],
         "css": ["moj.css"],
+        "run_at": "document_idle",
+        "all_frames": true
+    },
+    {
+        "matches": ["*://lis.ly.gov.tw/*"],
+        "js": ["lis.ly.js"],
+        "css": ["lis.ly.css"],
         "run_at": "document_idle",
         "all_frames": true
     },

@@ -1,0 +1,69 @@
+[class^="LER-stratum-"],
+[class*=" LER-stratum-"] {
+    margin: 0 0 0 1em !important;
+    padding: 0;
+}
+
+[class^="LER-stratum-"] > li,
+[class*=" LER-stratum-"] > li {
+    margin: 0.5em 0 !important;
+    padding: 0;
+}
+
+[class^="LER-stratum-"] p,
+[class*=" LER-stratum-"] p {
+    margin: 0;
+}
+
+.LER-stratum-0 > li:not(:only-of-type) {
+    list-style-type: upper-roman;
+}
+
+.LER-stratum-0 > li:only-of-type {
+    list-style-type: circle;
+}
+
+.LER-stratum-1 > li {
+    list-style-type: none;
+    padding-left: 3em;
+}
+
+.LER-stratum-1 > li > p:first-child {
+    text-indent: -4em;
+}
+
+.LER-stratum-2 > li {
+    list-style-type: none;
+    padding-left: 1em;
+}
+.LER-stratum-2 > li > p:first-child {
+    text-indent: -2em;
+}
+
+/**
+ * 本專案以全國法規資料庫的資料為優先，「目」的括號是全形；但留意立法院法律系統中的括號是半形。
+ */
+
+.LER-stratum-3 > li {
+    list-style-type: none;
+    padding-left: 2em;
+}
+.LER-stratum-3 > li > p:first-child {
+    text-indent: -3em;
+}
+
+.LER-stratum-4 > li {
+    list-style-type: none;
+    padding-left: 0em;
+}
+.LER-stratum-4 > li > p:first-child {
+    text-indent: -1em;
+}
+
+.LER-stratum-5 > li {
+    list-style-type: none;
+    padding-left: 1.5em;
+}
+.LER-stratum-5 > li > p:first-child {
+    text-indent: -2.5em;
+}
