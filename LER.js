@@ -102,6 +102,6 @@ LER.parse = (()=>{
         const start = new Date;
         getTextNodes(elem).forEach(parseText);
         console.log("LER spent " + ((new Date) - start) + " ms.");
-        console.log(debug.counter);
+        //console.log(debug.counter);
     };
 })();

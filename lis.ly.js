@@ -3,6 +3,9 @@
 
 const e = LER.createElement;
 
+/**
+ * 這邊跟 lawtext2obj 很像，但其實空格排版的機制不同。
+ */
 const stratumRE = [
     /^(?! )/,
     /^第[一二三四五六七八九十]+類：/,          // 所得稅法第14條第1項
@@ -17,14 +20,11 @@ const getStratum = text => {
     return -1;
 };
 
+const start = new Date;
 document.querySelectorAll("td").forEach(td => {
     if(!td.hasChildNodes() || !/^\n　　/.test(td.firstChild.textContent)) return;
 
-    /**
-     * 這邊跟 lawtext2obj 很像，但就衝著第14條第1項第1類第2段那種情形，不方便寫成同一個函式
-     */
     let warning = false;
-    let nested = []; // 巢狀法條結構
     let paras = []; // 每一行文字，即各項款目
     let others = []; // 原本頁面中有、不打算處理但仍要保留的元件
 
@@ -36,9 +36,11 @@ document.querySelectorAll("td").forEach(td => {
         if(child.nodeType == 3) {
             const text = child.textContent.trim();
             if(!text) return;
+            const stratum = getStratum(text);
+            if(stratum == 1) warning = true; // 標示所得稅法第14條
             paras.push({
                 text: text,
-                stratum: getStratum(text),
+                stratum: stratum,
                 children: []
             });
             return;
@@ -47,35 +49,11 @@ document.querySelectorAll("td").forEach(td => {
         others.push(child);
     });
 
-    /**
-     * 把項目塞到「前一個比自己高層級」的 children 裡。
-     */
-    paras.forEach((para, i) => {
-        const s = para.stratum;
-        if(s < 0) throw new Error("分層錯誤");
-        if(s == 0) {
-            nested.push(para);
-            return;
-        }
-        if(s == 1) { // 在立法院法律系統，所得稅法第14條第1項第1類第2段沒法跟「項」做區別。
-            para.warning = true;
-            warning = true;
-        }
-        for(let j = i - 1; j >= 0; --j)
-            if(paras[j].stratum < s) {
-                paras[j].children.push(para);
-                return;
-            }
-    });
-    paras.forEach(para => {
-        if(!para.children.length) delete para.children;
-    });
-    
     if(warning) return; // 如果是所得稅法第14條，就先不處理…
 
     td.replaceWith(e("td", null,
-        LER.createList(nested),
+        LER.createList(lawtext2obj.arr2nested(paras)),
         ...others
     ));
-
 });
+console.log("Parse lines to ULs: " + ((new Date) - start) + " ms.");

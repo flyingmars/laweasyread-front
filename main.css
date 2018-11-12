@@ -12,7 +12,7 @@
 
 [class^="LER-stratum-"] p,
 [class*=" LER-stratum-"] p {
-    margin: 0;
+    margin: 0.2em 0;
 }
 
 .LER-stratum-0 > li:not(:only-of-type) {
