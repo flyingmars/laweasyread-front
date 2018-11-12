@@ -22,7 +22,7 @@ const getStratum = text => {
 
 const start = new Date;
 document.querySelectorAll("td").forEach(td => {
-    if(!td.hasChildNodes() || !/^\n　　/.test(td.firstChild.textContent)) return;
+    if(!td.hasChildNodes() || !td.firstChild.textContent.startsWith("\n　　")) return;
 
     let warning = false;
     let paras = []; // 每一行文字，即各項款目
