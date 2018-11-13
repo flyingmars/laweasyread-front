@@ -16,3 +16,23 @@ LER.createList = paras => {
     });
     return e("ol", {className: `LER-stratum-${paras[0].stratum}`}, ...listItems);
 };
+
+
+/**
+ * 比對用的正規表達式們
+ */
+LER.regexps = {
+    number: "([\\d零一二三四五六七八九十百千]+)",
+    article: "第number條(之number)?",
+    artRange: "article([至到]article)*",
+    artList: "artRange([,、及或和與]artRange)*"
+};
+{
+    const res = LER.regexps;
+    Object.getOwnPropertyNames(res).reduce((prev, cur) => {
+        res[cur] = res[cur].replace(RegExp(prev, "g"), res[prev]);
+        return cur;
+    });
+    for(let i in res) res[i] = new RegExp(res[i], "g");
+    //console.log(res);
+}

@@ -13,6 +13,7 @@
         "js": [
             "data.js",
             "domCrawler/domCrawler.js",
+            "chinese-parseint/chinese-parseint.js",
             "functions.js",
             "LER.js"
         ],
