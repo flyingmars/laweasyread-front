@@ -1,8 +1,6 @@
 "use strict";
 // 參考 https://github.com/g0v/laweasyread-front/blob/master/ly.js
 
-const e = LER.createElement;
-
 /**
  * 這邊跟 lawtext2obj 很像，但其實空格排版的機制不同。
  */
@@ -51,7 +49,7 @@ document.querySelectorAll("td").forEach(td => {
 
     if(warning) return; // 如果是所得稅法第14條，就先不處理…
 
-    td.replaceWith(e("td", null,
+    td.replaceWith(domCrawler.createElement("td", null,
         LER.createList(lawtext2obj.arr2nested(paras)),
         ...others
     ));
