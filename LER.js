@@ -51,11 +51,12 @@ LER.parse = (()=>{
                 let ranges = "";
                 res.artRange.lastIndex = 0;
                 while(match = res.artRange.exec($0)) {
+                    //console.log(match);
                     if(ranges) ranges += ",";
                     ranges += cpi(match[1]);
                     if(match[3]) ranges += "." + cpi(match[3]);
-                    if(match[5]) ranges += "-" + cpi(match[5]);
-                    if(match[7]) ranges += "." + cpi(match[7]);
+                    if(match[14]) ranges += "-" + cpi(match[14]);
+                    if(match[16]) ranges += "." + cpi(match[16]);
                 }
                 return {text: $0, rangeText: ranges};
             },
@@ -70,15 +71,17 @@ LER.parse = (()=>{
             arr = arr.filter(x => x);
             return arr.map((item, index) => {
                 if(typeof item == "string" || item instanceof Element) return item;
-                const props = {"data-range": item.rangeText, "data-index": index};
+                //const props = {"data-range": item.rangeText, "data-index": index};
+                const props = {};
                 if(index) {
                     const prevItem = arr[index - 1];
                     if(prevItem instanceof Element && prevItem.dataset.pcode) {
-                        props["data-pcode"] = prevItem.dataset.pcode;
+                        //props["data-pcode"] = prevItem.dataset.pcode;
                         props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${prevItem.dataset.pcode}&SNo=${item.rangeText}`;
+                        props.target = "_blank";
                     }
                 }
-                return domCrawler.createElement("A", props, item.text);
+                return domCrawler.createElement(props.href ? "A" : "EM", props, item.text);
             })
         });
         console.log("LER spent " + ((new Date) - start) + " ms.");

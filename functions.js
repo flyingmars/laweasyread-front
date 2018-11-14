@@ -23,16 +23,20 @@ LER.createList = paras => {
  */
 LER.regexps = {
     number: "([\\d零一二三四五六七八九十百千]+)",
-    article: "第number條(之number)?",
-    artRange: "article([至到]article)*",
+    article: "第number條(之number)?(前段|但書)?",
+    paragraph: "(第number[項款目])+(前段|但書)?",
+    paraList: "paragraph([,、及或和與至到]paragraph)*",
+    artFull: "article(paraList)?",
+    artRange: "artFull([至到]artFull)*",
     artList: "artRange([,、及或和與]artRange)*"
 };
 {
     const res = LER.regexps;
-    Object.getOwnPropertyNames(res).reduce((prev, cur) => {
-        res[cur] = res[cur].replace(RegExp(prev, "g"), res[prev]);
-        return cur;
+    const names = Object.getOwnPropertyNames(res);
+    names.forEach((reKey, index) => {
+        for(let j = 0; j < index; ++j)
+            res[reKey] = res[reKey].replace(RegExp(names[j], "g"), res[names[j]]);
     });
-    for(let i in res) res[i] = new RegExp(res[i], "g");
     //console.log(res);
+    for(let i in res) res[i] = new RegExp(res[i], "g");
 }
