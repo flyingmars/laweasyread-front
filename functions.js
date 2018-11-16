@@ -128,3 +128,7 @@ const parser = LER.articleParser = {
 
 }
 
+
+LER.getLawByName = name =>
+    LER.laws.find(law => law.name == name)
+;

@@ -20,7 +20,27 @@ const getStratum = text => {
 
 const start = new Date;
 document.querySelectorAll("td").forEach(td => {
-    if(!td.hasChildNodes() || !td.firstChild.textContent.startsWith("\n　　")) return;
+    if(!td.hasChildNodes() || !/^\s*　　/.test(td.firstChild.textContent)) return;
+    const className = td.className;
+
+    /**
+     * 修正理由欄
+     * 目前假設理由欄只分一層，但其實也有再分層的，例如洗錢防制法第3條於0950505 的修正理由
+     */
+    if(/^\n?　　一、/.test(td.firstChild.textContent)) {
+        const lis = Array.from(td.childNodes)
+            .filter(child => child.nodeType == 3)
+            .map(textNode => domCrawler.createElement(
+                "li",
+                {style: {textIndent: "-2em"}},
+                textNode.textContent.trim()
+            ))
+        ;
+        td.replaceWith(domCrawler.createElement("td", {className},
+            domCrawler.createElement("ul", {style: {listStyleType: "none"}}, ...lis)
+        ));
+        return;
+    }
 
     let warning = false;
     let paras = []; // 每一行文字，即各項款目
@@ -49,9 +69,26 @@ document.querySelectorAll("td").forEach(td => {
 
     if(warning) return; // 如果是所得稅法第14條，就先不處理…
 
-    td.replaceWith(domCrawler.createElement("td", null,
+    td.replaceWith(domCrawler.createElement("td", {className},
         LER.createList(lawtext2obj.arr2nested(paras)),
         ...others
     ));
 });
 console.log("Parse lines to ULs: " + ((new Date) - start) + " ms.");
+
+
+/**
+ * 設定預設法規
+ */
+{
+let lawName;
+try {
+    lawName = document.querySelector("td.law_NA").firstChild.textContent;
+} catch(e){}
+try {
+    lawName = document.querySelector("td.law_n").firstChild.textContent;
+} catch(e){}
+
+if(lawName) LER.defaultLaw = LER.getLawByName(lawName).PCode;
+
+}

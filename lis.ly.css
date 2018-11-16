@@ -21,3 +21,7 @@
 .LER-stratum-5 > li > p:first-child {
     text-indent: -1em;
 }
+
+.arti {
+    padding-left: 1em;
+}
