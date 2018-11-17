@@ -23,7 +23,7 @@ LER.parse = (()=>{
     const createLawLink = (law, text) => domCrawler.createElement("a", {
         target: "_blank",
         href: "https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + law.PCode,
-        title: law.name,
+        title: law.fullName || law.name,
         "data-pcode": law.PCode
     }, text || law.name);
 

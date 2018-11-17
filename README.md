@@ -11,9 +11,10 @@
 * `maniffest.json`: Google Chrome 擴充功能設定
 * `icon.png`: Google Chrome 擴充功能圖示
 * `LER.js`: 本專案主程式
-* `data.js`: 法規名稱資料
 * `parseData.js`: 將其他資料轉為本專案所需的資料並存為 `data.js`
 * `demo.html`: 測試用
+* `data.js`: 法規名稱資料，由 `parseData.js` 產生
+* `aliases.json`: 本專案法規簡稱資料，需手動維護
 
 ## Milestones
 
