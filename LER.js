@@ -48,7 +48,7 @@ LER.parse = (()=>{
             pattern: res.artList,
             replacer: function($0) {
                 let rangeText = "";
-                LER.articleParser.list(arguments).ranges.forEach(range => {
+                LER.parser.artList(arguments).ranges.forEach(range => {
                     const f = range["from"][0];
                     if(f.stratum != "條") return;
                     if(rangeText) rangeText += ",";
@@ -60,6 +60,28 @@ LER.parse = (()=>{
                 return {text: text, rangeText: rangeText};
             },
             minLength: 3
+        });
+    }
+
+    /**
+     * 大法官解釋的判斷
+     */
+    {
+        rules.push({
+            pattern: LER.regexps.jyi,
+            replacer: function($0) {
+                const data = LER.parser.jyi(arguments);
+                const nodes = [data.previous];
+                data.jyis.forEach((jyi, index) => {
+                    if(index) nodes.push(data.conjs[index - 1]);
+                    nodes.push(domCrawler.createElement("A", {
+                        href: "https://www.judicial.gov.tw/constitutionalcourt/p03_01_1.asp?expno=" + jyi,
+                        target: "_blank"
+                    }, `第${jyi}號`));
+                });
+                return domCrawler.createElement("SPAN", {"data-conjList": data.conjs.join()}, ...nodes);
+            },
+            minLength: 7
         });
     }
 

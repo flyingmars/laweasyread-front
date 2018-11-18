@@ -69,14 +69,18 @@ const reMatchAll = (regexp, str) => {
  */
 const res = LER.regexps = {
     number: "([\\d零一二三四五六七八九十百千]+)",    // 1
+
     artPart: "第number([條項類款目])(之number)?(但書)?",  // 5
     artRange: "((artPart)+)([前後]段|([至到])(artPart))?", // 15
-    artList: "(artRange)(([,、及或和與])(artRange))*" // 34
+    artList: "(artRange)(([,、及或和與])(artRange))*", // 34
+
+    jyi: "((司法院)?(大法官)?釋字)第number號([,、及]第number號)*"
 };
-Object.getOwnPropertyNames(res).reduce((prev, cur) => {
-    res[cur] = res[cur].replace(new RegExp(prev, "g"), res[prev]);
-    return cur;
-});
+const names = Object.getOwnPropertyNames(res);
+for(let i = 1; i < names.length; ++i) {
+    for(let j = i - 1; j >= 0; --j)
+        res[names[i]] = res[names[i]].replace(new RegExp(names[j], "g"), res[names[j]]);
+}
 for(let e in res) res[e] = new RegExp(res[e], "g");
 
 
@@ -88,8 +92,8 @@ for(let e in res) res[e] = new RegExp(res[e], "g");
  * @see {@link https://stackoverflow.com/questions/53327130/ }
  * @see {@link https://stackoverflow.com/questions/3537878/ }
  */
-const parser = LER.articleParser = {
-    part: match => {
+const parser = LER.parser = {
+    artPart: match => {
         const ret = {
             number: cpi(match[1]),
             stratum: match[2]
@@ -98,9 +102,9 @@ const parser = LER.articleParser = {
         if(match[5]) ret.but = true
         return ret;
     },
-    range: match => {
+    artRange: match => {
         const ret = {
-            "from": reMatchAll(res.artPart, match[1]).map(parser.part)
+            "from": reMatchAll(res.artPart, match[1]).map(parser.artPart)
         };
         if(!match[8]) return ret;
         if(!match[9]) {
@@ -108,19 +112,34 @@ const parser = LER.articleParser = {
             return ret;
         }
         ret.conj = match[9];
-        ret.to = parser.part(reMatch(res.artPart, match[10]));
+        ret.to = parser.artPart(reMatch(res.artPart, match[10]));
         return ret;
     },
-    list: match => {
+    artList: match => {
         let prevIndex = 0;
         const conjunctions = [];
         const ranges = reMatchAll(res.artRange, match[0]).map(m => {
             if(prevIndex) conjunctions.push(match[0].substring(prevIndex, m.index));
             prevIndex = m.index + m[0].length;
-            return parser.range(m);
+            return parser.artRange(m);
         });
         return {
             ranges: ranges,
+            conjs: conjunctions
+        };
+    },
+
+    jyi: match => {
+        let prevIndex = 0;
+        const conjunctions = [];
+        const jyis = reMatchAll(res.number, match[0]).map(m => {
+            if(prevIndex) conjunctions.push(match[0].substring(prevIndex + 1, m.index - 1));
+            prevIndex = m.index + m[0].length;
+            return cpi(m[0]);
+        });
+        return {
+            previous: match[1],
+            jyis: jyis,
             conjs: conjunctions
         };
     }
