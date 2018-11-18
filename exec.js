@@ -1,3 +1,3 @@
 "use strict";
-if(typeof LER == "object")
+if(typeof LER == "object" && document.body)
     LER.parse(document.body);
