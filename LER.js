@@ -98,9 +98,14 @@ LER.parse = (()=>{
                         const prevItem = arr[index - 1];
                         if(prevItem instanceof Element && prevItem.dataset.pcode)
                             props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${prevItem.dataset.pcode}&SNo=${item.rangeText}`;
+                        else if((prevItem.endsWith("本法") || prevItem.endsWith("本條例")) && LER.defaultLaw) {
+                            const name = LER.defaultLaw.name;
+                            const theLaw = LER.getLawByName(name.substring(0, name.length - 4));
+                            if(theLaw) props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`;
+                        }
                     }
                     if(!props.href && LER.defaultLaw)
-                        props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${LER.defaultLaw}&SNo=${item.rangeText}`;
+                        props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${LER.defaultLaw.PCode}&SNo=${item.rangeText}`;
                 }
                 if(props.href) props.target = "_blank";
                 return domCrawler.createElement(props.href ? "A" : "EM", props, item.text);

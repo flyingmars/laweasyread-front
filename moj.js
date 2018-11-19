@@ -12,7 +12,7 @@ console.log("Parse PREs to ULs: " + ((new Date) - start) + " ms.");
  */
 {
     const m = location.search.match(/\Wpc(ode)?=(\w\d{7})(\W|$)/i);
-    if(m) LER.defaultLaw = m[2];
+    if(m) LER.defaultLaw = LER.getLawByPCode(m[2]);
 }
 
 

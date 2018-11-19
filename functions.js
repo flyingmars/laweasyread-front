@@ -151,3 +151,8 @@ const parser = LER.parser = {
 LER.getLawByName = name =>
     LER.laws.find(law => law.name == name)
 ;
+
+LER.getLawByPCode = pcode =>
+    LER.laws.find(law => law.PCode == pcode)
+;
+

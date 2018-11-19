@@ -89,6 +89,6 @@ try {
     lawName = document.querySelector("td.law_n").firstChild.textContent;
 } catch(e){}
 
-if(lawName) LER.defaultLaw = LER.getLawByName(lawName).PCode;
+if(lawName) LER.defaultLaw = LER.getLawByName(lawName);
 
 }
