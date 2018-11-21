@@ -52,11 +52,13 @@ const getLaw = keys => LER.laws.find(law => {
 
 /**
  * 回傳「是否要跳過這個元素」的函式
+ * TODO: 用 class name 指示應忽略的元素
  */
 const skippableTags = "TEXTAREA,STYLE,SCRIPT,CODE,A,BUTTON,SELECT,SUMMARY,TEMPLATE".split(",");
 const reject = node => {
     if(skippableTags.includes(node.tagName)) return true;
     if(node.nodeType != 3) return false;
+    if(node.isContentEditable) return true;
 
     const text = node.textContent;
     if(text.length < 2) return true;
