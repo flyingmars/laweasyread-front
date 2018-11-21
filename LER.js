@@ -102,6 +102,7 @@ LER.parse = (()=>{
                             const name = LER.defaultLaw.name;
                             const theLaw = LER.getLawByName(name.substring(0, name.length - 4));
                             if(theLaw) props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`;
+                            else console.log("LER error: failed to detect enforcement rule.");
                         }
                     }
                     if(!props.href && LER.defaultLaw)
