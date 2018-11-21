@@ -70,7 +70,7 @@ document.querySelectorAll("td").forEach(td => {
     if(warning) return; // 如果是所得稅法第14條，就先不處理…
 
     td.replaceWith(domCrawler.createElement("td", {className},
-        LER.createList(lawtext2obj.arr2nested(paras)),
+        createList(lawtext2obj.arr2nested(paras)),
         ...others
     ));
 });
@@ -89,6 +89,8 @@ try {
     lawName = document.querySelector("td.law_n").firstChild.textContent;
 } catch(e){}
 
-if(lawName) LER.defaultLaw = LER.getLawByName(lawName);
+if(lawName) LER.loadLaws.then(() => {
+        LER.defaultLaw = LER.getLaw({name: lawName});
+    });
 
 }

@@ -28,9 +28,8 @@ const namesWithoutDates = mojData.reduce((acc, cur) => {
     const match = /（新?\s?(\d+\.\d+\.\d+)\s?訂定）$/.exec(cur.name);
     if(!match) return acc;
     const name = cur.name.substring(0, match.index);
-    //const date = match[1];
     const newItem = {PCode: cur.PCode, name};
-    console.log(newItem);
+    //console.log(newItem);
 
     // 如果已經有同名的法規，那就看誰的 PCode 比較大（「應該」也就比較新）
     const existing = acc.findIndex(law => law.name == name);
@@ -46,9 +45,4 @@ const namesWithoutDates = mojData.reduce((acc, cur) => {
 
 mojData.sort((a, b) => b.name.length - a.name.length);
 const json = JSON.stringify(mojData, ["PCode", "name", "fullName"], 1);
-
-const js = 'if(typeof LER == "undefined") LER = {};\n'
-    + `LER.laws = ${json};\n`
-;
-
-fs.writeFileSync("./data.js", js);
+fs.writeFileSync("./data.json", json);

@@ -2,7 +2,7 @@
 
 const start = new Date;
 document.querySelectorAll(".TableLawAll td:nth-of-type(3) pre").forEach(pre =>
-    pre.replaceWith(LER.createList(lawtext2obj(pre.textContent)))
+    pre.replaceWith(createList(lawtext2obj(pre.textContent)))
 );
 console.log("Parse PREs to ULs: " + ((new Date) - start) + " ms.");
 
@@ -12,7 +12,10 @@ console.log("Parse PREs to ULs: " + ((new Date) - start) + " ms.");
  */
 {
     const m = location.search.match(/\Wpc(ode)?=(\w\d{7})(\W|$)/i);
-    if(m) LER.defaultLaw = LER.getLawByPCode(m[2]);
+    if(m) LER.loadLaws.then(() => {
+        LER.defaultLaw = LER.getLaw({PCode: m[2]});
+    });
+
 }
 
 

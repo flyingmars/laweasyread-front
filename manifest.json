@@ -26,13 +26,12 @@
     {
         "matches": ["<all_urls>"],
         "js": [
-            "data.js",
             "domCrawler/domCrawler.js",
             "chinese-parseint/chinese-parseint.js",
-            "functions.js",
-            "LER.js"
+            "LER.js",
+            "content_scripts/loadLaws.js"
         ],
-        "css": ["main.css"],
+        "css": ["content_scripts/main.css"],
         "run_at": "document_idle",
         "all_frames": true
     },
@@ -41,9 +40,10 @@
         "exclude_matches": ["*://*/LawClass/LawHistory.aspx*"],
         "js": [
             "lawtext2obj/lawtext2obj.js",
-            "moj.js"
+            "content_scripts/functions.js",
+            "content_scripts/moj.js"
         ],
-        "css": ["moj.css"],
+        "css": ["content_scripts/moj.css"],
         "run_at": "document_idle",
         "all_frames": true
     },
@@ -51,15 +51,16 @@
         "matches": ["*://lis.ly.gov.tw/*"],
         "js": [
             "lawtext2obj/lawtext2obj.js",
-            "lis.ly.js"
+            "content_scripts/functions.js",
+            "content_scripts/lis.ly.js"
         ],
-        "css": ["lis.ly.css"],
+        "css": ["content_scripts/lis.ly.css"],
         "run_at": "document_idle",
         "all_frames": true
     },
     {
         "matches": ["<all_urls>"],
-        "js": ["exec.js"],
+        "js": ["content_scripts/exec.js"],
         "run_at": "document_idle",
         "all_frames": true
     }
