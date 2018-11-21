@@ -1,0 +1,33 @@
+body {
+    background-color: #000;
+    line-height: 1.5rem;
+}
+main {
+    width: 375px;
+    font-size: 16px;
+    color: #fff;
+}
+a[href] {
+    color: #f8f9fa;
+}
+
+nav {
+    float: right;
+}
+
+input[type=text] {
+    width: 10em;
+}
+input[type=checkbox] {
+    margin: 0 0 0 auto;
+}
+
+section {
+    padding: 0 0.5em;
+    margin: 0.5em 0;
+    border-left: 2px dotted #ccc;
+}
+
+.d-inline {
+    display: inline;
+}
