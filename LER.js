@@ -1,5 +1,9 @@
 "use strict";
 
+/**
+ * 本專案主要物件
+ * 主程式 LER.parse 宣告在文件最末。
+ */
 const LER = {
     laws: [],
     rules: []
@@ -45,11 +49,6 @@ const getLaw = keys => LER.laws.find(law => {
     return true;
 });
 
-
-/****************
- * DOM 相關
- */
-
 /**
  * 回傳「是否要跳過這個元素」的函式
  * TODO: 用 class name 指示應忽略的元素
@@ -66,48 +65,6 @@ const reject = node => {
     if(!/[\u4E00-\u9FFF]{2}/.test(text)) return true; //< 如果沒有連續的「中日韓統一表意文字」
     return false;
 };
-
-/**
- * 建立法規的超連結元素
- */
-const createLawLink = (law, text) => e("a", {
-    target: "_blank",
-    href: "https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=" + law.PCode,
-    title: law.fullName || law.name,
-    "data-pcode": law.PCode
-}, text || law.name);
-
-/**
- * 建立法條們的超連結元素
- */
-const createArticlesLink = (pcode, rangeText, text) => e("a", {
-    target: "_blank",
-    href: `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${pcode}&SNo=${rangeText}`
-}, text);
-
-const createElement = props => {
-    switch(props.type) {
-        case "law": {
-            const law = props.law;
-            return e("a", {
-                target: "_blank",
-                href: `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${law.PCode}`,
-                title: law.fullName || law.name,
-                "data-pcode": law.PCode
-            }, props.text || law.name)
-        }
-        case "article": {
-            const law = props.law;
-            return e("a", {
-                target: "_blank",
-                href: `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${law.PCode}&SNo=${props.rangeText}`
-            }, props.text);
-        }
-        default:
-            throw new TypeError("uncaught type");
-    }
-};
-
 
 
 /****************
@@ -241,7 +198,7 @@ LER.rules.push({
             if(range.to && range.to.stratum == "條") rangeText += "-" + range.to.number;
         });
         const text = $0.replace(regexps.number, x => ` ${cpi(x, 10)} `);
-        return {text: text, rangeText: rangeText};
+        return {type: "articles", text: text, rangeText: rangeText};
     },
     minLength: 3
 });
@@ -268,37 +225,54 @@ LER.rules.push({
 
 
 /****************
+ * 把單一文字節點的資料解析完之後，弄成節點陣列
+ */
+const objArr2nodes = arr => {
+    arr = arr.filter(x => x);   // 要先濾掉空字串
+    return arr.map((item, index) => {
+        if(typeof item == "string" || item instanceof Element) return item;
+        switch(item.type) {
+            case "law": {
+                const law = item.law;
+                return e("a", {
+                    target: "_blank",
+                    href: `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${law.PCode}`,
+                    title: law.fullName || law.name,
+                    "data-pcode": law.PCode
+                }, item.text || law.name)
+            }
+            case "articles": {
+                let theLaw;
+                if(index) {
+                    const prevItem = arr[index - 1];
+                    if(prevItem.type == "law") theLaw = prevItem.law;
+                    else if(LER.defaultLaw && LER.defaultLaw.name.endsWith("施行細則") && /本(法|條例)$/.test(prevItem)) {
+                        // TODO: 不用每次出現「本法」就再跑一次 getLaw
+                        const name = LER.defaultLaw.name;
+                        theLaw = getLaw({name: name.substring(0, name.length - 4)});
+                    }
+                }
+                if(!theLaw && LER.defaultLaw) theLaw = LER.defaultLaw;
+                if(!theLaw) return e("EM", null, item.text);
+                return e("A", {
+                    target: "_blank",
+                    href: `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`
+                }, item.text);
+            }
+            default:
+                console.log(item);
+                throw new TypeError("uncaught type");
+        }
+    })
+};
+
+
+/****************
  * 主程式：解析指定的節點其內的文字。
  */
 const parse = elem => {
     const start = new Date;
-
-    domCrawler.replaceTexts(LER.rules, elem, reject, arr => {
-        arr = arr.filter(x => x); // 濾掉空字串
-        return arr.map((item, index) => {
-            if(typeof item == "string" || item instanceof Element) return item;
-            const props = {};
-            if(item.rangeText) {
-                if(index) {
-                    const prevItem = arr[index - 1];
-                    if(prevItem instanceof Element && prevItem.dataset.pcode)
-                        props.href = `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${prevItem.dataset.pcode}&SNo=${item.rangeText}`;
-                    else if((prevItem.endsWith("本法") || prevItem.endsWith("本條例")) && LER.defaultLaw) {
-                        // TODO: 不用每次出現「本法」就再跑一次 getLaw
-                        // 有些法律層級的在自我引用時還是會自稱「本法」，例如所得稅法第113條
-                        const name = LER.defaultLaw.name;
-                        const theLaw = getLaw({name: name.substring(0, name.length - 4)});
-                        if(theLaw) props.href = `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`;
-                        else console.log("LER error: failed to detect enforcement rule.");
-                    }
-                }
-                if(!props.href && LER.defaultLaw)
-                    props.href = `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${LER.defaultLaw.PCode}&SNo=${item.rangeText}`;
-            }
-            if(props.href) props.target = "_blank";
-            return domCrawler.createElement(props.href ? "A" : "EM", props, item.text);
-        })
-    });
+    domCrawler.replaceTexts(LER.rules, elem, reject, objArr2nodes);
     console.log("LER spent " + ((new Date) - start) + " ms.");
 };
 
@@ -307,6 +281,5 @@ const parse = elem => {
  * `LER.loadLaws` 是 Promise 物件，建立於其他檔案。
  */
 LER.parse = elem => LER.loadLaws.then(() => parse(elem));
-LER.getLaw = getLaw;
-LER.createLawLink = createLawLink;
+LER.getLaw = getLaw; //< TODO: 改成 setDefaultLaw
 }

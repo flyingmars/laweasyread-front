@@ -6,7 +6,7 @@ LER.loadLaws = new Promise((resolve, reject) => {
         const rules = storage.laws.map(law => {
             return {
                 pattern: law.name,
-                replacer: () => LER.createLawLink(law),
+                replacer: {type: "law", law: law},
                 minLength: law.name.length
             };
         });
