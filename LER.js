@@ -1,4 +1,5 @@
 "use strict";
+
 const LER = {
     laws: [],
     rules: []
@@ -279,18 +280,18 @@ const parse = elem => {
                 if(index) {
                     const prevItem = arr[index - 1];
                     if(prevItem instanceof Element && prevItem.dataset.pcode)
-                        props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${prevItem.dataset.pcode}&SNo=${item.rangeText}`;
+                        props.href = `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${prevItem.dataset.pcode}&SNo=${item.rangeText}`;
                     else if((prevItem.endsWith("本法") || prevItem.endsWith("本條例")) && LER.defaultLaw) {
-                        // TODO: 不用每次出現「本法」就再跑一次 getLaw 
+                        // TODO: 不用每次出現「本法」就再跑一次 getLaw
                         // 有些法律層級的在自我引用時還是會自稱「本法」，例如所得稅法第113條
                         const name = LER.defaultLaw.name;
                         const theLaw = getLaw({name: name.substring(0, name.length - 4)});
-                        if(theLaw) props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`;
+                        if(theLaw) props.href = `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`;
                         else console.log("LER error: failed to detect enforcement rule.");
                     }
                 }
                 if(!props.href && LER.defaultLaw)
-                    props.href = `https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=${LER.defaultLaw.PCode}&SNo=${item.rangeText}`;
+                    props.href = `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${LER.defaultLaw.PCode}&SNo=${item.rangeText}`;
             }
             if(props.href) props.target = "_blank";
             return domCrawler.createElement(props.href ? "A" : "EM", props, item.text);

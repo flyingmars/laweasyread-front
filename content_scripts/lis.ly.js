@@ -1,5 +1,4 @@
 "use strict";
-// 參考 https://github.com/g0v/laweasyread-front/blob/master/ly.js
 
 /**
  * 這邊跟 lawtext2obj 很像，但其實空格排版的機制不同。
@@ -90,7 +89,6 @@ try {
 } catch(e){}
 
 if(lawName) LER.loadLaws.then(() => {
-        LER.defaultLaw = LER.getLaw({name: lawName});
-    });
-
+    LER.defaultLaw = LER.getLaw({name: lawName});
+});
 }

@@ -11,7 +11,6 @@ LER.loadLaws = new Promise((resolve, reject) => {
             };
         });
         LER.rules.unshift(...rules);
-        LER.laws = storage.laws;
-        resolve();
+        resolve(LER.laws = storage.laws);
     });
 });

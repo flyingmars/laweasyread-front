@@ -1,8 +1,10 @@
 "use strict";
+
 /**
  * 把 lawtext2obj 的輸出轉成有序列表
  */
 const createList = paras => {
+    if(!paras.length) throw new SyntaxError("Unknown structure.");
     const e = domCrawler.createElement;
     const listItems = paras.map(para => {
         const children = (para.children && para.children.length) ? createList(para.children) : "";
