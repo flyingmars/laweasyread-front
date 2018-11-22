@@ -1,31 +1,43 @@
 "use strict";
 
+const remoteDocRoot = "https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/gh-pages";
+
 /**
- * 讀取資料
- * TODO: 下載、更新為最新版
+ * 安裝時要做的事
  * @see {@link https://developer.chrome.com/extensions/runtime#event-onInstalled }
  */
 chrome.runtime.onInstalled.addListener(() => {
+    // 讀取資料
     fetch("./data.json")
     .then(res => res.json())
-    .then(laws => chrome.storage.local.set(
-        {laws: laws},
-        () => console.log("%d laws are loaded.", laws.length)
-    ));
+    .then(laws => setData({laws}))
+    .then(() => console.log("Laws loaded."));
+
+    // 設定計時器，用於檢查更新
+    chrome.alarms.create("perHour", {
+        when: Date.now(),
+        periodInMinutes: 60
+    });
+});
+
+chrome.alarms.onAlarm.addListener(alarm => {
+    console.log(alarm);
+    checkUpdate();
 });
 
 
 /**
- * 檢查有無更新
+ * 檢查有無更新，並將已知最新的版本日期存起來。
  * @return {Promise} 有較新的資料就回傳新資料的日期字串，若無則回傳 false 。
  */
 const checkUpdate = async() => {
-    const pLocal = new Promise(resolve =>
-        chrome.storage.local.get({updateDate: ""}, storage => resolve(storage.updateDate))
-    );
-    const pRemote = fetch("https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/gh-pages/UpdateDate.txt").then(res => res.text());
-    const [vLocal, vRemote] = await Promise.all([pLocal, pRemote]);
+    const [vLocal = "", vRemote] = await Promise.all([
+        getData("updateDate"),
+        fetch(remoteDocRoot + "/UpdateDate.txt").then(res => res.text())
+    ]);
     if(vLocal > vRemote || !/^\d{8}$/.test(vRemote)) throw new SyntaxError("UpdateDate format error");
+    await setData({remoteDate: vRemote});
+    console.log("checkUpdate: " + vRemote);
     if(vLocal == vRemote) return false;
     return vRemote;
 }
@@ -34,19 +46,19 @@ const checkUpdate = async() => {
  * 更新資料
  * @return {Promise}
  */
-const update = async(date) => {
+const update = async() => {
+    const vRemote = await checkUpdate();
+    if(!vRemote) return;
+
     const [mojData, aliases] = await Promise.all([
-        fetch("https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/gh-pages/index.json").then(res => res.json()),
+        fetch(remoteDocRoot + "/index.json").then(res => res.json()),
         fetch("./aliases.json").then(res => res.json())
     ]);
-    await new Promise(resolve =>
-        chrome.storage.local.set({
-            updateDate: date,
-            laws: parseData(mojData, aliases)
-        }, resolve)
-    );
-    console.log([mojData, aliases, date]);
-    return;
+    await setData({
+        updateDate: vRemote,
+        laws: parseData(mojData, aliases)
+    });
+    console.log("laws updated");
 };
 
 
@@ -62,7 +74,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             checkUpdate().then(sendResponse);
             break;
         case "update":
-            update(message.date).then(sendResponse);
+            update().then(sendResponse);
             break;
         default:
             sendResponse("Error: uncaught message.");
