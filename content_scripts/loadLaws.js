@@ -1,7 +1,7 @@
 "use strict";
 
 LER.loadLaws = new Promise((resolve, reject) => {
-    chrome.storage.local.get("laws", storage => {
+    chrome.storage.local.get({laws: []}, storage => {
         if(chrome.runtime.lastError) return reject(chrome.runtime.lastError);
         const rules = storage.laws.map(law => {
             return {
