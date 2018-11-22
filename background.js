@@ -15,7 +15,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
     // 設定計時器，用於檢查更新
     chrome.alarms.create("perHour", {
-        when: Date.now(),
+        //when: Date.now(),
         periodInMinutes: 60
     });
 });
@@ -24,6 +24,28 @@ chrome.alarms.onAlarm.addListener(alarm => {
     console.log(alarm);
     checkUpdate();
 });
+
+
+/**
+ * 訊息處理
+ * 注意要回傳 true 才能讓非同步的回呼函式順利運作。
+ * @see {@link https://developer.chrome.com/extensions/runtime#event-onMessage }
+ */
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log("runtime.onMessage", message);
+    switch(message.command) {
+        case "checkUpdate":
+            checkUpdate().then(sendResponse);
+            break;
+        case "update":
+            update().then(sendResponse);
+            break;
+        default:
+            sendResponse("Error: uncaught message.");
+    }
+    return true;
+});
+
 
 
 /**
@@ -60,24 +82,3 @@ const update = async() => {
     });
     console.log("laws updated");
 };
-
-
-/**
- * 訊息處理
- * 注意要回傳 true 才能讓非同步的回呼函式順利運作。
- * @see {@link https://developer.chrome.com/extensions/runtime#event-onMessage }
- */
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("runtime.onMessage", message);
-    switch(message.command) {
-        case "checkUpdate":
-            checkUpdate().then(sendResponse);
-            break;
-        case "update":
-            update().then(sendResponse);
-            break;
-        default:
-            sendResponse("Error: uncaught message.");
-    }
-    return true;
-});

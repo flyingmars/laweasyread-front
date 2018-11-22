@@ -38,6 +38,7 @@
         "js": [
             "domCrawler/domCrawler.js",
             "chinese-parseint/chinese-parseint.js",
+            "chrome.js",
             "LER.js",
             "content_scripts/loadLaws.js"
         ],
