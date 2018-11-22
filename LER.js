@@ -225,7 +225,7 @@ LER.rules.push({
         data.jyis.forEach((jyi, index) => {
             if(index) nodes.push(data.conjs[index - 1]);
             nodes.push(domCrawler.createElement("A", {
-                href: "https://www.judicial.gov.tw/constitutionalcourt/p03_01_1.asp?expno=" + jyi,
+                href: "https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=" + jyi,
                 target: "_blank"
             }, `第${jyi}號`));
         });

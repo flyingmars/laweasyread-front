@@ -6,24 +6,27 @@
     <base target="_blank">
     <!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"-->
     <script src="chrome.js"></script>
-    <script src="popup.js"></script>
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
-    <main>
+    <header>
+        <h1>法規亦毒氣</h1>
         <nav>
-            <a href="options.html">選項<!--&#x2699;--></a>
+            <span id="updateSpan" style="display: none;">更新</span>
+            <a href="options.html">設定<!--&#x2699;--></a>
         </nav>
+    </header>
+    <main>
         <section>
+            <div style="float: right;">
+                <button id="parseTheCurrentTab">轉換此頁面</button>
+            </div>
             <div>
                 <label>
                     <input type="checkbox" id="autoParse">
                     自動轉換
                 </label>
-                <!--button id="addException">本頁不要自動轉換</button-->
-            </div>
-            <div>
-                <button id="parseTheCurrentTab">手動轉換</button>
+                <!--button id="addException">加入例外</button-->
             </div>
         </section>
         <section>
@@ -64,5 +67,6 @@
             </div>
         </section>
     </main>
+    <script src="popup.js"></script>
   </body>
 </html>
