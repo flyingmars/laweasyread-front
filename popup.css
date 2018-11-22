@@ -1,6 +1,5 @@
 body {
     background-color: #000;
-    line-height: 1.5rem;
 }
 main {
     width: 375px;
@@ -8,7 +7,11 @@ main {
     color: #fff;
 }
 a[href] {
-    color: #f8f9fa;
+    color: yellow;
+    text-decoration: none;
+}
+a[href]:hover {
+    text-decoration: underline;
 }
 
 nav {
@@ -20,6 +23,10 @@ input[type=text] {
 }
 input[type=checkbox] {
     margin: 0 0 0 auto;
+}
+
+label {
+    cursor: pointer;
 }
 
 section {
