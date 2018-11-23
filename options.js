@@ -1,6 +1,6 @@
 "use strict";
 
-
+const e = domCrawler.createElement;
 const $ = s => (typeof s == "string") ? document.querySelector(s) : s;
 const hide = elem => $(elem).style.display = "none";
 const show = elem => $(elem).style.display = "";
@@ -10,10 +10,9 @@ const setContent = (elem, ...nodes) => {
     elem.append(...nodes);
 };
 
-const e = domCrawler.createElement;
-
-//hide("#lastCheckUpdateContainer");
-
+/**
+ * 讀取資料並設定最初的顯示值
+ */
 fetch("./manifest.json")
 .then(res => res.json())
 .then(manifest => {
@@ -24,18 +23,54 @@ fetch("./options_default.json")
 .then(res => res.json())
 .then(getData)
 .then(storage => {
-    console.log(storage);
+    //console.log(storage);
     setContent("#updateDate", storage.updateDate);
+
+    const ub = $("#updateButton");
     if(storage.remoteDate > storage.updateDate) {
-        const ub = $("#updateButton");
-        setContent(ub, "更新");
-        ub.classList.replace("btn-primary", "btn-warning");
+        setContent(ub, `更新到 ${storage.remoteDate}`);
+        ub.classList.add("btn-info");
     }
+    else ub.classList.add("btn-primary");
+
     setContent("#lastCheckUpdate", (new Date(storage.lastCheckUpdate)).toLocaleString());
     $("#autoParse").checked = storage.autoParse;
     setContent("#exclude_matches", storage.exclude_matches);
     $("#artNumberParserMethod-" + storage.artNumberParserMethod).checked = true;
 });
+hide("#saveButton");
+
+/**
+ * 設定「檢查更新」鈕
+ * 結果分為「安裝更新」和「不用更新」。
+ */
+$("#updateButton").addEventListener("click", event => {
+    const self = event.target;
+    const cl = self.classList;
+    hide("#lastCheckUpdateContainer");
+    setContent(self, "檢查更新中…");
+    cl.remove("btn-primary", "btn-info");
+    cl.add("btn-warning");
+    chrome.runtime.sendMessage({command: "update"}, newDate => {
+        if(newDate) { // 有更新且已安裝
+            setContent("#updateDate", newDate);
+            setContent(self, "已更新");
+            cl.add("btn-success");
+        }
+        else {
+            setContent(self, "無可更新");
+            cl.add("btn-secondary");
+        }
+        cl.remove("btn-warning");
+        self.disabled = true;
+        setContent("#lastCheckUpdate", (new Date).toLocaleString());
+        show("#lastCheckUpdateContainer");
+    });
+});
+
+
+
+
 
 /**
  * 條號轉換方式的選擇
@@ -73,7 +108,6 @@ const artNumberParserOptions = [
         id: "artNumberParserMethod-" + option.value,
         value: option.value
     };
-
     return e(
         "tr", null, e(
             "td", null, e(
@@ -87,6 +121,7 @@ const artNumberParserOptions = [
     );
 });
 $("#artNumberParserOptions").append(...artNumberParserOptions);
+
 
 
 /**

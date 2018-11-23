@@ -31,7 +31,7 @@
 
             <p>當前法規資料版本：<time id="updateDate"></time></p>
 
-            <button id="updateButton" class="btn btn-sm btn-primary">檢查並更新</button>
+            <button id="updateButton" class="btn btn-sm">檢查更新</button>
             <span id="lastCheckUpdateContainer" class="text-muted small">
                 上次檢查：
                 <time id="lastCheckUpdate"></time>
@@ -45,12 +45,13 @@
                     <input type="checkbox" id="autoParse">
                     開啟自動轉換
                 </label>
+                <p class="text-muted small">自動轉換對動態讀取的網頁（如臉書）沒有作用。</p>
             </div>
             <div class="form-group">
                 <label>
                     例外路徑
-                    <span class="text-muted small">（這裡列出的路徑將不會啟動「自動轉換」。使用正規表達式。）</span>
                 </label>
+                <p class="text-muted small">這裡列出的路徑將不會啟動「自動轉換」。使用正規表達式。</p>
                 <textarea id="exclude_matches" class="form-control" spellcheck="false"></textarea>
             </div>
         </fieldset>

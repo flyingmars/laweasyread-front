@@ -84,4 +84,5 @@ const update = async() => {
         laws: parseData(mojData, aliases)
     });
     console.log("laws updated");
+    return vRemote;
 };

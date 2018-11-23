@@ -24,6 +24,9 @@ $("#autoParse").addEventListener("click", event => {
 });
 
 // 手動轉換的 button
+// TODO: 在不能轉換的頁面（網址為 chrome 開頭的那些）隱藏這個按鈕
+// 因為就算是 <all_urls> 也不包含 chrome*:// 協定。
+// @see {@link https://developer.chrome.com/extensions/match_patterns }
 $("#parseTheCurrentTab").addEventListener("click", () =>
     sendMessageToCurrentTab({command: "parse"})
 );
