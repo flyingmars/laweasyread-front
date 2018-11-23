@@ -3,8 +3,79 @@
   <head>
     <meta charset="utf-8">
     <title>法規亦毒氣 - 選項</title>
+    <base target="_blank">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="domCrawler/domCrawler.js"></script>
+    <script src="chrome.js"></script>
+    <style type="text/css">
+        fieldset {
+            margin-bottom: 2em;
+        }
+        #exclude_matches {
+            height: 10em;
+        }
+    </style>
   </head>
   <body>
-    <h1>法規亦毒氣 - 選項</h1>
+    <header class="border-bottom fixed-top bg-secondary text-light">
+        <div class="container d-flex justify-content-between">
+            <h1 class="lead">法規亦毒氣 選項</h1>
+            <span id="version" class="text-white-50"></span>
+        </div>
+    </header>
+    <main class="container py-5">
+
+        <div class="text-danger lead">本頁面還沒好！</div>
+        <fieldset id="checkUpdateContainer">
+            <legend>檢查更新</legend>
+
+            <p>當前法規資料版本：<time id="updateDate"></time></p>
+
+            <button id="updateButton" class="btn btn-sm btn-primary">檢查並更新</button>
+            <span id="lastCheckUpdateContainer" class="text-muted small">
+                上次檢查：
+                <time id="lastCheckUpdate"></time>
+            </span>
+        </fieldset>
+
+        <fieldset>
+            <legend>自動轉換</legend>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="autoParse">
+                    開啟自動轉換
+                </label>
+            </div>
+            <div class="form-group">
+                <label>
+                    例外路徑
+                    <span class="text-muted small">（這裡列出的路徑將不會啟動「自動轉換」。使用正規表達式。）</span>
+                </label>
+                <textarea id="exclude_matches" class="form-control" spellcheck="false"></textarea>
+            </div>
+        </fieldset>
+
+        <fieldset id="parseSettings">
+            <legend>條號轉換</legend>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">轉換方式</th>
+                        <th scope="col">範例</th>
+                    </tr>
+                </thead>
+                <tbody id="artNumberParserOptions">
+                </tbody>
+            </table>
+        </fieldset>
+
+        <button id="saveButton" class="btn btn-primary">儲存</button>
+    </main>
+    <footer class="fixed-bottom bg-dark">
+        <div class="container d-flex justify-content-end">
+            <ul class="nav"></ul>
+        </div>
+    </footer>
+    <script src="options.js"></script>
   </body>
 </html>

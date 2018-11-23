@@ -58,7 +58,10 @@ const checkUpdate = async() => {
         fetch(remoteDocRoot + "/UpdateDate.txt").then(res => res.text())
     ]);
     if(vLocal > vRemote || !/^\d{8}$/.test(vRemote)) throw new SyntaxError("UpdateDate format error");
-    await setData({remoteDate: vRemote});
+    await setData({
+        remoteDate: vRemote,
+        lastCheckUpdate: Date.now()
+    });
     console.log("checkUpdate: " + vRemote);
     if(vLocal == vRemote) return false;
     return vRemote;

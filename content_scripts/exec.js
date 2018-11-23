@@ -1,6 +1,6 @@
 "use strict";
 
-const parse = document.body
+const parse = (typeof LER == "object") && document.body
     ? () => LER.parse(document.body)
     : () => {}
 ;
@@ -13,7 +13,7 @@ getData("autoParse").then(autoParse => {
 chrome.runtime.onMessage.addListener(message => {
     switch(message.command) {
         case "parse":
-            LER.parse(document.body);
+            parse();
             break;
         default:
             console.log("Error: uncaught message.");
