@@ -24,7 +24,8 @@ fetch("./options_default.json")
 .then(getData)
 .then(storage => {
     //console.log(storage);
-    setContent("#updateDate", storage.updateDate);
+    if(storage.updateDate) setContent("#updateDate", storage.updateDate);
+    else hide("#updateDateContainer");
 
     const ub = $("#updateButton");
     if(storage.remoteDate > storage.updateDate) {
@@ -33,12 +34,15 @@ fetch("./options_default.json")
     }
     else ub.classList.add("btn-primary");
 
-    setContent("#lastCheckUpdate", (new Date(storage.lastCheckUpdate)).toLocaleString());
+    if(storage.lastCheckUpdate)
+        setContent("#lastCheckUpdate", (new Date(storage.lastCheckUpdate)).toLocaleString());
+
     $("#autoParse").checked = storage.autoParse;
     setContent("#exclude_matches", storage.exclude_matches);
     $("#artNumberParserMethod-" + storage.artNumberParserMethod).checked = true;
 });
-hide("#saveButton");
+$("#saveButton").disabled = true;
+hide("#lastSaveContainer");
 
 /**
  * 設定「檢查更新」鈕
@@ -69,6 +73,36 @@ $("#updateButton").addEventListener("click", event => {
 });
 
 
+/**
+ * 按下「儲存」鈕
+ */
+$("saveButton").addEventListener("click", event => {
+    const self = event.target;
+
+    let artNumberParserMethod;
+    document.querySelectorAll("input[name=artNumberParserMethod]")
+    .forEach(ie => {if(ie.checked) artNumberParserMethod = ie.value;});
+
+    setData({
+        autoParse: $("#autoParse").checked,
+        exclude_matches: $("#exclude_matches").value,
+        artNumberParserMethod: artNumberParserMethod
+    }).then(() => {
+        console.log("options saved");
+        $("#saveButton").disabled = true;
+        setContent("#lastSave", (new Date).toLocaleString());
+        show("#lastSaveContainer");
+    });
+});
+
+
+/**
+ * 有任何更改時就顯示儲存按鈕
+ */
+const onChange = () => {
+    console.log("onchange");
+    $("#saveButton").disabled = false;
+};
 
 
 
