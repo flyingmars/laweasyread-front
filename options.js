@@ -36,6 +36,7 @@ fetch("./options_default.json")
 
     if(storage.lastCheckUpdate)
         setContent("#lastCheckUpdate", (new Date(storage.lastCheckUpdate)).toLocaleString());
+    else hide("#lastCheckUpdateContainer");
 
     $("#autoParse").checked = storage.autoParse;
     setContent("#exclude_matches", storage.exclude_matches);
@@ -43,6 +44,7 @@ fetch("./options_default.json")
 });
 $("#saveButton").disabled = true;
 hide("#lastSaveContainer");
+hide("#saveButtonContainer");
 
 /**
  * 設定「檢查更新」鈕
@@ -65,6 +67,7 @@ $("#updateButton").addEventListener("click", event => {
             setContent(self, "無可更新");
             cl.add("btn-secondary");
         }
+        show("#updateDateContainer");
         cl.remove("btn-warning");
         self.disabled = true;
         setContent("#lastCheckUpdate", (new Date).toLocaleString());
@@ -76,8 +79,8 @@ $("#updateButton").addEventListener("click", event => {
 /**
  * 按下「儲存」鈕
  */
-$("saveButton").addEventListener("click", event => {
-    const self = event.target;
+$("#saveButton").addEventListener("click", event => {
+    event.target.disabled = true;
 
     let artNumberParserMethod;
     document.querySelectorAll("input[name=artNumberParserMethod]")
@@ -85,11 +88,10 @@ $("saveButton").addEventListener("click", event => {
 
     setData({
         autoParse: $("#autoParse").checked,
-        exclude_matches: $("#exclude_matches").value,
+        exclude_matches: $("#exclude_matches").value.trim(),
         artNumberParserMethod: artNumberParserMethod
     }).then(() => {
         console.log("options saved");
-        $("#saveButton").disabled = true;
         setContent("#lastSave", (new Date).toLocaleString());
         show("#lastSaveContainer");
     });
@@ -98,12 +100,16 @@ $("saveButton").addEventListener("click", event => {
 
 /**
  * 有任何更改時就顯示儲存按鈕
+ * 注意 onchange 對 textarea 只在鍵盤輸入後的失焦事件時觸發，而 chrome 不支援 checkbox 和 radio 的 oninput 。
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/Events/input#Browser_compatibility }
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/Events/change#Description }
  */
 const onChange = () => {
-    console.log("onchange");
+    show("#saveButtonContainer");
     $("#saveButton").disabled = false;
 };
-
+$("#autoParse").addEventListener("change", onChange);
+$("#exclude_matches").addEventListener("input", onChange);
 
 
 /**
@@ -140,18 +146,19 @@ const artNumberParserOptions = [
         type: "radio",
         name: "artNumberParserMethod",
         id: "artNumberParserMethod-" + option.value,
-        value: option.value
+        value: option.value,
+        onchange: onChange
     };
-    return e(
-        "tr", null, e(
-            "td", null, e(
-                "label", null, e(
-                    "input", optionProps
-                ),
+    return e("tr", null,
+        e("td", null,
+            e("label", null,
+                e("input", optionProps),
                 option.title
             )
         ),
-        e("td", null, option.example)
+        e("td", null,
+            e("label", {"for": optionProps.id}, option.example)
+        )
     );
 });
 $("#artNumberParserOptions").append(...artNumberParserOptions);

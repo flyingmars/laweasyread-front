@@ -13,6 +13,12 @@ chrome.runtime.onInstalled.addListener(() => {
     .then(laws => setData({laws}))
     .then(() => console.log("Laws loaded."));
 
+    // 讀取資料庫的選項，補上預設的後就再存進去。
+    fetch("./options_default.json")
+    .then(res => res.json())
+    .then(getData)
+    .then(setData);
+
     // 設定計時器，用於檢查更新
     chrome.alarms.create("perHour", {
         //when: Date.now(),

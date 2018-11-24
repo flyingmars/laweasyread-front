@@ -219,18 +219,7 @@ LER.rules.push({
  */
 LER.rules.push({
     pattern: regexps.jyi,
-    replacer: function($0) {
-        const data = parser.jyi(arguments);
-        const nodes = [data.previous];
-        data.jyis.forEach((jyi, index) => {
-            if(index) nodes.push(data.conjs[index - 1]);
-            nodes.push(domCrawler.createElement("A", {
-                href: "https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=" + jyi,
-                target: "_blank"
-            }, `第${jyi}號`));
-        });
-        return domCrawler.createElement("SPAN", {"data-conjList": data.conjs.join()}, ...nodes);
-    },
+    replacer: (...args) => Object.assign({type: "jyis"}, parser.jyi(args)),
     minLength: 7
 });
 
@@ -269,6 +258,17 @@ const objArr2nodes = arr => {
                     target: "_blank",
                     href: `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`
                 }, item.text);
+            }
+            case "jyis": {
+                const nodes = [item.previous];
+                item.jyis.forEach((jyi, index) => {
+                    if(index) nodes.push(item.conjs[index - 1]);
+                    nodes.push(e("A", {
+                        href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`,
+                        target: "_blank"
+                    }, `第${jyi}號`));
+                });
+                return e("SPAN", null, ...nodes);
             }
             default:
                 console.log(item);

@@ -38,3 +38,13 @@ chrome.tabs.query(
     {active: true, currentWindow: true},
     tabs => chrome.tabs.sendMessage(tabs[0].id, message, callback)
 );
+
+/**
+ * 回傳網址是在「需要排除的列表」中的哪一個規則。
+ */
+const isExcluded = async(href = location.href) =>
+    (await getData("exclude_matches"))
+    .split("\n")
+    .filter(x => x) // 略去空行
+    .find(line => RegExp(line).test(href))
+;

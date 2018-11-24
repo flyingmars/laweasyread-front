@@ -1,12 +1,10 @@
 /**
- * 這個檔案是在最後才執行，甚至晚於 `moj.js` 那些。
+ * 處理、判斷是否需要運作 LER.parse
  *
- * 因為在 `manifest.json` 的 `content_scripts` 區塊中，
- * 不想重複複製可能會越來越多的 `exclude_matches` 陣列，
- * 所以改成在這個檔案中確認 `LER` 是否已經被宣告過，如果未被宣告，就不用執行解析。
- * 其他雖然 LER 有被宣告過，但因故不用解析的情形：
- * * 沒有 document.body ，例如臉書相簿上傳檔案後的跳轉頁面。
- * * 已設定為不用自動轉換的頁面。
+ * 需要排除 LER.parse 運作的情形：
+ * 1. 未宣告 LER 。起因於不想在 `manifest.json` 宣告重複的 `exclude_matches`
+ * 2. 頁面沒有 body 元素。例如臉書相簿上傳檔案後的跳轉頁面。
+ * 3. 使用者設定為不用轉換。
  *
  */
 "use strict";
@@ -15,8 +13,12 @@ let parse = () => {};
 
 if(typeof LER == "object" && document.body) {
     parse = () => LER.parse(document.body);
-    getData("autoParse").then(autoParse => {
-        if(autoParse) parse();
+    Promise.all([
+        getData("autoParse"),
+        isExcluded(location.href)
+    ]).then(([autoParse, matched_pattern]) => {
+        if(matched_pattern) console.log("Skip auto-parse due to pattern " + matched_pattern);
+        else if(autoParse) parse();
     });
 }
 
