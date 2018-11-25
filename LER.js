@@ -195,7 +195,28 @@ const parser = {
 
 /**
  * 規則：條號判斷
+ * 而且還要依使用者指定的方式轉換
  */
+const artNumberParser = {};
+artNumberParser.parseInt = text => text.replace(regexps.number, x => ` ${cpi(x, 10)} `);
+artNumberParser.hyphen = text =>
+    artNumberParser.parseInt(text)
+    .replace(/(\d+) 條之 (\d+)/g, (...mm) => `${mm[1]}-${mm[2]} 條`)
+;
+artNumberParser.dollar = text =>
+    artNumberParser.parseInt(text)
+    .replace(/第 (\d+) 條(之 (\d+))/g, (...mm) => {
+        let ret = "§" + mm[1];
+        if(mm[2]) ret += "-" + mm[3];
+        return ret;
+    })
+;
+artNumberParser.shortest = text =>
+    artNumberParser.dollar(text)
+    .replace(/第 (\d+) 項/g, (...mm) => String.fromCodePoint(8543 + parseInt(mm[1])))
+    .replace(/第 (\d+) 款/g, (...mm) => String.fromCodePoint(9311 + parseInt(mm[1])))
+; // TODO: Unicode 的阿拉伯數字只有到12，圈圈數字只有到20。
+
 LER.rules.push({
     pattern: regexps.artList,
     replacer: function($0) {
@@ -208,8 +229,9 @@ LER.rules.push({
             if(f.append) rangeText += "." + f.append;
             if(range.to && range.to.stratum == "條") rangeText += "-" + range.to.number;
         });
-        const text = $0.replace(regexps.number, x => ` ${cpi(x, 10)} `);
-        return {type: "articles", text: text, rangeText: rangeText};
+
+        const text = artNumberParser[LER.artNumberParserMethod || "parseInt"]($0);
+        return {type: "articles", text: text, rangeText: rangeText, raw: $0};
     },
     minLength: 3
 });
@@ -242,8 +264,8 @@ const objArr2nodes = arr => {
                 }, item.text || law.name)
             }
             case "articles": {
-                let theLaw;
-                if(index) {
+                let theLaw = LER.defaultLaw;
+                if(index && item.rangeText) {
                     const prevItem = arr[index - 1];
                     if(prevItem.type == "law") theLaw = prevItem.law;
                     else if(LER.defaultLaw && LER.defaultLaw.name.endsWith("施行細則") && /本(法|條例)$/.test(prevItem)) {
@@ -252,9 +274,9 @@ const objArr2nodes = arr => {
                         theLaw = getLaw({name: name.substring(0, name.length - 4)});
                     }
                 }
-                if(!theLaw && LER.defaultLaw) theLaw = LER.defaultLaw;
-                if(!theLaw) return e("EM", null, item.text);
+                if(!theLaw || !item.rangeText) return e("EM", {title: item.raw}, item.text);
                 return e("A", {
+                    title: item.raw,
                     target: "_blank",
                     href: `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`
                 }, item.text);

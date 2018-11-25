@@ -130,13 +130,13 @@ const artNumberParserOptions = [
         title: "重組條號的「之」結構",
         value: "hyphen",
         example: "第 91-1 條第 2 項第 5 款"
-    }/*,
+    },
     {
         title: "使用「§」符號",
         value: "dollar",
         example: "§91-1 第 2 項第 5 款"
-    },
-    {
+    }/*,
+    { // 必須要只在有「條」的時候才適合啟動，機制要再修…
         title: "連同「項」跟「款」也用簡記的方式",
         value: "shortest",
         example: "§91-1 Ⅱ⑤"   // 羅馬數字：U+2160~216B ；圓圈數字：U+2460~2473
