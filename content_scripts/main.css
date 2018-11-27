@@ -43,7 +43,6 @@
 /**
  * 本專案以全國法規資料庫的資料為優先，「目」的括號是全形；但留意立法院法律系統中的括號是半形。
  */
-
 .LER-stratum-3 > li {
     list-style-type: none;
     padding-left: 2em;
@@ -66,4 +65,23 @@
 }
 .LER-stratum-5 > li > p:first-child {
     text-indent: -2.5em;
+}
+
+/**
+ * 彈出視窗
+ */
+.LER-modal {
+    position: absolute;
+}
+.LER-modal-header {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid gray;
+}
+.LER-modal-body {
+    border: 1px solid gray;
+    background-color: #fff;
+    padding: 0.5em;
 }

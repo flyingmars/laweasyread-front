@@ -17,7 +17,8 @@
  */
 const LER = {
     laws: [],
-    rules: []
+    rules: [],
+    popupArticles: () => {() => {}} // 之後會被替換
 };
 
 {
@@ -278,7 +279,8 @@ const objArr2nodes = arr => {
                 return e("A", {
                     title: item.raw,
                     target: "_blank",
-                    href: `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`
+                    href: `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`,
+                    //onmouseenter: LER.popupArticles(theLaw.PCode, item.rangeText)
                 }, item.text);
             }
             case "jyis": {

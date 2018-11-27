@@ -13,7 +13,7 @@ const setContent = (elem, ...nodes) => {
 /**
  * 讀取資料並設定最初的顯示值
  */
-fetch("./manifest.json")
+fetch("/manifest.json")
 .then(res => res.json())
 .then(manifest => {
     $("#version").append(manifest.version);

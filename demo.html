@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>法規亦毒氣測試頁面</title>
+    <script src="domCrawler/domCrawler.js"></script>
     <style>
         em { color: red; }
     </style>
@@ -11,7 +12,7 @@
     <h1>法規亦毒氣測試頁面</h1>
     <main>
         最短的法律名稱是「民法」；
-        資料庫裡其實沒有「刑法」，對應的是「中華民國刑法」，所以此系統一定需要一個「別名」或「短名」的對照表或判斷機制；
+        <span id="xx" style="color: red;">資料庫裡其實沒有「刑法」，對應的是「中華民國刑法」，所以此系統一定需要一個「別名」或「短名」的對照表或判斷機制；</span>
         另外，「總統副總統選舉罷免法（新 84.08.09 制定）」和「總統副總統選舉罷免法（舊 36.03.31 制定）」也有點麻煩。
         如果民法又出現一次的話會怎麼樣呢？
         <button>要記得不能把這裡頭的民法也換成&lt;a /&gt;喔</button>
@@ -32,5 +33,79 @@
 民事訴訟法第一百九十五條至第一百九十七條、第二百條、第二百零一條、第二百零四條、第二百零六條至第二百零八條、第二百十條、第二百十一條、第二百十四條、第二百十五條、第二百十七條至第二百十九條、第二百六十五條至第二百六十八條之一、第二百六十八條之二、第二百七十條至第二百七十一條之一、第二百七十三條至第二百七十六條之規定，於本節準用之。</dd>
         </dl>
     </main>
+    <div id="ff" style="display: none; position: absolute;">
+        <div id="ff-head" style="width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid gray;"></div>
+        <!--div id="ff-head" style="width: 0; height: 0; border-style: solid; border-width: 0 10px 10px 10px; border-color: transparent transparent gray transparent"></div-->
+        <!--div style="width: 20px; height: 20px; transform: rotate(45deg); position: absolute; top: 0; left: 10px; border: 1px solid #888; background-color: #fff;"></div>
+        <div style="width: 30px; height: 20px; background: #fff; position: absolute; top: 10px; left: 6px;"></div-->
+        <div ="ff-body" style="border: 1px solid gray; background-color: #fff; padding: 0.5em;"></div>
+    </div>
+    <script>
+        const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages";
+        const e = domCrawler.createElement;
+        const xx = document.getElementById("xx");
+        const ff = document.getElementById("ff");
+
+        const getAbsoluteRect = elem => {
+            const rect = elem.getBoundingClientRect();
+            return new DOMRect(
+                rect.x + window.scrollX,
+                rect.y + window.scrollY,
+                rect.width,
+                rect.height
+            );
+        };
+
+        const isInRect = (point, rect) => {
+            if(point instanceof MouseEvent)
+                point = new DOMPoint(point.pageX, point.pageY);
+            return (
+                point.x >= Math.floor(rect.left) &&
+                point.x <= Math.ceil(rect.right) &&
+                point.y >= Math.floor(rect.top) &&
+                point.y <= Math.floor(rect.bottom)
+            );
+        };
+
+        const isInElem = (point, elem) =>
+            isInRect(point, getAbsoluteRect(elem))
+        ;
+
+        xx.addEventListener("mouseenter", event => {
+            //console.log(event);
+            const rect = getAbsoluteRect(xx);
+            ff.style.top = rect.bottom + "px";
+            ff.style.left = rect.left + "px";
+            ff.style.display = "";
+            document.getElementById("ff-head").style.marginLeft = (event.pageX - rect.left - 5) + "px";
+            //console.log(ff.getBoundingClientRect());
+
+            const body = document.getElementById("ff-body");
+            fetch(remoteDocRoot + "/FalVMingLing/A0000001.json")
+            .then(res => res.json())
+            .then(obj => console.log(obj))
+            ;
+        });
+
+        /*xx.addEventListener("mouseleave", event => {
+            if(event.relatedTarget == ff) return;
+            ff.style.display = "none";
+        })
+        ff.addEventListener("mouseleave", event => {
+            if(event.relatedTarget != xx)
+                ff.style.display = "none";
+        })*/
+
+        xx.addEventListener("mouseleave", event => {
+            if(!isInElem(event, ff)) ff.style.display = "none";
+        });
+
+        ff.addEventListener("mouseleave", event => {
+            if(!isInElem(event, xx)) ff.style.display = "none";
+        });
+
+
+
+    </script>
   </body>
 </html>

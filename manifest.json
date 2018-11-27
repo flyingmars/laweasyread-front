@@ -5,7 +5,7 @@
 "version": "1.0.0",
 "author": "kong0107",
 "homepage_url": "https://g0v.github.io/laweasyread-front/",
-"options_page": "options.html",
+"options_page": "chrome/options.html",
 "icons" : {
     "128": "icon.png"
 },
@@ -14,18 +14,18 @@
     "alarms"
 ],
 "web_accessible_resources": [
-    "./*.json"
+    "*.json"
 ],
 "background": {
     "scripts": [
-        "chrome.js",
-        "parseData.js",
-        "background.js"
+        "chrome/chrome.js",
+        "chrome/background.js",
+        "parseData.js"
     ],
     "persistent": false
 },
 "browser_action": {
-  "default_popup": "popup.html"
+  "default_popup": "chrome/popup.html"
 },
 "content_scripts": [
     {
@@ -38,8 +38,9 @@
         "js": [
             "domCrawler/domCrawler.js",
             "chinese-parseint/chinese-parseint.js",
-            "chrome.js",
+            "chrome/chrome.js",
             "LER.js",
+            "LER.popup.js",
             "content_scripts/loadLaws.js"
         ],
         "css": ["content_scripts/main.css"],

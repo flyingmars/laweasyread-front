@@ -1,6 +1,7 @@
 "use strict";
 
-const remoteDocRoot = "https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/gh-pages";
+//const remoteDocRoot = "https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/gh-pages";
+const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages";
 
 /**
  * 安裝時要做的事
@@ -8,13 +9,13 @@ const remoteDocRoot = "https://raw.githubusercontent.com/kong0107/mojLawSplitJSO
  */
 chrome.runtime.onInstalled.addListener(() => {
     // 讀取資料
-    fetch("./data.json")
+    fetch("/data.json")
     .then(res => res.json())
     .then(laws => setData({laws}))
     .then(() => console.log("Laws loaded."));
 
     // 讀取資料庫的選項，補上預設的後就再存進去。
-    fetch("./options_default.json")
+    fetch("/chrome/options_default.json")
     .then(res => res.json())
     .then(getData)
     .then(setData);
@@ -83,7 +84,7 @@ const update = async() => {
 
     const [mojData, aliases] = await Promise.all([
         fetch(remoteDocRoot + "/index.json").then(res => res.json()),
-        fetch("./aliases.json").then(res => res.json())
+        fetch("/aliases.json").then(res => res.json())
     ]);
     await setData({
         updateDate: vRemote,
