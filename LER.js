@@ -222,7 +222,8 @@ LER.rules.push({
     pattern: regexps.artList,
     replacer: function($0) {
         let rangeText = "";
-        parser.artList(arguments).ranges.forEach(range => {
+        const ranges = parser.artList(arguments).ranges;
+        ranges.forEach(range => {
             const f = range["from"][0];
             if(f.stratum != "條") return;
             if(rangeText) rangeText += ",";
@@ -232,7 +233,13 @@ LER.rules.push({
         });
 
         const text = artNumberParser[LER.artNumberParserMethod || "parseInt"]($0);
-        return {type: "articles", text: text, rangeText: rangeText, raw: $0};
+        return {
+            type: "articles",
+            raw: $0, // 用於除錯與設定 title
+            text: text, // 用於直接顯示
+            ranges: ranges, // 用於傳遞資料
+            rangeText: rangeText // 用於生成連結
+        };
     },
     minLength: 3
 });
@@ -280,7 +287,7 @@ const objArr2nodes = arr => {
                     title: item.raw,
                     target: "_blank",
                     href: `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`,
-                    //onmouseenter: LER.popupArticles(theLaw.PCode, item.rangeText)
+                    onmouseenter: LER.popupArticles(theLaw.PCode, item.ranges)
                 }, item.text);
             }
             case "jyis": {

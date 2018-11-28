@@ -70,18 +70,22 @@
 /**
  * 彈出視窗
  */
-.LER-modal {
+.LER-modal-container {
     position: absolute;
+    width: 400px;
+    text-align: left;
 }
-.LER-modal-header {
+.LER-modal-before {
     width: 0;
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-bottom: 10px solid gray;
 }
-.LER-modal-body {
+.LER-modal {
     border: 1px solid gray;
     background-color: #fff;
     padding: 0.5em;
+    height: 300px;
+    overflow: visible auto;
 }

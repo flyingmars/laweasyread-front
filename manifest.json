@@ -40,6 +40,8 @@
             "chinese-parseint/chinese-parseint.js",
             "chrome/chrome.js",
             "LER.js",
+            "lawtext2obj/lawtext2obj.js",
+            "content_scripts/functions.js",
             "LER.popup.js",
             "content_scripts/loadLaws.js"
         ],
@@ -49,21 +51,13 @@
     {
         "matches": ["*://law.moj.gov.tw/LawClass/*"],
         "exclude_matches": ["*://*/LawClass/LawHistory*.aspx*"],
-        "js": [
-            "lawtext2obj/lawtext2obj.js",
-            "content_scripts/functions.js",
-            "content_scripts/moj.js"
-        ],
+        "js": ["content_scripts/moj.js"],
         "css": ["content_scripts/moj.css"],
         "all_frames": true
     },
     {
         "matches": ["*://lis.ly.gov.tw/*"],
-        "js": [
-            "lawtext2obj/lawtext2obj.js",
-            "content_scripts/functions.js",
-            "content_scripts/lis.ly.js"
-        ],
+        "js": ["content_scripts/lis.ly.js"],
         "css": ["content_scripts/lis.ly.css"],
         "all_frames": true
     },
