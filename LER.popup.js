@@ -25,12 +25,6 @@ const isEventInElem = (event, elem) => {
         event.pageY >= rect.top + window.scrollY &&
         event.pageY <= rect.bottom + window.scrollY
     );
-    /*return (
-        event.pageX >= Math.floor(rect.left + window.scrollX) &&
-        event.pageX <= Math.ceil(rect.right + window.scrollX) &&
-        event.pageY >= Math.floor(rect.top + window.scrollY) &&
-        event.pageY <= Math.ceil(rect.bottom + window.scrollY)
-    );*/
 };
 
 /**
@@ -144,6 +138,7 @@ LER.popupArticles = (pcode, ranges) => {
                 body.append(...doc.childNodes);
                 setPopupPosition(event, popup);
             });
+            setPopupPosition(event, popup);
 
             /**
              * 滑鼠離開某元件時，如果也已不再另一元件的話才隱藏浮動窗
@@ -155,17 +150,17 @@ LER.popupArticles = (pcode, ranges) => {
              * 如果想要改讓浮動窗之間有母子關係，就要煩惱子浮動窗要如何定位。
              */
             elem.addEventListener("mouseleave", event => {
-                if(!isEventInElem(event, popup)) popup.style.display = "none";
-            });
-            popup.addEventListener("mouseleave", event => {
-                //console.log(isEventInElem(event, popup), isEventInElem(event, elem));
                 if(!isEventInElem(event, popup) && !isEventInElem(event, elem)) popup.style.display = "none";
             });
-
+            popup.addEventListener("mouseleave", event => {
+                if(!isEventInElem(event, popup) && !isEventInElem(event, elem)) popup.style.display = "none";
+            });
         }
-        else popup.style.display = "";
-
-        setPopupPosition(event, popup);
+        if(popup.style.display === "none") {
+            // 滑鼠從浮動窗回來時也會觸發 onmouseenter ，不避開的話浮動窗會被重新定位。
+            popup.style.display = "";
+            setPopupPosition(event, popup);
+        }
     };
 };
 
