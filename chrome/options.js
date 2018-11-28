@@ -41,6 +41,7 @@ fetch("./options_default.json")
     $("#autoParse").checked = storage.autoParse;
     setContent("#exclude_matches", storage.exclude_matches);
     $("#artNumberParserMethod-" + storage.artNumberParserMethod).checked = true;
+    $("#showArticleContents").checked = storage.showArticleContents;
 });
 $("#saveButton").disabled = true;
 hide("#lastSaveContainer");
@@ -89,7 +90,8 @@ $("#saveButton").addEventListener("click", event => {
     setData({
         autoParse: $("#autoParse").checked,
         exclude_matches: $("#exclude_matches").value.trim(),
-        artNumberParserMethod: artNumberParserMethod
+        artNumberParserMethod: artNumberParserMethod,
+        showArticleContents: $("#showArticleContents").checked
     }).then(() => {
         console.log("options saved");
         setContent("#lastSave", (new Date).toLocaleString());
@@ -110,6 +112,7 @@ const onChange = () => {
 };
 $("#autoParse").addEventListener("change", onChange);
 $("#exclude_matches").addEventListener("input", onChange);
+$("#showArticleContents").addEventListener("change", onChange);
 
 
 /**

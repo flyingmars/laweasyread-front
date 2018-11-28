@@ -17,8 +17,7 @@
  */
 const LER = {
     laws: [],
-    rules: [],
-    popupArticles: () => {() => {}} // 之後會被替換
+    rules: []
 };
 
 {

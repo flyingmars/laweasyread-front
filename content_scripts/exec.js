@@ -14,10 +14,11 @@ let parse = () => {};
 if(typeof LER == "object" && document.body) {
     parse = () => LER.parse(document.body);
     Promise.all([
-        getData(["autoParse", "artNumberParserMethod"]),
+        getData(["autoParse", "artNumberParserMethod", "showArticleContents"]),
         isExcluded(location.href)
     ]).then(([storage, matched_pattern]) => {
         LER.artNumberParserMethod = storage.artNumberParserMethod;
+        LER.showArticleContents = storage.showArticleContents;
         if(matched_pattern) console.log("Skip auto-parse due to pattern " + matched_pattern);
         else if(storage.autoParse) parse();
     });

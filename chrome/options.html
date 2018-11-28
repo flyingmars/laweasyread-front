@@ -43,7 +43,7 @@
                     <input type="checkbox" id="autoParse">
                     開啟自動轉換
                 </label>
-                <p class="text-muted small">自動轉換對動態讀取的網頁（如臉書）沒有作用。</p>
+                <p class="text-muted small">自動轉換對動態讀取的網頁（如臉書）未必有作用。</p>
             </div>
             <div class="form-group">
                 <label>
@@ -68,6 +68,15 @@
             </table>
         </fieldset>
 
+        <fieldset id="parseSettings">
+            <legend>滑鼠移過時</legend>
+            <label>
+                <input type="checkbox" id="showArticleContents">
+                顯示條文內容
+            </label>
+            <p class="text-muted small">必須先「轉換」（無論手動或自動）後才會顯示。</p>
+        </fieldset>
+
         <div id="saveButtonContainer">
             <button id="saveButton" class="btn btn-warning">儲存</button>
             <span id="lastSaveContainer" class="text-muted small">
@@ -76,7 +85,7 @@
             </span>
         </div>
     </main>
-    <footer class="fixed-bottom bg-dark">
+    <footer class="bg-dark">
         <div class="container d-flex justify-content-end">
             <ul class="nav"></ul>
         </div>

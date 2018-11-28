@@ -2,7 +2,8 @@
     "updateDate": "",
     "remoteDate": "",
     "lastCheckUpdate": 0,
-    "autoParse": false,
+    "autoParse": true,
     "exclude_matches": "",
-    "artNumberParserMethod": "parseInt"
+    "artNumberParserMethod": "parseInt",
+    "showArticleContents": true
 }

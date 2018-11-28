@@ -128,6 +128,7 @@ LER.popupArticles = (pcode, ranges) => {
     let popup;
     return event => {
         const elem = event.target;
+        if(!LER.showArticleContents) return;
         if(!popup) {
             popup = document.body.appendChild(modalTemplate.cloneNode(true));
 

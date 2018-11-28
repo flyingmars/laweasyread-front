@@ -72,7 +72,7 @@
  */
 .LER-modal-container {
     position: absolute;
-    width: 400px;
+    width: 480px;
     text-align: left;
 }
 .LER-modal-before, .LER-modal-after {
@@ -91,7 +91,7 @@
     border: 1px solid gray;
     background-color: #fff;
     padding: 0.5em;
-    max-height: 300px;
+    max-height: 270px;
     overflow: visible auto;
 }
 
