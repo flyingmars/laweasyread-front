@@ -75,17 +75,46 @@
     width: 400px;
     text-align: left;
 }
-.LER-modal-before {
+.LER-modal-before, .LER-modal-after {
     width: 0;
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
+}
+.LER-modal-before {
     border-bottom: 10px solid gray;
 }
+.LER-modal-after {
+    border-top: 10px solid gray;
+}
 .LER-modal {
-    border: 1px solid gray;
+    border: 10px solid gray;
     background-color: #fff;
     padding: 0.5em;
-    height: 300px;
+    max-height: 300px;
     overflow: visible auto;
+}
+
+.LER-modal > header {
+    border-bottom: 1px dotted gray;
+    margin-bottom: 0.5em;
+}
+.LER-modal > header > .title {
+    font-weight: bold;
+}
+.LER-modal > header > .updateDate {
+    text-align: right;
+    font-size: smaller;
+    color: gray;
+    margin: 0;
+    padding: 0;
+}
+.LER-modal dl {
+    margin-bottom: 1.5em;
+}
+.LER-modal dt {
+    font-weight: bold;
+}
+.LER-modal dd {
+    margin-left: 1em;
 }

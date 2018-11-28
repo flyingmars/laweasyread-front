@@ -20,11 +20,17 @@ const modalTemplate = e("div", {className: "LER-modal-container"},
 const isEventInElem = (event, elem) => {
     const rect = elem.getBoundingClientRect();
     return (
+        event.pageX >= rect.left + window.scrollX &&
+        event.pageX <= rect.right + window.scrollX &&
+        event.pageY >= rect.top + window.scrollY &&
+        event.pageY <= rect.bottom + window.scrollY
+    );
+    /*return (
         event.pageX >= Math.floor(rect.left + window.scrollX) &&
         event.pageX <= Math.ceil(rect.right + window.scrollX) &&
         event.pageY >= Math.floor(rect.top + window.scrollY) &&
         event.pageY <= Math.ceil(rect.bottom + window.scrollY)
-    );
+    );*/
 };
 
 /**
@@ -46,6 +52,7 @@ const loadArticles = async(pcode, compRanges) => {
     const law = await fetch(
         `${remoteDocRoot}/FalVMingLing/${pcode}.json`
     ).then(res => res.json());
+
     const articles = law["法規內容"].filter(article => {
         if(!article["條號"]) return false;
         const am = /(\d+)(-(\d+))?/.exec(article["條號"]);
@@ -64,10 +71,59 @@ const loadArticles = async(pcode, compRanges) => {
         e("dd", null, createList(lawtext2obj(article["條文內容"])))
     ));
 
-    return e("div", null,
-        e("header", null, law["法規名稱"]),
-        ...articles
+    const header = e("header", null,
+        e("div", {className: "title"}, law["法規名稱"]),
+        e("div", {className: "updateDate"},
+            "最新異動",
+            e("time", null, law["最新異動日期"])
+        )
     );
+
+    return LER.parse(e("div", null, header, ...articles), {PCode: pcode});
+};
+
+/**
+ * 設定浮動窗位置
+ * * Y軸：預設為目標元素的下緣，但若會超出可視範圍（即使未超過文件範圍），則應該改在目標元素的上端。
+ * * X軸：看視滑鼠在目標元素的水平位置，依比例。但不能讓浮動窗超過畫面寬度。
+ *
+ * 注意：
+ * * 位置跟尺寸的資訊必須在元素顯示後才能取得
+ * * `Element.getBoundingClientRect` 取得的位置是相對於顯示畫面，而非相對於文件左上角。
+ *   不過如果只是算比例，到是仍可以用之跟 MouseEvent.clientX 相加減。
+ */
+const setPopupPosition = (event, popup) => {
+    const rect = event.target.getBoundingClientRect();
+    let arrow;
+
+    let top = rect.bottom + window.scrollY;
+    if(top + popup.offsetHeight > window.scrollY + window.innerHeight) {
+        arrow = popup.lastChild;
+        popup.firstChild.style.display = "none";
+        popup.lastChild.style.display = "";
+        top -= rect.height + popup.offsetHeight;
+    }
+    else {
+        arrow = popup.firstChild;
+        popup.firstChild.style.display = "";
+        popup.lastChild.style.display = "none";
+    }
+    popup.style.top = top + "px";
+
+    let left = rect.left + window.scrollX; // 目標元素的左緣
+    left += (event.clientX - rect.left)
+        * Math.max(rect.width - popup.offsetWidth, 0) / rect.width
+    ; // 如果目標元素比浮動窗還要寬，那就依滑鼠在目標元素的相對位置來調整浮動窗的X軸位置。
+    if(left + popup.offsetWidth > document.body.clientWidth) // 不能讓浮動窗超過畫面寬度
+        left = document.body.clientWidth - popup.offsetWidth;
+    popup.style.left = left + "px";
+
+    // 箭頭的位置：跟著滑鼠座標的X值，但不能超出浮動窗本身。
+    let arrowLeft = Math.min(
+        event.pageX - left - arrow.offsetWidth / 2, // 理想位置
+        popup.offsetWidth - arrow.offsetWidth       // 浮動窗右緣
+    );
+    arrow.style.marginLeft = Math.max(arrowLeft, 0) + "px";
 };
 
 /**
@@ -85,48 +141,31 @@ LER.popupArticles = (pcode, ranges) => {
             body.append("讀取中");
             loadArticles(pcode, ranges).then(doc => {
                 body.lastChild.remove();
-                body.appendChild(doc);
+                body.append(...doc.childNodes);
+                setPopupPosition(event, popup);
             });
 
             /**
              * 滑鼠離開某元件時，如果也已不再另一元件的話才隱藏浮動窗
              * 不宜用 `MouseEvent.relatedTarget` ，因為那會抓到預期的對象的子元件。
              * （類似 mouseleave 和 mouseout 差異的問題）
+             *
+             * 在「浮動窗的浮動窗」的情形，因為在 DOM 中浮動窗彼此並不隸屬，所以會觸發 mouseleave ，
+             * 幸好滑鼠剛移到新的浮動窗內時，座標仍會在母浮動窗的範圍內，所以只要如下判斷。
+             * 如果想要改讓浮動窗之間有母子關係，就要煩惱子浮動窗要如何定位。
              */
             elem.addEventListener("mouseleave", event => {
                 if(!isEventInElem(event, popup)) popup.style.display = "none";
             });
             popup.addEventListener("mouseleave", event => {
-                if(!isEventInElem(event, elem)) popup.style.display = "none";
+                //console.log(isEventInElem(event, popup), isEventInElem(event, elem));
+                if(!isEventInElem(event, popup) && !isEventInElem(event, elem)) popup.style.display = "none";
             });
 
         }
         else popup.style.display = "";
 
-        /**
-         * 使用者可能調整過視窗尺寸，所以要每次重新算浮動窗的位置。
-         * 位置：Y軸即目標元素的下緣；X軸位置即視滑鼠在目標元素的比例，但不能讓浮動窗超過畫面寬度。
-         * 位置跟尺寸的資訊必須在元素顯示後才能取得，所以這一段不能放在前面。
-         *
-         * 注意 `Element.getBoundingClientRect` 取得的位置是相對於顯示畫面，而非相對於文件左上角。
-         * 不過如果只是算比例，到是仍可以用之跟 MouseEvent.clientX 相加減。
-         */
-        const rect = event.target.getBoundingClientRect();
-        popup.style.top = rect.bottom + window.scrollY + "px";
-
-        let left = rect.left + window.scrollX;
-        left += Math.max(rect.width - popup.offsetWidth, 0) * (event.clientX - rect.left) / rect.width;
-        if(left + popup.offsetWidth > document.body.clientWidth)
-            left = document.body.clientWidth - popup.offsetWidth;
-        popup.style.left = left + "px";
-
-        // 箭頭的位置：跟著滑鼠座標的X值，但不能超出浮動窗本身。
-        const arrow = popup.firstChild;
-        let arrowLeft = Math.min(
-            event.pageX - left - arrow.offsetWidth / 2,
-            popup.offsetWidth - arrow.offsetWidth
-        );
-        arrow.style.marginLeft = Math.max(arrowLeft, 0) + "px";
+        setPopupPosition(event, popup);
     };
 };
 

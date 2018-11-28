@@ -312,16 +312,18 @@ const objArr2nodes = arr => {
 /****************
  * 主程式：解析指定的節點其內的文字。
  */
-const parse = elem => {
+const parse = (elem, defaultLaw) => {
     const start = new Date;
+    if(defaultLaw) LER.defaultLaw = getLaw(defaultLaw);
     domCrawler.replaceTexts(LER.rules, elem, reject, objArr2nodes);
-    console.log("LER spent " + ((new Date) - start) + " ms.");
+    if(elem === document.body) console.log("LER spent " + ((new Date) - start) + " ms.");
+    return elem;
 };
 
 /**
  * 把主程式包裝起來
  * `LER.loadLaws` 是 Promise 物件，建立於其他檔案。
  */
-LER.parse = elem => LER.loadLaws.then(() => parse(elem));
+LER.parse = (...args) => LER.loadLaws.then(() => parse(...args));
 LER.getLaw = getLaw; //< TODO: 改成 setDefaultLaw
 }
