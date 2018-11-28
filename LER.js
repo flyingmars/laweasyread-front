@@ -295,7 +295,8 @@ const objArr2nodes = arr => {
                     if(index) nodes.push(item.conjs[index - 1]);
                     nodes.push(e("A", {
                         href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`,
-                        target: "_blank"
+                        target: "_blank"/*,
+                        onmouseenter: LER.popupJYI(jyi)*/
                     }, `第${jyi}號`));
                 });
                 return e("SPAN", null, ...nodes);

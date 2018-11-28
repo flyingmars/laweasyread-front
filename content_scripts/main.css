@@ -95,14 +95,14 @@
     overflow: visible auto;
 }
 
-.LER-modal > header {
+.LER-modal  header {
     border-bottom: 1px dotted gray;
     margin-bottom: 0.5em;
 }
-.LER-modal > header > .title {
+.LER-modal  header > .title {
     font-weight: bold;
 }
-.LER-modal > header > .updateDate {
+.LER-modal  header > .updateDate {
     text-align: right;
     font-size: smaller;
     color: gray;
@@ -117,4 +117,8 @@
 }
 .LER-modal dd {
     margin-left: 1em;
+}
+.LER-modal iframe {
+    width: 100%;
+    height: 100%;
 }
