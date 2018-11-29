@@ -22,7 +22,7 @@ function parseData(mojData, aliases) {
      * 找出法規名稱最後面有修訂日期的那些，塞入一筆最新版的對照。
      */
     const namesWithoutDates = ret.reduce((acc, cur) => {
-        const match = /（新?\s?(\d+\.\d+\.\d+)\s?訂定）$/.exec(cur.name);
+        const match = /（新?\s?(\d+\.\d+\.\d+)\s?[訂制]定）$/.exec(cur.name);
         if(!match) return acc;
         const name = cur.name.substring(0, match.index);
         const newItem = {PCode: cur.PCode, name, fullName: cur.name};
@@ -37,6 +37,7 @@ function parseData(mojData, aliases) {
 
         return acc;
     }, []);
+    console.log("namesWithoutDates", namesWithoutDates);
 
     return ret.concat(namesWithoutDates).sort((a, b) => b.name.length - a.name.length);
 }
@@ -44,6 +45,7 @@ function parseData(mojData, aliases) {
 /**
  * 開發階段生成 data.json 用
  * 由另一專案讀取所有法規資料
+ * @see {@link https://github.com/kong0107/mojLawSplitJSON }
  */
 if(typeof module !== 'undefined' && module.exports) {
     const fs = require("fs");

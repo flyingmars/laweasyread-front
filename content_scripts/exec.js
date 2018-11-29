@@ -19,7 +19,7 @@ if(typeof LER == "object" && document.body) {
     ]).then(([storage, matched_pattern]) => {
         LER.artNumberParserMethod = storage.artNumberParserMethod;
         LER.enablePopup = storage.enablePopup;
-        if(matched_pattern) console.log("Skip auto-parse due to pattern " + matched_pattern);
+        if(matched_pattern) console.log(`LER skipped auto-parse because location ${location.href} is matched by the pattern ${matched_pattern}`);
         else if(storage.autoParse) parse();
     });
 }

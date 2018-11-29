@@ -8,11 +8,18 @@ const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-p
  * @see {@link https://developer.chrome.com/extensions/runtime#event-onInstalled }
  */
 chrome.runtime.onInstalled.addListener(() => {
-    // 讀取資料
-    fetch("/data.json")
+    // 讀取法規資料
+    Promise.all([
+        fetch("/data.json").then(res => res.json()),
+        fetch("/aliases.json").then(res => res.json())
+    ]).then(([mojData, aliases]) =>
+        setData({laws: parseData(mojData, aliases)})
+    ).then(() => console.log("Laws loaded."));
+
+    /*fetch("/data.json")
     .then(res => res.json())
     .then(laws => setData({laws}))
-    .then(() => console.log("Laws loaded."));
+    .then(() => console.log("Laws loaded."));*/
 
     // 讀取資料庫的選項，補上預設的後就再存進去。
     fetch("/chrome/options_default.json")
