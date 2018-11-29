@@ -3,9 +3,6 @@
  * 建立浮動視窗的程式碼太繁瑣，所以集中到這個檔案來。
  */
 {
-// 遠端資料根目錄
-const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages";
-
 // 語法糖
 const e = domCrawler.createElement;
 
@@ -79,7 +76,7 @@ const popupWrapper = (docLoader, ...args) => {
     let popup;
     return event => {
         const elem = event.target;
-        if(!LER.showArticleContents) return; // TODO: 這不能放在這
+        if(!LER.enablePopup) return;
         if(!popup) {
             popup = document.body.appendChild(modalTemplate.cloneNode(true));
 
@@ -138,7 +135,7 @@ const loadArticles = async(pcode, compRanges) => {
     ;
 
     const law = await fetch(
-        `${remoteDocRoot}/FalVMingLing/${pcode}.json`
+        `https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages/FalVMingLing/${pcode}.json`
     ).then(res => res.json());
 
     const articles = law["法規內容"].filter(article => {
@@ -176,8 +173,44 @@ const loadArticles = async(pcode, compRanges) => {
  * TODO: 用 iframe 的話，浮動窗的浮動窗只會被包在 iframe 裡。
  */
 LER.popupJYI = jyi => popupWrapper(loadJYI, jyi);
-const loadJYI = async(jyi) => {
-    return e("iframe", {src: `https://www.judicial.gov.tw/constitutionalcourt/p03_01_1_printpage.asp?expno=${jyi}`});
+const loadJYI = async(jyiNum) => {
+    const jyi = await fetch(
+        `https://raw.githubusercontent.com/kong0107/jyi/gh-pages/json/${jyiNum}.json`
+    ).then(res => res.ok ? res.json() : null);
+
+    if(!jyi) return e("div", null,
+        "資料庫還沒更新到這，建議手動",
+        e("a", {
+            target: "_blank",
+            href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01_1_printpage.asp?expno=${jyiNum}`
+        }, "到司法院網站確認")
+    );
+
+    const header = e("header", null,
+        e("time", {style: {"float": "right"}}, jyi.date),
+        e("div", {className: "title"}, `釋字第${jyiNum}號`),
+        e("div", null, jyi.title || "")
+    );
+    const body = e("dl", null);
+    if(jyi.issue) body.append(
+        e("dt", null, "爭點"),
+        e("dd", null, jyi.issue)
+    );
+    body.append(
+        e("dt", null, "解釋文"),
+        e("dd", null, ...jyi.holding.split("\n").map(para => e("p", null, para)))
+    );
+    if(jyi.reasoning) body.append(
+        e("dt", null, "理由書"),
+        //e("dd", null, ...jyi.reasoning.split("\n").map(para => e("p", null, para)))
+        e("dd", null,
+            e("ul", {className: "LER-jyi-reasoning-list"},
+                ...jyi.reasoning.split("\n").map(para => e("li", null, para))
+            )
+        )
+    );
+
+    return LER.parse(e("div", null, header, body));
 };
 
 

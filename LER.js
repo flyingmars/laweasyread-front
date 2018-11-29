@@ -112,7 +112,7 @@ const reject = node => {
  * 若有修改，則要留意括號的數量與位置會影響後續的函式。
  */
 const regexps = {
-    number: "([\\d零一二三四五六七八九十百千]+)",    // 1
+    number: "([\\d零０一二三四五六七八九十百千]+)",    // 1
 
     artPart: "第number([條項類款目])(之number)?(但書)?",  // 5
     artRange: "((artPart)+)([前後]段|([至到])(artPart))?", // 15
@@ -295,8 +295,8 @@ const objArr2nodes = arr => {
                     if(index) nodes.push(item.conjs[index - 1]);
                     nodes.push(e("A", {
                         href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`,
-                        target: "_blank"/*,
-                        onmouseenter: LER.popupJYI(jyi)*/
+                        target: "_blank",
+                        onmouseenter: LER.popupJYI(jyi)
                     }, `第${jyi}號`));
                 });
                 return e("SPAN", null, ...nodes);

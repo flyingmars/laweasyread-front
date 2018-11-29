@@ -5,5 +5,5 @@
     "autoParse": true,
     "exclude_matches": "",
     "artNumberParserMethod": "parseInt",
-    "showArticleContents": true
+    "enablePopup": true
 }

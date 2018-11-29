@@ -76,6 +76,8 @@
     text-align: left;
 }
 .LER-modal-before, .LER-modal-after {
+    margin: 0;
+    padding: 0;
     width: 0;
     height: 0;
     border-left: 10px solid transparent;
@@ -93,6 +95,10 @@
     padding: 0.5em;
     max-height: 270px;
     overflow: visible auto;
+}
+.LER-modal * {
+    font-size: 16px;
+    color: #000;
 }
 
 .LER-modal  header {
@@ -116,7 +122,17 @@
     font-weight: bold;
 }
 .LER-modal dd {
-    margin-left: 1em;
+    margin: 0 0 1em 1em;
+}
+.LER-jyi-reasoning-list {
+    list-style-type: decimal;
+    padding: 0;
+    margin: 0;
+}
+.LER-jyi-reasoning-list > li,
+.LER-modal p {
+    margin: 0 0 0.75em 0;
+    line-height: 150%;
 }
 .LER-modal iframe {
     width: 100%;
