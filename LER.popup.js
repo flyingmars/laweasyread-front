@@ -33,6 +33,8 @@ const isEventInElem = (event, elem) => {
  * * 位置跟尺寸的資訊必須在元素顯示後才能取得
  * * `Element.getBoundingClientRect` 取得的位置是相對於顯示畫面，而非相對於文件左上角。
  *   不過如果只是算比例，到是仍可以用之跟 MouseEvent.clientX 相加減。
+ *
+ * TODO: 全國法規資料庫的搜尋結果是用 IFrame 實作，其內的「浮動窗要在目標的上面還是下面」的判斷會失準。
  */
 const setPopupPosition = (event, popup) => {
     const rect = event.target.getBoundingClientRect();
@@ -157,8 +159,8 @@ const loadArticles = async(pcode, compRanges) => {
     ));
 
     const header = e("header", null,
-        e("div", {className: "title"}, law["法規名稱"]),
-        e("div", {className: "updateDate"},
+        e("div", {className: "LER-modal-title"}, law["法規名稱"]),
+        e("div", {className: "LER-modal-updateDate"},
             "最新異動",
             e("time", null, law["最新異動日期"])
         )
@@ -179,16 +181,16 @@ const loadJYI = async(jyiNum) => {
     ).then(res => res.ok ? res.json() : null);
 
     if(!jyi) return e("div", null,
-        "資料庫還沒更新到這，建議手動",
+        "遠端資料庫還沒更新到這，建議手動",
         e("a", {
             target: "_blank",
-            href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01_1_printpage.asp?expno=${jyiNum}`
+            href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyiNum}`
         }, "到司法院網站確認")
     );
 
     const header = e("header", null,
         e("time", {style: {"float": "right"}}, jyi.date),
-        e("div", {className: "title"}, `釋字第${jyiNum}號`),
+        e("div", {className: "LER-modal-title"}, `釋字第${jyiNum}號`),
         e("div", null, jyi.title || "")
     );
     const body = e("dl", null);
@@ -202,10 +204,9 @@ const loadJYI = async(jyiNum) => {
     );
     if(jyi.reasoning) body.append(
         e("dt", null, "理由書"),
-        //e("dd", null, ...jyi.reasoning.split("\n").map(para => e("p", null, para)))
         e("dd", null,
             e("ul", {className: "LER-jyi-reasoning-list"},
-                ...jyi.reasoning.split("\n").map(para => e("li", null, para))
+                ...jyi.reasoning.split("\n").map(para => e("li", null, e("p", null, para)))
             )
         )
     );

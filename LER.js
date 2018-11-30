@@ -198,6 +198,7 @@ const parser = {
  * 而且還要依使用者指定的方式轉換
  */
 const artNumberParser = {};
+artNumberParser.none = text => text;
 artNumberParser.parseInt = text => text.replace(regexps.number, x => ` ${cpi(x, 10)} `);
 artNumberParser.hyphen = text =>
     artNumberParser.parseInt(text)

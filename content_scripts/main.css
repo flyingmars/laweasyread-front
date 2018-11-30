@@ -105,10 +105,10 @@
     border-bottom: 1px dotted gray;
     margin-bottom: 0.5em;
 }
-.LER-modal  header > .title {
+.LER-modal-title {
     font-weight: bold;
 }
-.LER-modal  header > .updateDate {
+.LER-modal-updateDate {
     text-align: right;
     font-size: smaller;
     color: gray;
@@ -124,12 +124,15 @@
 .LER-modal dd {
     margin: 0 0 1em 1em;
 }
+.LER-modal a {
+    font-weight: bold;
+    text-decoration: underline;
+}
 .LER-jyi-reasoning-list {
     list-style-type: decimal;
     padding: 0;
     margin: 0;
 }
-.LER-jyi-reasoning-list > li,
 .LER-modal p {
     margin: 0 0 0.75em 0;
     line-height: 150%;

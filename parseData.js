@@ -37,7 +37,6 @@ function parseData(mojData, aliases) {
 
         return acc;
     }, []);
-    console.log("namesWithoutDates", namesWithoutDates);
 
     return ret.concat(namesWithoutDates).sort((a, b) => b.name.length - a.name.length);
 }
