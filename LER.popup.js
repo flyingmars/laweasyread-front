@@ -138,7 +138,7 @@ const loadArticles = async(pcode, compRanges) => {
 
     const law = await fetch(
         `https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages/FalVMingLing/${pcode}.json`
-    ).then(res => res.json());
+    ).then(res => res.ok ? res.json() : errorHandler(res),  errorHandler);
 
     const articles = law["法規內容"].filter(article => {
         if(!article["條號"]) return false;
@@ -177,8 +177,8 @@ const loadArticles = async(pcode, compRanges) => {
 LER.popupJYI = jyi => popupWrapper(loadJYI, jyi);
 const loadJYI = async(jyiNum) => {
     const jyi = await fetch(
-        `https://raw.githubusercontent.com/kong0107/jyi/gh-pages/json/${jyiNum}.json`
-    ).then(res => res.ok ? res.json() : null);
+        `https://cdn.jsdelivr.net/gh/kong0107/jyi/gh-pages/json/${jyiNum}.json`
+    ).then(res => res.ok ? res.json() : errorHandler(res),  errorHandler);
 
     if(!jyi) return e("div", null,
         "遠端資料庫還沒更新到這，建議手動",
