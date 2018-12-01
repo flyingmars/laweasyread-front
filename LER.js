@@ -269,7 +269,7 @@ const objArr2nodes = arr => {
                     href: `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${law.PCode}`,
                     title: law.fullName || law.name,
                     "data-pcode": law.PCode
-                }, item.text || law.name)
+                }, item.text || law.name);
             }
             case "articles": {
                 let theLaw = LER.defaultLaw;
