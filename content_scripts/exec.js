@@ -24,7 +24,7 @@ if(typeof LER == "object" && document.body) {
     });
 }
 
-chrome.runtime.onMessage.addListener(message => {
+if(browser) browser.runtime.onMessage.addListener(message => {
     switch(message.command) {
         case "parse":
             parse();

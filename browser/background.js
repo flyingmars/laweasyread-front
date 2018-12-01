@@ -5,9 +5,8 @@ const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-p
 
 /**
  * 安裝時要做的事
- * @see {@link https://developer.chrome.com/extensions/runtime#event-onInstalled }
  */
-chrome.runtime.onInstalled.addListener(() => {
+browser.runtime.onInstalled.addListener(() => {
     // 讀取法規資料
     Promise.all([
         fetch("/data.json").then(res => res.json()),
@@ -16,50 +15,39 @@ chrome.runtime.onInstalled.addListener(() => {
         setData({laws: parseData(mojData, aliases)})
     ).then(() => console.log("Laws loaded."));
 
-    /*fetch("/data.json")
-    .then(res => res.json())
-    .then(laws => setData({laws}))
-    .then(() => console.log("Laws loaded."));*/
-
     // 讀取資料庫的選項，補上預設的後就再存進去。
-    fetch("/chrome/options_default.json")
+    fetch("/options_default.json")
     .then(res => res.json())
     .then(getData)
     .then(setData);
 
     // 設定計時器，用於檢查更新
-    chrome.alarms.create("perHour", {
+    browser.alarms.create("perHour", {
         //when: Date.now(),
         periodInMinutes: 60
     });
 });
 
-chrome.alarms.onAlarm.addListener(alarm => {
-    console.log(alarm);
+browser.alarms.onAlarm.addListener(alarm => {
+    //console.log(alarm);
     checkUpdate();
 });
 
 
 /**
  * 訊息處理
- * 注意要回傳 true 才能讓非同步的回呼函式順利運作。
- * @see {@link https://developer.chrome.com/extensions/runtime#event-onMessage }
  */
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener(message => {
     console.log("runtime.onMessage", message);
     switch(message.command) {
         case "checkUpdate":
-            checkUpdate().then(sendResponse);
-            break;
+            return checkUpdate();
         case "update":
-            update().then(sendResponse);
-            break;
+            return update();
         default:
-            sendResponse("Error: uncaught message.");
+            return Promise.reject("Error: uncaught message.");
     }
-    return true;
 });
-
 
 
 /**
@@ -79,7 +67,7 @@ const checkUpdate = async() => {
     console.log("checkUpdate: " + vRemote);
     if(vLocal == vRemote) return false;
     return vRemote;
-}
+};
 
 /**
  * 更新資料

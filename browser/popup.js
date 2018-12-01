@@ -35,5 +35,6 @@ $("#parseTheCurrentTab").addEventListener("click", () =>
 $("#updateSpan").addEventListener("click", event => {
     const self = event.target;
     self.firstChild.replaceWith("更新中…");
-    chrome.runtime.sendMessage({command: "update"}, () => self.remove());
+    browser.runtime.sendMessage({command: "update"})
+    .then(() => self.remove());
 });

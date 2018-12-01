@@ -206,10 +206,10 @@ artNumberParser.hyphen = text =>
 ;
 artNumberParser.dollar = text =>
     artNumberParser.parseInt(text)
-    .replace(/第 (\d+) 條(之 (\d+))/g, (...mm) => {
+    .replace(/第 (\d+) 條(之 (\d+) )?/g, (...mm) => {
         let ret = "§" + mm[1];
         if(mm[2]) ret += "-" + mm[3];
-        return ret;
+        return ret + " ";
     })
 ;
 artNumberParser.shortest = text =>
