@@ -27,7 +27,8 @@
     "persistent": false
 },
 "browser_action": {
-  "default_popup": "browser/popup.html"
+  "default_popup": "browser/popup.html",
+  "default_icon": "icon.png"
 },
 "content_scripts": [
     {
@@ -39,12 +40,12 @@
         ],
         "js": [
             "node_modules/webextension-polyfill/dist/browser-polyfill.min.js",
-            "domCrawler/domCrawler.js",
             "chinese-parseint/chinese-parseint.js",
-            "browser/browser.js",
-            "LER.js",
             "lawtext2obj/lawtext2obj.js",
+            "domCrawler/domCrawler.js",
+            "browser/browser.js",
             "content_scripts/functions.js",
+            "LER.js",
             "LER.popup.js",
             "content_scripts/loadLaws.js"
         ],

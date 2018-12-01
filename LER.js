@@ -314,11 +314,12 @@ const objArr2nodes = arr => {
  * 主程式：解析指定的節點其內的文字。
  */
 const parse = (elem, defaultLaw) => {
-    const start = new Date;
+    const start = Date.now();
     if(defaultLaw) LER.defaultLaw = getLaw(defaultLaw);
-    domCrawler.replaceTexts(LER.rules, elem, reject, objArr2nodes);
-    if(elem === document.body) console.log("LER spent " + ((new Date) - start) + " ms.");
-    return elem;
+    domCrawler.replaceTextsAsync(LER.rules, elem, reject, objArr2nodes, 1)
+    .then(() => {
+        if(elem === document.body) console.log("LER spent " + (Date.now() - start) + " ms.");
+    });
 };
 
 /**

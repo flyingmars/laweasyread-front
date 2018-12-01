@@ -9,10 +9,7 @@
  */
 "use strict";
 
-let parse = () => {};
-
 if(typeof LER == "object" && document.body) {
-    parse = () => LER.parse(document.body);
     Promise.all([
         getData(["autoParse", "artNumberParserMethod", "enablePopup"]),
         isExcluded(location.href)
@@ -20,16 +17,16 @@ if(typeof LER == "object" && document.body) {
         LER.artNumberParserMethod = storage.artNumberParserMethod;
         LER.enablePopup = storage.enablePopup;
         if(matched_pattern) console.log(`LER skipped auto-parse because location ${location.href} is matched by the pattern ${matched_pattern}`);
-        else if(storage.autoParse) parse();
+        else if(storage.autoParse) LER.parse(document.body);
+    });
+
+    browser.runtime.onMessage.addListener(message => {
+        switch(message.command) {
+            case "parse":
+                LER.parse(document.body);
+                break;
+            default:
+                console.log("Error: uncaught message.");
+        }
     });
 }
-
-if(browser) browser.runtime.onMessage.addListener(message => {
-    switch(message.command) {
-        case "parse":
-            parse();
-            break;
-        default:
-            console.log("Error: uncaught message.");
-    }
-});

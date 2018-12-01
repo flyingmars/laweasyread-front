@@ -3,13 +3,6 @@
  */
 "use strict";
 
-/**
- *
- */
-const errorHandler = error =>
-    console.error(error);
-;
-
 
 /**
  * 抓 browser.storage 裡的資料
