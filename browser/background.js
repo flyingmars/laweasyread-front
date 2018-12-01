@@ -5,6 +5,7 @@ const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-p
 
 /**
  * 安裝時要做的事
+ * TODO: 改善預設例外清單的格式
  */
 browser.runtime.onInstalled.addListener(() => {
     // 讀取法規資料

@@ -174,9 +174,8 @@ $("#artNumberParserOptions").append(...artNumberParserOptions);
  */
 const links = [
     {
-        href: "https://g0v.github.io/laweasyread-front/dist/0.4.9/laweasyread-0.4.9.crx",
-        text: "下載舊版",
-        title: "安裝方法：右鍵另存、改副檔名為zip、解壓縮，而後進入瀏覽器的「開發人員模式」，執行「載入未封裝項目」。"
+        href: "https://github.com/g0v/laweasyread-front/tree/gh-pages/dist",
+        text: "下載舊版"
     },
     {
         href: "https://github.com/g0v/laweasyread-front/issues/",
