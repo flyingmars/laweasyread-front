@@ -4,7 +4,10 @@
 
 ## 1.1.1
 2018-12-02
-* 增加 LICENSE 和 changelog-dev.md
+* 增加 `LICENSE` 和 `changelog-dev.md`
+* 將 `manifest.json` 的 `options_page` 改為 `options_ui`
+* 在整個頁面都沒有比對到法規名稱的情形，不轉換條號。（解決 #24 。參閱變數 `LER.matchedAnyLaw` ）
+* 略去處理寬度或高度為 0 的 iFrame 。
 
 ## 1.1.0
 2018-12-02
@@ -22,5 +25,5 @@
 * 將 DOM 的處理拆給另一個專案 [domCrawler](https://github.com/kong0107/domCrawler/) 。
 * 將「把換行字元的排版方式解析成項款目結構」的功能拆給另一個專案 [lawtext2obj](https://github.com/kong0107/lawtext2obj/) 。
 * 將資料外包給其他專案 [mojLawSplitJSON](https://github.com/kong0107/mojLawSplitJSON) 和 [jyi](https://github.com/kong0107/jyi) ，讀取其在 jsDelivr 的檔案。
-* 彈出框改讀取遠端資料再顯示，而不再內嵌網頁。（以解決 #30 與 #24 ）
-* 讓使用者選擇條號轉換的方式。（對應 #28 ）
+* 彈出框改讀取遠端資料再顯示，而不再內嵌網頁。（解決 #30 ）
+* 讓使用者選擇條號轉換的方式。（解決 #28 ）

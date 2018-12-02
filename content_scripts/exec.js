@@ -9,7 +9,7 @@
  */
 "use strict";
 
-if(typeof LER == "object" && document.body) {
+if(typeof LER == "object" && document.body && window.innerWidth && window.innerHeight) {
     Promise.all([
         getData(["autoParse", "artNumberParserMethod", "enablePopup"]),
         isExcluded(location.href)

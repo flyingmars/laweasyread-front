@@ -272,6 +272,7 @@ const objArr2nodes = arr => {
                 }, item.text || law.name);
             }
             case "articles": {
+                if(!LER.matchedAnyLaw) return item.raw;
                 let theLaw = LER.defaultLaw;
                 if(index && item.rangeText) {
                     const prevItem = arr[index - 1];
@@ -316,9 +317,10 @@ const objArr2nodes = arr => {
 const parse = (elem, defaultLaw) => {
     const start = Date.now();
     if(defaultLaw) LER.defaultLaw = getLaw(defaultLaw);
-    domCrawler.replaceTextsAsync(LER.rules, elem, reject, objArr2nodes, 1)
+    domCrawler.replaceTextsAsync(LER.rules, elem, reject, objArr2nodes, 2)
     .then(() => {
-        if(elem === document.body) console.log("LER spent " + (Date.now() - start) + " ms.");
+        if(elem === document.body)
+            console.log(`LER spent ${Date.now() - start} ms in ${window.innerWidth}x${window.innerHeight} on\n${location.href}`);
     });
 };
 

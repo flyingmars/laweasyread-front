@@ -9,7 +9,10 @@ LER.loadLaws = getData("laws").then((laws = []) => {
     //console.log(laws.length);
     const rules = laws.map(law => ({
         pattern: law.name,
-        replacer: {type: "law", law: law},
+        replacer: () => {
+            LER.matchedAnyLaw = true;
+            return {type: "law", law: law};
+        },
         minLength: law.name.length
     }));
     LER.rules.unshift(...rules);
