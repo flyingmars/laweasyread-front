@@ -9,6 +9,7 @@ const setContent = (elem, ...nodes) => {
     while(elem.lastChild) elem.lastChild.remove();
     elem.append(...nodes);
 };
+const domParser = new DOMParser();
 
 /**
  * 讀取資料並設定最初的顯示值
@@ -168,6 +169,62 @@ const artNumberParserOptions = [
 $("#artNumberParserOptions").append(...artNumberParserOptions);
 
 
+/**
+ * 相關檔案：專案裡的 *.md
+ */
+const styleTag = e("style", null, "body > :not(.LER-modal) {display: none}");
+const docs = [
+    {
+        file: "/README.md",
+        title: "專案介紹"
+    },
+    {
+        file: "/changelog.md",
+        title: "更新紀錄"
+    },
+    {
+        file: "/changelog-dev.md",
+        title: "開發紀錄"
+    }
+].map(doc => {
+    const modalId = "modal" + doc.file.replace(/[/\.]/g, "-");
+    const target = e("span", {className: "nav-link text-info"}, doc.title);
+
+    fetch(doc.file)
+    .then(res => res.text())
+    .then(text => {
+        const nodes = domParser.parseFromString(marked(text), "text/html").body.childNodes;
+        const closeButton = e("button", {className: "close", title: "關閉"}, "\xD7");
+        document.body.appendChild(
+            e("div",
+                {
+                    id: modalId,
+                    className: "LER-modal container",
+                    style: {display: "none"}
+                },
+                closeButton,
+                ...nodes
+            )
+        );
+        const modal = $(`#${modalId}`);
+        target.addEventListener("click", () => {
+            document.querySelectorAll(".LER-modal").forEach(elem => elem.style.display = "none");
+            document.head.appendChild(styleTag);
+            modal.style.display = "";
+            window.scroll(0, 0);
+        });
+        closeButton.addEventListener("click", () => {
+            modal.style.display = "none";
+            styleTag.remove();
+        });
+    });
+    return e(
+        "li",
+        {className: "nav-item"},
+        target
+    );
+});
+$("#docs").append(...docs);
 
 /**
  * 相關連結
@@ -192,7 +249,7 @@ const links = [
         title: "阿空"
     }
 ].map(link => {
-    const linkProps = {
+    const props = {
         className: "nav-link text-warning",
         href: link.href,
         title: link.title || ""
@@ -200,7 +257,7 @@ const links = [
     return e(
         "li",
         {className: "nav-item"},
-        e("A", linkProps, link.text)
+        e("A", props, link.text)
     );
 });
-$(".nav").append(...links);
+$("#links").append(...links);

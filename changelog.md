@@ -1,6 +1,6 @@
 # 「法規亦毒氣」更新紀錄
 
-Developers may also see [changelog-dev.md](changelog-dev.md) to know more.
+Developers may also see `changelog-dev.md` to know more.
 
 ## 1.1.0
 2018-12-02

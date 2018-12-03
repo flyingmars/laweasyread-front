@@ -1,8 +1,8 @@
 {
-  "author": "kong0107",
   "name": "laweasyread",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "fullName": "法規亦毒氣",
+  "author": "kong0107",
   "description": "an extension for browsers to view Taiwan's law articles/websites easier",
   "id": "jid0-TbNAc8Mn0J5idqU6wtcFNmtNcqo",
   "keywords": [
@@ -16,7 +16,13 @@
     "url": "https://github.com/g0v/laweasyread-front"
   },
   "license": "MIT",
+  "scripts": {
+    "prepare": "git submodule update"
+  },
   "devDependencies": {
     "webextension-polyfill": "^0.3.1"
+  },
+  "dependencies": {
+    "marked": "^0.5.2"
   }
 }

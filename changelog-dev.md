@@ -1,6 +1,11 @@
 # 「法規亦毒氣」開發紀錄
 
-這是給程式設計師看的版本。一般使用者請參閱 [changelog.md](changelog.md) 。
+這是給程式設計師看的版本。一般使用者請參閱 `changelog.md` 。
+
+## 1.1.2
+2018-12-04
+* 在 `package.json` 的 `script.prepare` 加上 `git submodule update` ，這樣 `npm install` 時就可以把子模組也一起載入。
+* 可於選項頁面閱覽更新紀錄。（這功能其實沒甚麼意義，畢竟可以放上 GitHub 上對該 markdown 檔案的連結就好。）
 
 ## 1.1.1
 2018-12-02
