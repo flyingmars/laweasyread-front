@@ -67,6 +67,24 @@
     text-indent: -2.5em;
 }
 
+
+/**
+ * 顯示警告
+ */
+.LER-stratum-0 .LER-warning::after {
+    display: "block";
+    font-size: smaller;
+    color: gray;
+}
+.LER-stratum-0 .warning-table::after,
+.LER-stratum-0 .warning-formula::after {
+    content: "偵測到算式";
+}
+/*.LER-stratum-0 .warning-fullLine::after {
+    content: "這裡可能沒有分項";
+}*/
+
+
 /**
  * 彈出視窗
  */

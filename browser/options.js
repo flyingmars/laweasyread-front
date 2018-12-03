@@ -171,6 +171,9 @@ $("#artNumberParserOptions").append(...artNumberParserOptions);
 
 /**
  * 相關檔案：專案裡的 *.md
+ * 讀取 markdown 後轉成 DOM 顯示。
+ * 其實沒甚麼意義，畢竟完全可以連結到 GitHub 上的該檔案專屬頁面。
+ * 而且這個方式會讓 [xx](xx.md) 的連結在外掛內部失效 orz
  */
 const styleTag = e("style", null, "body > :not(.LER-modal) {display: none}");
 const docs = [
@@ -225,6 +228,7 @@ const docs = [
     );
 });
 $("#docs").append(...docs);
+
 
 /**
  * 相關連結
