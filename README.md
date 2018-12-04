@@ -43,13 +43,12 @@
 
 * `README.md`: 此說明文件
 * `changelog.md`: [更新紀錄](changelog.md)
+* `changelog-dev.md`: [開發紀錄](changelog-dev.md)
 * `g0v.json`: G0V 專案設定
 * `package.json`: Node.js 專案設定
 * `maniffest.json`: 瀏覽器擴充功能設定
 * `LER.js`: 本專案主程式
-* `parseData.js`: 將其他資料轉為本專案所需的資料並存為 `data.js`
-* `data.json`: 法規名稱資料，由 `parseData.js` 產生
-* `aliases.json`: 本專案法規簡稱資料，需手動維護
+* `parseData.js`: 將其他資料轉為本專案所需的資料並存為 `data/laws.js`
 
 
 ## Milestones

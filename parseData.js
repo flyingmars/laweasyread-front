@@ -1,7 +1,7 @@
 "use strict";
 /**
  * 生成資料的函式
- * 可用於瀏覽器外掛的更新資料，亦可用於開發階段生成 data.json
+ * 可用於瀏覽器外掛的更新資料，亦可用於開發階段生成 data/laws.json
  * @return 後依法規名稱長度，由長至短排序
  */
 function parseData(mojData, aliases) {
@@ -42,15 +42,15 @@ function parseData(mojData, aliases) {
 }
 
 /**
- * 開發階段生成 data.json 用
+ * 開發階段生成 data/laws.json 用
  * 由另一專案讀取所有法規資料
  * @see {@link https://github.com/kong0107/mojLawSplitJSON }
  */
 if(typeof module !== 'undefined' && module.exports) {
     const fs = require("fs");
     const mojData = JSON.parse(fs.readFileSync("../mojLawSplit/json/index.json").toString());
-    const aliases = JSON.parse(fs.readFileSync("./aliases.json").toString());
-    fs.writeFileSync("./data.json", JSON.stringify(
+    const aliases = JSON.parse(fs.readFileSync("./data/aliases.json").toString());
+    fs.writeFileSync("./data/laws.json", JSON.stringify(
         parseData(mojData, aliases), null, 1
     ));
 }

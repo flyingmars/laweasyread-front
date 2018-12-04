@@ -1,9 +1,0 @@
-{
-    "updateDate": "",
-    "remoteDate": "",
-    "lastCheckUpdate": 0,
-    "autoParse": true,
-    "exclude_matches": "^https?:\\/\\/(drive|docs|clients\\d+|notifications)\\.google\\.com\\/\n^https:\\/\\/jsfiddle\\.net\\/",
-    "artNumberParserMethod": "parseInt",
-    "enablePopup": true
-}

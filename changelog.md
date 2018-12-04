@@ -1,6 +1,13 @@
 # 「法規亦毒氣」更新紀錄
 
-Developers may also see `changelog-dev.md` to know more.
+Developers may also see [`changelog-dev.md`](changelog-dev.md) to know more.
+
+## 1.2.0
+2018-12-05
+* 重新編排「設定」頁面。
+* 支援直接輸入例外網址。
+* 除了「例外清單」外，設定的變更會直接儲存。
+* 在條文有算式或表格時，放棄轉換以免排版錯亂。
 
 ## 1.1.0
 2018-12-02

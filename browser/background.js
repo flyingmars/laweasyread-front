@@ -10,17 +10,32 @@ const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-p
 browser.runtime.onInstalled.addListener(() => {
     // 讀取法規資料
     Promise.all([
-        fetch("/data.json").then(res => res.json()),
-        fetch("/aliases.json").then(res => res.json())
+        fetch("/data/laws.json").then(res => res.json()),
+        fetch("/data/aliases.json").then(res => res.json())
     ]).then(([mojData, aliases]) =>
         setData({laws: parseData(mojData, aliases)})
     ).then(() => console.log("Laws loaded."));
 
     // 讀取資料庫的選項，補上預設的後就再存進去。
-    fetch("/options_default.json")
+    fetch("/data/options_default.json")
     .then(res => res.json())
     .then(getData)
     .then(setData);
+
+    // 例外清單比較麻煩，是要「新增」進去，而且要去掉重複的…
+    // @see {@link https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates#answer-14438954 }
+    Promise.all([
+        fetch("/data/exclude_matches_default.txt").then(res => res.text()),
+        getData("exclude_matches")
+    ]).then(([defaultList, currentList]) => {
+        if(!currentList) return setData({exclude_matches: defaultList});
+        const newList = (defaultList + "\n" + currentList).split("\n")
+            .filter((value, index, self) => value && self.indexOf(value) === index)
+            .join("\n")
+        ;
+        setData({exclude_matches: newList});
+    });
+
 
     // 設定計時器，用於檢查更新
     browser.alarms.create("perHour", {
@@ -80,7 +95,7 @@ const update = async() => {
 
     const [mojData, aliases] = await Promise.all([
         fetch(remoteDocRoot + "/index.json").then(res => res.json()),
-        fetch("/aliases.json").then(res => res.json())
+        fetch("/data/aliases.json").then(res => res.json())
     ]);
     await setData({
         updateDate: vRemote,

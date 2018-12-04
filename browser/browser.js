@@ -37,10 +37,22 @@ const sendMessageToCurrentTab = message =>
 
 /**
  * 回傳網址是在「需要排除的列表」中的哪一個規則。
+ * @param {string} 網址。若無指派則為當前網頁。
+ * @param {string} 規則們，由換行字元結合成單一字串。若無指派則從資料庫抓。注意有可能是空字串。
+ * @return {Promise} 符合的規則。
  */
-const isExcluded = async(href = location.href) =>
-    (await getData("exclude_matches"))
-    .split("\n")
-    .filter(x => x) // 略去空行
-    .find(line => RegExp(line).test(href))
-;
+const isExcluded = async(href = location.href, exclude_matches) => {
+    if(exclude_matches === "") return;
+    if(typeof exclude_matches === "undefined")
+        exclude_matches = await getData("exclude_matches");
+    return exclude_matches.split("\n").find(rule => {
+        if(rule.indexOf("\\") >= 0) return RegExp(rule).test(href);
+        /**
+         * 接下來是允許星號的規則
+         * 要對正規表達式的特殊字元做跳脫，但星號本身除外。
+         * 星號最終不會比對到斜線。
+         */
+        rule = rule.replace(/([\(\)\[\]\{\}\^\$\?\+])/g, "\\$1");
+        return RegExp(rule.replace(/\*/g, "[^:/.]*")).test(href);
+    });
+};
