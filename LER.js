@@ -114,7 +114,7 @@ const reject = node => {
 const regexps = {
     number: "([\\d零０一二三四五六七八九十百千]+)",    // 1
 
-    artPart: "第number([條項類款目])(之number)?(但書)?",  // 5
+    artPart: "第number([條項類款目])(\\s*之number)?(但書)?",  // 5
     artRange: "((artPart)+)([前後]段|([至到])(artPart))?", // 15
     artList: "(artRange)(([,、及或和與])(artRange))*", // 34
 
@@ -202,11 +202,11 @@ artNumberParser.none = text => text;
 artNumberParser.parseInt = text => text.replace(regexps.number, x => ` ${cpi(x, 10)} `);
 artNumberParser.hyphen = text =>
     artNumberParser.parseInt(text)
-    .replace(/(\d+) 條之 (\d+)/g, (...mm) => `${mm[1]}-${mm[2]} 條`)
+    .replace(/(\d+) 條\s*之 (\d+)/g, (...mm) => `${mm[1]}-${mm[2]} 條`)
 ;
 artNumberParser.dollar = text =>
     artNumberParser.parseInt(text)
-    .replace(/第 (\d+) 條(之 (\d+) )?/g, (...mm) => {
+    .replace(/第 (\d+) 條(\s*之 (\d+) )?/g, (...mm) => {
         let ret = "§" + mm[1];
         if(mm[2]) ret += "-" + mm[3];
         return ret + " ";
