@@ -80,9 +80,9 @@
 .LER-stratum-0 .warning-formula::after {
     content: "偵測到算式";
 }
-/*.LER-stratum-0 .warning-fullLine::after {
+.LER-stratum-0 .warning-fullLine::after {
     content: "這裡可能沒有分項";
-}*/
+}
 
 
 /**

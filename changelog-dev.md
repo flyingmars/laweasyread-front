@@ -2,8 +2,9 @@
 
 這是給程式設計師看的版本。一般使用者請參閱 `changelog.md` 。
 
-## 1.1.3
+## 1.1.4
 2018-12-04
+* 偵測「這裡可能沒有分項」。
 * 偵測條文中的表格或算式（由 `lawtext2obj` 實作），並於該項款目不予轉換，用 `<pre />` 放入原本的東西。
 * 於偵測到表格或算式時顯示提示。
 * 在 `package.json` 的 `script.prepare` 加上 `git submodule update` ，這樣 `npm install` 時就可以把子模組也一起載入。

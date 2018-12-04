@@ -13,17 +13,21 @@ const errorHandler = error =>
 const createList = paras => {
     if(!paras.length) throw new SyntaxError("Unknown structure.");
     const e = domCrawler.createElement;
-    const listItems = paras.map(para => {
+    const listItems = paras.map((para, index) => {
         const props = {};
-        if(para.warning) {
-            if(para.warning == "fullLine") {
-                /*props.className = "LER-warning warning-fullLine";
-                console.log("fullLine");*/
-            }
-            else return e("li",
-                {className: `LER-warning warning-${para.warning}`},
-                e("pre", null, para.raw.join("\n"))
-            );
+        switch(para.warning) {
+            case "fullLine":
+                if(para.stratum === 0 && index + 1 < paras.length) {
+                    props.className = "LER-warning warning-fullLine";
+                    console.log(para);
+                }
+                break;
+            case "table":
+            case "formula":
+                return e("li",
+                    {className: `LER-warning warning-${para.warning}`},
+                    e("pre", null, para.raw.join("\n"))
+                );
         }
 
         const children = (para.children && para.children.length) ? createList(para.children) : "";
