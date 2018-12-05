@@ -93,13 +93,27 @@
 
 /**
  * 彈出視窗
+ *
+ * z-index 最讓人擔憂了。已知：
+ * * 法操的 .content-wrapper 是89
+ * * 法律白話文的 #wi-wrapper 是 1000
+ * * Bootstrap 的各式動態元件是 1000~1070
  */
 .LER-modal-container {
+    z-index: 1010;
     position: absolute;
     width: 480px;
     text-align: left;
+    font-size: 16px;
+    color: #000;
 }
-.LER-modal-before, .LER-modal-after {
+.LER-modal-container * {
+    font-size: inherit;
+    float: initial;
+    list-style-position: initial;
+}
+.LER-modal-before,
+.LER-modal-after {
     margin: 0;
     padding: 0;
     width: 0;
@@ -121,10 +135,6 @@
     overflow: visible auto;
     max-height: 270px;
 }
-.LER-modal * {
-    font-size: 16px;
-    color: #000;
-}
 .LER-modal p {
     margin: 0 0 0.75em 0;
     line-height: 150%;
@@ -132,6 +142,7 @@
 .LER-modal a {
     font-weight: bold;
     text-decoration: underline;
+    color: inherit !important;
 }
 
 .LER-modal-header {
@@ -144,11 +155,11 @@
     font-weight: bold;
 }
 .LER-modal-pin {
-    font-size: smaller;
+    font-size: small;
     color: gray;
     white-space: nowrap;
 }
-.LER-modal-date, .LER-modal-date * {
+.LER-modal-date {
     font-size: small;
     color: gray;
     margin: 0;
@@ -162,9 +173,11 @@
     margin-bottom: 1.5em;
 }
 .LER-modal dt {
+    width: auto;
     font-weight: bold;
 }
 .LER-modal dd {
+    width: auto;
     margin: 0 0 1em 1em;
 }
 

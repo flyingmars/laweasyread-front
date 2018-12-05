@@ -273,8 +273,8 @@ const objArr2nodes = arr => {
                 }, item.text || law.name);
             }
             case "articles": {
-                if(!LER.matchedAnyLaw) return item.raw;
                 let theLaw = LER.defaultLaw;
+                if(!theLaw && !LER.matchedAnyLaw) return item.raw;
                 if(index && item.rangeText) {
                     const prevItem = arr[index - 1];
                     if(prevItem.type == "law") theLaw = prevItem.law;

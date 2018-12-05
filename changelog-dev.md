@@ -2,6 +2,13 @@
 
 這是給程式設計師看的版本。一般使用者請參閱 [`changelog.md`](changelog.md) 。
 
+## 1.2.6
+2018-12-05
+* 改善浮動窗的 CSS ，於下列網站中校正（後續應該找 [CSS Reset 或 normalize](https://ithelp.ithome.com.tw/articles/10196528) ） ：
+  * [法律白話文](https://plainlaw.me/2017/07/26/inherit/) 內文的容器的 z-index 是 1000 。
+  * [聯晟法網](https://www.rclaw.com.tw/post-254-2917) 浮動窗中的連結變成白色的字，因為 `a:link` 的優先權較高，只好用 `!important` 蓋掉。
+  * [法操](https://www.follaw.tw/f06/16740/) 將 `dt` 和 `dd` 設定為浮動且寬度不是 100% ，故加上了 `width: auto` 規則。
+
 ## 1.2.5
 2018-12-05
 * 支援把浮動窗固定住。
