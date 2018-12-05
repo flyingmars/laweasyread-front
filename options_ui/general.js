@@ -1,11 +1,11 @@
 "use strict";
 
-$("#autoParse").addEventListener("change", () =>
-    setData({autoParse: $("#autoParse").checked})
+$("#autoParse").addEventListener("change", event =>
+    setData({autoParse: event.target.checked})
 );
 
-$("#enablePopup").addEventListener("change", () =>
-    setData({autoParse: $("#enablePopup").checked})
+$("#enablePopup").addEventListener("change", event =>
+    setData({enablePopup: event.target.checked})
 );
 
 /**

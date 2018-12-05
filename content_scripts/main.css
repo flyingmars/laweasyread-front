@@ -117,28 +117,38 @@
     border: 1px solid gray;
     background-color: #fff;
     padding: 0.5em;
-    max-height: 270px;
     overflow: visible auto;
+    /*max-height: 270px;*/
+    resize: both;
 }
 .LER-modal * {
     font-size: 16px;
     color: #000;
 }
 
-.LER-modal  header {
+.LER-modal-header {
     border-bottom: 1px dotted gray;
     margin-bottom: 0.5em;
+    display: flex;
+    justify-content: space-between;
 }
 .LER-modal-title {
     font-weight: bold;
 }
-.LER-modal-updateDate {
-    text-align: right;
+.LER-modal-pin {
+    font-size: smaller;
+    color: gray;
+    white-space: nowrap;
+}
+.LER-modal-date, .LER-modal-date * {
     font-size: smaller;
     color: gray;
     margin: 0;
     padding: 0;
 }
+.LER-modal-body {
+}
+
 .LER-modal dl {
     margin-bottom: 1.5em;
 }

@@ -12,6 +12,18 @@ const modalTemplate = e("div", {className: "LER-modal-container"},
     e("div", {className: "LER-modal"}),
     e("div", {className: "LER-modal-after"})
 );
+const modalPinTemplate = e("div", {className: "LER-modal-pin"},
+    e("label", null,
+        e("input", {
+            type: "checkbox",
+            onchange: event => {
+                const pin = event.target.value;
+                console.log(pin);
+            }
+        }),
+        "固定"
+    )
+);
 
 // 判斷事件座標是不是發生在某元件內部
 const isEventInElem = (event, elem) => {
@@ -84,8 +96,9 @@ const popupWrapper = (docLoader, ...args) => {
 
             const body = popup.childNodes[1];
             body.append("讀取中");
-            docLoader(...args).then(doc => {
-                body.lastChild.replaceWith(doc);
+            docLoader(...args).then(docs => {
+                if(docs instanceof Node || typeof docs === "string") docs = [docs];
+                body.lastChild.replaceWith(...docs);
                 setPopupPosition(event, popup);
             });
             setPopupPosition(event, popup);
@@ -140,6 +153,17 @@ const loadArticles = async(pcode, compRanges) => {
         `https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages/FalVMingLing/${pcode}.json`
     ).catch(errorHandler);
 
+    const header = e("header", {className: "LER-modal-header"},
+        e("div", null,
+            e("div", {className: "LER-modal-title"}, law["法規名稱"]),
+            e("div", {className: "LER-modal-date"},
+                "最新異動",
+                e("time", null, law["最新異動日期"])
+            )
+        ),
+        modalPinTemplate.cloneNode(true)
+    );
+
     const articles = law["法規內容"].filter(article => {
         if(!article["條號"]) return false;
         const am = /(\d+)(-(\d+))?/.exec(article["條號"]);
@@ -157,24 +181,15 @@ const loadArticles = async(pcode, compRanges) => {
         e("dt", {className: "LER-skip"}, article["條號"]),
         e("dd", null, createList(lawtext2obj(article["條文內容"])))
     ));
+    const body = e("div", {className: "LER-modal-body"}, ...articles);
+    LER.parse(body, {PCode: pcode});
 
-    const header = e("header", null,
-        e("div", {className: "LER-modal-title"}, law["法規名稱"]),
-        e("div", {className: "LER-modal-updateDate"},
-            "最新異動",
-            e("time", null, law["最新異動日期"])
-        )
-    );
-
-    const container = e("div", null, header, ...articles);
-    LER.parse(container, {PCode: pcode});
-    return container;
+    return [header, body];
 };
 
 
 /****************
  * 用浮動窗顯示大法官解釋
- * TODO: 用 iframe 的話，浮動窗的浮動窗只會被包在 iframe 裡。
  */
 LER.popupJYI = jyi => popupWrapper(loadJYI, jyi);
 const loadJYI = async(jyiNum) => {
@@ -190,11 +205,20 @@ const loadJYI = async(jyiNum) => {
         }, "到司法院網站確認")
     );
 
-    const header = e("header", null,
-        e("time", {style: {"float": "right"}}, jyi.date),
-        e("div", {className: "LER-modal-title LER-skip"}, `釋字第${jyiNum}號`),
-        e("div", null, jyi.title || "")
+    const header = e("header", {className: "LER-modal-header"},
+        e("div", null,
+            e("div", {className: "LER-modal-title"},
+                e("div", {className: "LER-skip"}, `釋字第${jyiNum}號`),
+                e("div", null, jyi.title || "")
+            ),
+            e("div", {className: "LER-modal-date"},
+                "公布日期",
+                e("time", null, jyi.date)
+            )
+        ),
+        modalPinTemplate.cloneNode(true)
     );
+
     const body = e("dl", null);
     if(jyi.issue) body.append(
         e("dt", null, "爭點"),
@@ -212,10 +236,9 @@ const loadJYI = async(jyiNum) => {
             )
         )
     );
+    LER.parse(body);
 
-    const container = e("div", null, header, body);
-    LER.parse(container);
-    return container;
+    return [header, body];
 };
 
 
