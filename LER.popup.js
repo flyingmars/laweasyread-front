@@ -1,29 +1,47 @@
 "use strict";
 /**
  * 建立浮動視窗的程式碼太繁瑣，所以集中到這個檔案來。
+ * 浮動框結構：
+    <div class="LER-modal-container">
+        <div class="LER-modal-before"></div>
+        <div class="LER-modal">
+            <header class="LER-modal-header">
+                <div>...</div>
+                <div class="LER-modal-pin">
+                    <label>
+                        <input type="checkbox">固定
+                    </label>
+                </div>
+            </header>
+            <div class="LER-modal-body">...</div>
+        </div>
+        <div class="LER-modal-after"></div>
+    </div>
+ *
+ * 其中 .LER-modal 內是要被非同步替換的（一開始是「讀取中」）；
+ * .LER-modal-before 和 .LER-modal-after 則是用於顯示（不）花俏的三角形，沒有內容。
+ * （為了方便用 JS 調整三角形的位置，就沒有用虛擬元素 ::before 和 ::after ）
  */
 {
 // 語法糖
 const e = domCrawler.createElement;
 
-// 樣板，用於複製
-const modalTemplate = e("div", {className: "LER-modal-container"},
-    e("div", {className: "LER-modal-before"}),
-    e("div", {className: "LER-modal"}),
-    e("div", {className: "LER-modal-after"})
-);
-const modalPinTemplate = e("div", {className: "LER-modal-pin"},
-    e("label", null,
-        e("input", {
-            type: "checkbox",
-            onchange: event => {
-                const pin = event.target.value;
-                console.log(pin);
-            }
-        }),
-        "固定"
+// 建立空白樣板的函式
+const createModal = () =>
+    e("div", {className: "LER-modal-container"},
+        e("div", {className: "LER-modal-before"}),
+        e("div", {className: "LER-modal"}),
+        e("div", {className: "LER-modal-after"})
     )
-);
+;
+const createModalPin = () =>
+    e("div", {className: "LER-modal-pin"},
+        e("label", null,
+            e("input", {type: "checkbox"}),
+            "固定"
+        )
+    )
+;
 
 // 判斷事件座標是不是發生在某元件內部
 const isEventInElem = (event, elem) => {
@@ -87,18 +105,17 @@ const setPopupPosition = (event, popup) => {
  * 只在第一次要顯示時才建立元件與讀取資料
  */
 const popupWrapper = (docLoader, ...args) => {
-    let popup;
+    let popup; // 浮動窗本身
     return event => {
-        const elem = event.target;
+        const target = event.target; // 要加上浮動窗的連結
         if(!LER.enablePopup) return;
         if(!popup) {
-            popup = document.body.appendChild(modalTemplate.cloneNode(true));
+            popup = document.body.appendChild(createModal());
 
             const body = popup.childNodes[1];
             body.append("讀取中");
-            docLoader(...args).then(docs => {
-                if(docs instanceof Node || typeof docs === "string") docs = [docs];
-                body.lastChild.replaceWith(...docs);
+            docLoader(...args).then(nodes => {
+                body.lastChild.replaceWith(...nodes);
                 setPopupPosition(event, popup);
             });
             setPopupPosition(event, popup);
@@ -112,12 +129,18 @@ const popupWrapper = (docLoader, ...args) => {
              * 幸好滑鼠剛移到新的浮動窗內時，座標仍會在母浮動窗的範圍內，所以只要如下判斷。
              * 如果想要改讓浮動窗之間有母子關係，就要煩惱子浮動窗要如何定位。
              */
-            elem.addEventListener("mouseleave", event => {
-                if(!isEventInElem(event, popup) && !isEventInElem(event, elem)) popup.style.display = "none";
-            });
-            popup.addEventListener("mouseleave", event => {
-                if(!isEventInElem(event, popup) && !isEventInElem(event, elem)) popup.style.display = "none";
-            });
+            const onMouseLeave = event => {
+                if(isEventInElem(event, popup)) return;
+                if(isEventInElem(event, target)) return;
+
+                // 如果使用者釘住了這個框，那就不能消失。
+                const pinCheckbox = popup.querySelector(".LER-modal-pin input[type=checkbox]");
+                if(pinCheckbox && pinCheckbox.checked) return;
+
+                popup.style.display = "none";
+            };
+            target.addEventListener("mouseleave", onMouseLeave);
+            popup.addEventListener("mouseleave", onMouseLeave);
         }
         if(popup.style.display === "none") {
             // 滑鼠從浮動窗回來時也會觸發 onmouseenter ，不避開的話浮動窗會被重新定位。
@@ -161,7 +184,7 @@ const loadArticles = async(pcode, compRanges) => {
                 e("time", null, law["最新異動日期"])
             )
         ),
-        modalPinTemplate.cloneNode(true)
+        createModalPin()
     );
 
     const articles = law["法規內容"].filter(article => {
@@ -216,10 +239,10 @@ const loadJYI = async(jyiNum) => {
                 e("time", null, jyi.date)
             )
         ),
-        modalPinTemplate.cloneNode(true)
+        createModalPin()
     );
 
-    const body = e("dl", null);
+    const body = e("dl", {className: "LER-modal-body"});
     if(jyi.issue) body.append(
         e("dt", null, "爭點"),
         e("dd", null, jyi.issue)
@@ -240,6 +263,5 @@ const loadJYI = async(jyiNum) => {
 
     return [header, body];
 };
-
 
 }

@@ -2,6 +2,11 @@
 
 Developers may also see [`changelog-dev.md`](changelog-dev.md) to know more.
 
+## 1.2.5
+2018-12-05
+* 支援把浮動窗固定住。
+* 恢復立法院法律系統與全國法規資料庫的原本系統中，對搜尋的關鍵字加上顏色的機制。
+
 ## 1.2.0
 2018-12-05
 * 重新編排「設定」頁面。

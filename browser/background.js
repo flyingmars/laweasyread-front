@@ -1,6 +1,5 @@
 "use strict";
 
-//const remoteDocRoot = "https://raw.githubusercontent.com/kong0107/mojLawSplitJSON/gh-pages";
 const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages";
 
 /**
@@ -36,17 +35,11 @@ browser.runtime.onInstalled.addListener(() => {
         setData({exclude_matches: newList});
     });
 
-
     // 設定計時器，用於檢查更新
     browser.alarms.create("perHour", {
         //when: Date.now(),
         periodInMinutes: 60
     });
-});
-
-browser.alarms.onAlarm.addListener(alarm => {
-    //console.log(alarm);
-    checkUpdate();
 });
 
 
@@ -84,6 +77,7 @@ const checkUpdate = async() => {
     if(vLocal == vRemote) return false;
     return vRemote;
 };
+browser.alarms.onAlarm.addListener(checkUpdate);
 
 /**
  * 更新資料

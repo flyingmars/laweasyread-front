@@ -15,7 +15,7 @@
 "permissions": [
     "storage",
     "alarms",
-    "*://cdn.jsdelivr.net/"
+    "https://cdn.jsdelivr.net/gh/kong0107/"
 ],
 "web_accessible_resources": [
     "*.json",
