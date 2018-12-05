@@ -154,7 +154,7 @@ const loadArticles = async(pcode, compRanges) => {
         }
         return false;
     }).map(article => e("dl", null,
-        e("dt", null, article["條號"]),
+        e("dt", {className: "LER-skip"}, article["條號"]),
         e("dd", null, createList(lawtext2obj(article["條文內容"])))
     ));
 
@@ -192,7 +192,7 @@ const loadJYI = async(jyiNum) => {
 
     const header = e("header", null,
         e("time", {style: {"float": "right"}}, jyi.date),
-        e("div", {className: "LER-modal-title"}, `釋字第${jyiNum}號`),
+        e("div", {className: "LER-modal-title LER-skip"}, `釋字第${jyiNum}號`),
         e("div", null, jyi.title || "")
     );
     const body = e("dl", null);

@@ -67,8 +67,9 @@ const getLaw = keys => LER.laws.find(law => {
 const skippableTags = "TEXTAREA,STYLE,SCRIPT,CODE,A,BUTTON,SELECT,SUMMARY,TEMPLATE".split(",");
 const reject = node => {
     if(skippableTags.includes(node.tagName)) return true;
-    if(node.nodeType != 3) return false;
     if(node.isContentEditable) return true;
+    if(node.nodeType == 1 && node.classList.contains("LER-skip")) return true;
+    if(node.nodeType != 3) return false;
 
     const text = node.textContent;
     if(text.length < 2) return true;

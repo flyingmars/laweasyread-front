@@ -3,10 +3,6 @@
  */
 "use strict";
 
-const errorHandler = error =>
-    console.log(error);
-;
-
 /**
  * 把 lawtext2obj 的輸出轉成有序列表
  */
@@ -36,17 +32,3 @@ const createList = paras => {
     });
     return e("ol", {className: `LER-stratum-${paras[0].stratum}`}, ...listItems);
 };
-
-
-/**
- * 擷取 JSON 檔案並解析
- * 在 HTTP 錯誤的情形也會 reject
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch }
- */
-const fetchJSON = (...args) =>
-    fetch(...args).then(response =>
-        new Promise((resolve, reject) =>
-            response.ok ? resolve(response.json()) : reject(response)
-        )
-    )
-;

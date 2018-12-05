@@ -70,19 +70,22 @@
 
 /**
  * 顯示警告
+ * 影響使用者閱覽，還是不顯示了吧。
  */
-.LER-stratum-0 .LER-warning::after {
+/*.LER-stratum-0 .LER-warning::after {
     display: "block";
     font-size: smaller;
     color: gray;
 }
-.LER-stratum-0 .warning-table::after,
+.LER-stratum-0 .warning-table::after {
+    content: "偵測到表格";
+}
 .LER-stratum-0 .warning-formula::after {
     content: "偵測到算式";
 }
 .LER-stratum-0 .warning-fullLine::after {
     content: "這裡可能沒有分項";
-}
+}*/
 
 
 /**

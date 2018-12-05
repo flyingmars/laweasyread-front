@@ -45,7 +45,7 @@ document.querySelectorAll("td").forEach(td => {
     let paras = []; // 每一行文字，即各項款目
     let others = []; // 原本頁面中有、不打算處理但仍要保留的元件
 
-    td.childNodes.forEach(child => {
+    td.childNodes.forEach((child, index) => {
         /**
          * 如果是文字，那就是法條的一個項/款/目，先集中起來再做分層；
          * 如果是其他，那就集中起來最後一起挪到最後。（已知的其實只有「相關條文」的圖鈕）
@@ -53,6 +53,13 @@ document.querySelectorAll("td").forEach(td => {
         if(child.nodeType == 3) {
             const text = child.textContent.trim();
             if(!text) return;
+
+            // 處理立法院法律系統的內文搜尋標示
+            if(index && td.childNodes[index - 1].nodeName === "FONT") {
+                paras[paras.length - 1].text += text;
+                return;
+            }
+
             const stratum = getStratum(text);
             if(stratum == 1) warning = true; // 標示所得稅法第14條
             paras.push({
@@ -62,7 +69,12 @@ document.querySelectorAll("td").forEach(td => {
             });
             return;
         }
-        if(child.nodeName == "BR") return;
+        // 處理立法院法律系統的內文搜尋標示
+        if(child.nodeName === "FONT") {
+            paras[paras.length - 1].text += child.textContent;
+            return;
+        }
+        if(child.nodeName === "BR") return;
         others.push(child);
     });
 
