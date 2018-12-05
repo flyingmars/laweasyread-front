@@ -10,9 +10,12 @@
     padding: 0;
 }
 
-[class^="LER-stratum-"] p,
-[class*=" LER-stratum-"] p {
+.LER-stratum-0 p {
     margin: 0.2em 0;
+}
+
+.LER-stratum-0 em {
+    color: inherit;
 }
 
 .LER-stratum-0 > li:not(:only-of-type) {
