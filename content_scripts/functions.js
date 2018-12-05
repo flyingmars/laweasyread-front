@@ -27,7 +27,10 @@ const createList = paras => {
         }
 
         const children = (para.children && para.children.length) ? createList(para.children) : "";
-        const frags = para.text.split("\n").map(frag => e("p", null, frag)); // 還是為了所得稅法第14條
+        const frags = para.nodes
+            ? [e("p", null, ...para.nodes)] // 為了立法院法律系統的關鍵字搜尋功能
+            : para.text.split("\n").map(frag => e("p", null, frag)) // 還是為了所得稅法第14條
+        ;
         return e("li", props, ...frags, children);
     });
     return e("ol", {className: `LER-stratum-${paras[0].stratum}`}, ...listItems);
