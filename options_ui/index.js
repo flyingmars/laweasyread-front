@@ -14,12 +14,8 @@ const hide = elem => $(elem).style.display = "none";
 const show = elem => $(elem).style.display = "";
 
 
-// 讀取並顯示專案版本
-fetch("/manifest.json")
-.then(res => res.json())
-.then(manifest => {
-    $("#version").append(manifest.version);
-});
+// 顯示專案版本
+setContent("#version", browser.runtime.getManifest().version);
 
 
 /**

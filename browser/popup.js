@@ -2,6 +2,9 @@
 
 const $ = s => document.querySelector(s);
 
+// 顯示專案版本
+$("#version").append(browser.runtime.getManifest().version);
+
 getData({
     autoParse: false,
     updateDate: "",
