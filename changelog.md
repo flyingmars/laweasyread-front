@@ -2,6 +2,11 @@
 
 Developers may also see [`changelog-dev.md`](changelog-dev.md) to know more.
 
+## 1.2.7
+2018-12-07
+* 改善浮動窗的顯示。
+* 修正「文字在連結中就不會轉換，也沒有浮動窗」的問題。
+
 ## 1.2.5
 2018-12-05
 * 支援把浮動窗固定住。

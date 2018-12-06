@@ -2,6 +2,10 @@
 
 這是給程式設計師看的版本。一般使用者請參閱 [`changelog.md`](changelog.md) 。
 
+## 1.2.7
+2018-12-07
+* 處理在 `<a />` 之中的物件：不加上連結但滑鼠移過時會有浮動窗。
+
 ## 1.2.6
 2018-12-05
 * 改善浮動窗的 CSS ，於下列網站中校正（後續應該找 [CSS Reset 或 normalize](https://ithelp.ithome.com.tw/articles/10196528) ） ：

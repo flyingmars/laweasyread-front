@@ -6,7 +6,6 @@ LER.loadLaws = getData("laws").then((laws = []) => {
         !law.name.endsWith("）")
         //&& law.name.length < 20
     );
-    //console.log(laws.length);
     const rules = laws.map(law => ({
         pattern: law.name,
         replacer: () => {

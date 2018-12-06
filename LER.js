@@ -64,9 +64,9 @@ const getLaw = keys => LER.laws.find(law => {
  * 回傳「是否要跳過這個元素」的函式
  * TODO: 用 class name 指示應忽略的元素
  */
-const skippableTags = "TEXTAREA,STYLE,SCRIPT,CODE,A,BUTTON,SELECT,SUMMARY,TEMPLATE".split(",");
+const skippableTags = "TEXTAREA,STYLE,SCRIPT,CODE,BUTTON,SELECT,SUMMARY,TEMPLATE".split(",");
 const reject = node => {
-    if(skippableTags.includes(node.tagName)) return true;
+    if(skippableTags.includes(node.nodeName)) return true;
     if(node.isContentEditable) return true;
     if(node.nodeType == 1 && node.classList.contains("LER-skip")) return true;
     if(node.nodeType != 3) return false;
@@ -258,14 +258,23 @@ LER.rules.push({
 /****************
  * 把單一文字節點的資料解析完之後，弄成節點陣列
  */
-const objArr2nodes = arr => {
-    arr = arr.filter(x => x);   // 要先濾掉空字串
+const objArr2nodes = (arr, textNode) => {
+    arr = arr.filter(x => x);   // 先濾掉空字串
+
+    // 判斷這個文字節點是不是在 <A /> 裡面
+    let isInA = false;
+    for(let node = textNode; node; node = node.parentNode)
+        if(node.nodeName === "A") {
+            isInA = true;
+            break;
+        }
+
     return arr.map((item, index) => {
         if(typeof item == "string" || item instanceof Element) return item;
         switch(item.type) {
             case "law": {
                 const law = item.law;
-                return e("a", {
+                return e(isInA ? "SPAN" : "A", {
                     target: "_blank",
                     href: `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${law.PCode}`,
                     title: law.fullName || law.name,
@@ -285,7 +294,7 @@ const objArr2nodes = arr => {
                     }
                 }
                 if(!theLaw || !item.rangeText) return e("EM", {title: item.raw}, item.text);
-                return e("A", {
+                return e(isInA ? "SPAN" : "A", {
                     title: item.raw,
                     target: "_blank",
                     href: `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`,
@@ -296,7 +305,7 @@ const objArr2nodes = arr => {
                 const nodes = [item.previous];
                 item.jyis.forEach((jyi, index) => {
                     if(index) nodes.push(item.conjs[index - 1]);
-                    nodes.push(e("A", {
+                    nodes.push(e(isInA ? "SPAN" : "A", {
                         href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`,
                         target: "_blank",
                         onmouseenter: LER.popupJYI(jyi)
