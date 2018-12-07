@@ -5,29 +5,6 @@
 對所有文字節點比對所有法條名稱，然後將單一文字節點依規則替換成新的節點們。
 
 
-## Data Sources
-
-* [mojLawSplitJSON](https://github.com/kong0107/mojLawSplitJSON)
-* [jyi](https://github.com/kong0107/jyi)
-* [ronnywang/tw-law-corpus](https://github.com/ronnywang/tw-law-corpus/)
-
-
-## Files
-
-* `README.md`: 此說明文件
-* `changelog.md`: [更新紀錄](changelog.md)
-* `changelog-dev.md`: [開發紀錄](changelog-dev.md)
-* `g0v.json`: G0V 專案設定
-* `package.json`: Node.js 專案設定
-* `maniffest.json`: 瀏覽器擴充功能設定
-* `LER.js`: 本專案主程式
-* `parseData.js`: 將其他資料轉為本專案所需的資料並存為 `data/laws.js`
-* `data/laws.json`: 全國法規資料庫的法規名稱與其編號，由 `/parseData.js` 輸出。
-* `data/aliases.json`: 法規的簡稱、暱稱對照，手動維護。
-* `data/options_default.json`: 預設的使用者設定。
-* `data/exclude_matches_default.txt`: 預設的例外網站清單。
-
-
 ## Milestones
 
 - [x] 比對到法規全名並加上連結
@@ -62,11 +39,33 @@
   - [ ] 支援 IE
 
 
+## Files
+
+* `changelog.md`: [更新紀錄](changelog.md)
+* `changelog-dev.md`: [開發紀錄](changelog-dev.md)
+* `g0v.json`: G0V 專案設定
+* `package.json`: Node.js 專案設定
+* `maniffest.json`: 瀏覽器擴充功能設定
+* `LER.js`: 本專案主程式
+* `parseData.js`: 將其他資料轉為本專案所需的資料並存為 `data/laws.js`
+* `data/laws.json`: 全國法規資料庫的法規名稱與其編號，由 `/parseData.js` 輸出。
+* `data/aliases.json`: 法規的簡稱、暱稱對照，手動維護。
+* `data/options_default.json`: 預設的使用者設定。
+* `data/exclude_matches_default.txt`: 預設的例外網站清單。
+
+
+## Data Sources
+
+* [mojLawSplitJSON](https://github.com/kong0107/mojLawSplitJSON)
+* [jyi](https://github.com/kong0107/jyi)
+* [ronnywang/tw-law-corpus](https://github.com/ronnywang/tw-law-corpus/)
+
+
 ## Dependencies
 
 * [domCrawler](https://github.com/kong0107/domCrawler): 抓取文字節點並套用轉換規則。
 * [chinese-parseInt](https://github.com/kong0107/chinese-parseint/): 將中文數字轉成整數。
-* [lawtext2obj] (https://github.com/kong0107/lawtext2obj/): 將全國法規資料庫那種用換行排版的字串，分析成巢狀陣列。
+* [lawtext2obj](https://github.com/kong0107/lawtext2obj/): 將全國法規資料庫那種用換行排版的字串，分析成巢狀陣列。
 * [mozilla/webextension-polyfill](https://github.com/mozilla/webextension-polyfill): 方便開發跨瀏覽器的外掛。
 
 
