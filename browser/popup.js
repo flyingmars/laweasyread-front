@@ -23,7 +23,7 @@ getData({
 $("#autoParse").addEventListener("click", event => {
     const checked = event.target.checked;
     setData({autoParse: checked});
-    if(checked) sendMessageToCurrentTab({command: "parse"});
+    if(checked) sendMessageToCurrentTab({command: "parseDocument"});
 });
 
 // 手動轉換的 button
@@ -31,7 +31,7 @@ $("#autoParse").addEventListener("click", event => {
 // 因為就算是 <all_urls> 也不包含 chrome*:// 協定。
 // @see {@link https://developer.chrome.com/extensions/match_patterns }
 $("#parseTheCurrentTab").addEventListener("click", () =>
-    sendMessageToCurrentTab({command: "parse"})
+    sendMessageToCurrentTab({command: "parseDocument"})
 );
 
 // 「更新」的 span

@@ -115,7 +115,7 @@ const reject = node => {
 const regexps = {
     number: "([\\d零０一二三四五六七八九十百千]+)",    // 1
 
-    artPart: "第number([條項類款目])(\\s*之number)?(但書)?",  // 5
+    artPart: "第\\s*number\\s*([條項類款目])(\\s*之number)?(但書)?",  // 5
     artRange: "((artPart)+)([前後]段|([至到])(artPart))?", // 15
     artList: "(artRange)(([,、及或和與])(artRange))*", // 34
 
@@ -203,11 +203,11 @@ artNumberParser.none = text => text;
 artNumberParser.parseInt = text => text.replace(regexps.number, x => ` ${cpi(x, 10)} `);
 artNumberParser.hyphen = text =>
     artNumberParser.parseInt(text)
-    .replace(/(\d+) 條\s*之 (\d+)/g, (...mm) => `${mm[1]}-${mm[2]} 條`)
+    .replace(/第\s*(\d+)\s*條\s*之\s*(\d+)/g, (...mm) => `第 ${mm[1]}-${mm[2]} 條`)
 ;
 artNumberParser.dollar = text =>
     artNumberParser.parseInt(text)
-    .replace(/第 (\d+) 條(\s*之 (\d+) )?/g, (...mm) => {
+    .replace(/第\s*(\d+)\s*條(\s*之\s*(\d+))?/g, (...mm) => {
         let ret = "§" + mm[1];
         if(mm[2]) ret += "-" + mm[3];
         return ret + " ";
@@ -215,15 +215,15 @@ artNumberParser.dollar = text =>
 ;
 artNumberParser.shortest = text =>
     artNumberParser.dollar(text)
-    .replace(/第 (\d+) 項/g, (...mm) => String.fromCodePoint(8543 + parseInt(mm[1])))
-    .replace(/第 (\d+) 款/g, (...mm) => String.fromCodePoint(9311 + parseInt(mm[1])))
+    .replace(/第\s*(\d+)\s*項/g, (...mm) => String.fromCodePoint(8543 + parseInt(mm[1])))
+    .replace(/第\s*(\d+)\s*款/g, (...mm) => String.fromCodePoint(9311 + parseInt(mm[1])))
 ; // TODO: Unicode 的阿拉伯數字只有到12，圈圈數字只有到20。
 
 LER.rules.push({
     pattern: regexps.artList,
-    replacer: function($0) {
+    replacer: (...args) => {
         let rangeText = "";
-        const ranges = parser.artList(arguments).ranges;
+        const ranges = parser.artList(args).ranges;
         ranges.forEach(range => {
             const f = range["from"][0];
             if(f.stratum != "條") return;
@@ -233,10 +233,10 @@ LER.rules.push({
             if(range.to && range.to.stratum == "條") rangeText += "-" + range.to.number;
         });
 
-        const text = artNumberParser[LER.artNumberParserMethod || "parseInt"]($0);
+        const text = artNumberParser[LER.artNumberParserMethod || "parseInt"](args[0]);
         return {
             type: "articles",
-            raw: $0, // 用於除錯與設定 title
+            raw: args[0], // 用於除錯與設定 title
             text: text, // 用於直接顯示
             ranges: ranges, // 用於傳遞資料
             rangeText: rangeText // 用於生成連結
@@ -339,5 +339,6 @@ const parse = (elem, defaultLaw) => {
  * `LER.loadLaws` 是 Promise 物件，建立於其他檔案。
  */
 LER.parse = (...args) => LER.loadLaws.then(() => parse(...args));
+LER.parseText = text => LER.loadLaws.then(() => domCrawler.strSplitAndJoinByRules(text, LER.rules));
 LER.getLaw = getLaw; //< TODO: 改成 setDefaultLaw
 }

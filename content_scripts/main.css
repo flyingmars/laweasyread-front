@@ -100,7 +100,7 @@
  * * Bootstrap 的各式動態元件是 1000~1070
  */
 .LER-modal-container {
-    z-index: 1010;
+    z-index: 1020;
     position: absolute;
     width: 480px;
     text-align: left;
@@ -131,7 +131,7 @@
 .LER-modal {
     border: 1px solid gray;
     background-color: #fff;
-    padding: 0.5em;
+    padding: 0 0.5em 0.5em 0.5em;
     overflow: visible auto;
     max-height: 270px;
 }
@@ -150,6 +150,10 @@
     margin-bottom: 0.5em;
     display: flex;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
+    left: 0;
+    background-color: inherit;
 }
 .LER-modal-title {
     font-weight: bold;
@@ -166,17 +170,17 @@
     padding: 0;
 }
 
-.LER-modal dl {
+.LER-modal-body dl {
     margin-top: 0;
 }
-.LER-modal dl:not(:last-of-type) {
+.LER-modal-body dl:not(:last-of-type) {
     margin-bottom: 1.5em;
 }
-.LER-modal dt {
+.LER-modal-body dt {
     width: auto;
     font-weight: bold;
 }
-.LER-modal dd {
+.LER-modal-body dd {
     width: auto;
     margin: 0 0 1em 1em;
 }
@@ -190,4 +194,51 @@
 .LER-modal iframe {
     width: 100%;
     height: 100%;
+}
+
+
+#LER-float-box {
+    position: fixed;
+    background-color: #000;
+    color: #fff;
+    top: 0.5em;
+    right: 0.5em;
+    padding: 0 0.5em 0.5em 1em;
+    max-height: calc(100% - 1em);
+    width: 300px;
+    overflow: visible auto;
+    border: 0.2em solid gray;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 150%;
+    z-index: 1010;
+    text-align: left;
+}
+
+#LER-float-box * {
+    background-color: inherit;
+    font: inherit;
+    text-align: inherit;
+    color: inherit;
+}
+
+#LER-float-box > header {
+    display: flex;
+    justify-content: space-between;
+}
+
+#LER-float-box > section:not(:first-child) {
+    padding-top: 0.5em;
+}
+
+#LER-float-box > section:not(:last-child) {
+    border-bottom: 2px solid gray;
+}
+
+#LER-float-box .LER-modal-title {
+    font-size: 16px;
+}
+
+#LER-float-box a[href] {
+    color: yellow;
 }

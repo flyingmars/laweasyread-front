@@ -121,7 +121,7 @@ const popupWrapper = (docLoader, ...args) => {
             setPopupPosition(event, popup);
 
             /**
-             * 滑鼠離開某元件時，如果也已不再另一元件的話才隱藏浮動窗
+             * 滑鼠離開某元件時，如果也已不在另一元件內的話才隱藏浮動窗
              * 不宜用 `MouseEvent.relatedTarget` ，因為那會抓到預期的對象的子元件。
              * （類似 mouseleave 和 mouseout 差異的問題）
              *
@@ -157,7 +157,7 @@ const popupWrapper = (docLoader, ...args) => {
 LER.popupArticles = (pcode, ranges) => popupWrapper(loadArticles, pcode, ranges);
 
 /**
- * 非同步抓取法條們的內文，建立成 HTML Element 。
+ * 非同步抓取法條們的內文，建立成 HTMLElement[] 。
  */
 const loadArticles = async(pcode, compRanges) => {
     // 先把範圍轉成較簡單的格式，才方便比對哪幾條在這些範圍中。
@@ -215,18 +215,19 @@ const loadArticles = async(pcode, compRanges) => {
  * 用浮動窗顯示大法官解釋
  */
 LER.popupJYI = jyi => popupWrapper(loadJYI, jyi);
-const loadJYI = async(jyiNum) => {
+const loadJYI = async(jyiNum, skipReasoning) => {
     const jyi = await fetchJSON(
         `https://cdn.jsdelivr.net/gh/kong0107/jyi@gh-pages/json/${jyiNum}.json`
     ).catch(errorHandler);
 
-    if(!jyi) return e("div", null,
+    if(!jyi) return [e("div", null,
+        e("div", {className: "LER-modal-title LER-skip"}, `釋字第${jyiNum}號`),
         "遠端資料庫還沒更新到這，建議手動",
         e("a", {
             target: "_blank",
             href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyiNum}`
         }, "到司法院網站確認")
-    );
+    )];
 
     const header = e("header", {className: "LER-modal-header"},
         e("div", null,
@@ -251,7 +252,7 @@ const loadJYI = async(jyiNum) => {
         e("dt", null, "解釋文"),
         e("dd", null, ...jyi.holding.split("\n").map(para => e("p", null, para)))
     );
-    if(jyi.reasoning) body.append(
+    if(jyi.reasoning && !skipReasoning) body.append(
         e("dt", null, "理由書"),
         e("dd", null,
             e("ul", {className: "LER-jyi-reasoning-list"},
@@ -262,6 +263,96 @@ const loadJYI = async(jyiNum) => {
     LER.parse(body);
 
     return [header, body];
+};
+
+
+/****************
+ * 不一樣的複合顯示。
+ * 不是上面那種，而是固定在畫面右邊的。還沒想到好名字。
+ * 
+ * 注意如下的例子中，兩個條號的物件必須被併進民法的區塊中：
+ * [
+ *  {type: "law", law: {PCode: "A0000001", name: "憲法"}}, 
+ *  {type: "law", law: {PCode: "B0000001", name: "民法"}}, 
+ *  {type: "articles", ...},
+ *  {type: "law", law: {PCode: "C0000001", name: "刑法"}}, 
+ *  {type: "law", law: {PCode: "B0000001", name: "民法"}}, 
+ *  {type: "articles", ...},
+ * ]
+ */
+LER.popupComplex = arr => {
+    const laws = [];
+    const jyis = [];
+    let theLaw;
+    arr.forEach(item => {
+        if(typeof item === "string") return;
+        switch(item.type) {
+            case "law":
+                theLaw = laws.find(ex => ex.type === "law" && ex.law.PCode === item.law.PCode);
+                if(!theLaw) {
+                    laws.push(theLaw = item);
+                    theLaw.artRanges = [];
+                }
+                break;
+            case "articles":
+                if(!theLaw) break;
+                theLaw.artRanges.push(...item.ranges);
+                break;
+            case "jyis":
+                // 逐一塞入，維持陣列是排序好且不重複的狀態。
+                item.jyis.forEach(jyi => {
+                    const pos = jyis.findIndex(ex => ex >= jyi);
+                    if(pos === -1) {
+                        jyis.push(jyi);
+                        return;
+                    }
+                    if(jyis[pos] === jyi) return;
+                    jyis.splice(pos, 0, jyi);
+                });
+                break;
+            default:
+                console.error("unknown item type", item);
+        }
+    });
+
+    let container = document.getElementById("LER-float-box");
+    if(container) {
+        while(container.lastChild.nodeName !== "HEADER")
+            container.lastChild.remove();
+    }
+    else {
+        container = e("div", {id: "LER-float-box"}, 
+            e("header", null, 
+                e("span"),
+                e("span", {
+                    onclick: () => container.style.display = "none",
+                    style: {cursor: "pointer"},
+                    title: "關閉"
+                }, "\xD7")
+            )
+        );
+        document.body.append(container);
+    }
+    container.style.display = "none";
+    
+    if(!laws.length && !jyis.length) {
+        container.append("沒有偵測到法律資料");
+        container.style.display = "";
+        return;
+    }
+
+    Promise.all([
+        Promise.all(
+            laws.filter(law => law.artRanges.length)
+            .map(law => loadArticles(law.law.PCode, law.artRanges))
+        ),
+        Promise.all(jyis.map(jyi => loadJYI(jyi, true)))
+    ]).then(([lawSections, jyiSections]) => {
+        container.append(...lawSections.map(nodes => e("section", null, ...nodes)));
+        container.append(...jyiSections.map(nodes => e("section", null, ...nodes)));
+        container.querySelectorAll(".LER-modal-pin").forEach(node => node.remove());
+        container.style.display = "";
+    });
 };
 
 }

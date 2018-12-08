@@ -22,8 +22,17 @@ if(typeof LER == "object" && document.body && window.innerWidth && window.innerH
 
     browser.runtime.onMessage.addListener(message => {
         switch(message.command) {
-            case "parse":
+            case "parseDocument":
                 LER.parse(document.body);
+                break;
+            case "parseText":
+                let text = message.selection;
+                if(typeof text !== "string") {
+                    const bodyClone = document.body.cloneNode(true);
+                    bodyClone.querySelectorAll("script, style, .LER-modal-container").forEach(con => con.remove());
+                    text = bodyClone.textContent;
+                }
+                LER.parseText(text).then(LER.popupComplex);
                 break;
             default:
                 console.log("Error: uncaught message.");
