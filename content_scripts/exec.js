@@ -32,6 +32,8 @@ if(typeof LER == "object" && document.body && window.innerWidth && window.innerH
                     bodyClone.querySelectorAll("script, style, .LER-modal-container").forEach(con => con.remove());
                     text = bodyClone.textContent;
                 }
+                // 把所有空格都抽掉，以避開法規名稱中間換行之類的情形；把頭尾的半形字元都去掉，以略去網站最前面最後面的那些雜物。
+                text = text.replace(/\s+/g, "").replace(/^[\x20-\xff]+/g, "").replace(/[\x20-\xff]+$/g, "");
                 LER.parseText(text).then(LER.popupComplex);
                 break;
             default:

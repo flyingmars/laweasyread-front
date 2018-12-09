@@ -105,10 +105,10 @@ const setPopupPosition = (event, popup) => {
  * 只在第一次要顯示時才建立元件與讀取資料
  */
 const popupWrapper = (docLoader, ...args) => {
-    let popup; // 浮動窗本身
+    let popup; // 浮動窗元件
     return event => {
-        const target = event.target; // 要加上浮動窗的連結
         if(!LER.enablePopup) return;
+        const target = event.target; // 要加上浮動窗的目標元件
         if(!popup) {
             popup = document.body.appendChild(createModal());
 
@@ -340,6 +340,7 @@ LER.popupComplex = arr => {
         container.style.display = "";
         return;
     }
+    // TODO: 只有提到法規名稱但沒有提到條文時的情形。
 
     Promise.all([
         Promise.all(

@@ -2,6 +2,11 @@
 
 這是給程式設計師看的版本。一般使用者請參閱 [`changelog.md`](changelog.md) 。
 
+## 1.3.1
+2018-12-09
+* 調整更新時的 `fetch()` 快取設定。避免已能更新時，瀏覽器仍是抓本機快取。但平常抓法條跟釋字仍是用預設模式，即只在本機快取自己顯示已過期時才會抓新的。參閱 [Request.cache | MDN](https://developer.mozilla.org/en-US/docs/Web/API/Request/cache) 。
+* 更新法規名稱時也從網路更新法規簡稱對照表。亦即， `data/aliases.json` 將跟 `data/laws.json` 一樣，只在安裝時會使用。
+
 ## 1.3.0
 2018-12-09
 * 新增要求選單權限，以支援「找出滑鼠框選處所提到的法律資料」功能。

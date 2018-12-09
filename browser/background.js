@@ -1,6 +1,6 @@
 "use strict";
 
-const remoteDocRoot = "https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages";
+const remoteDocRoot = "https://cdn.jsdelivr.net/gh";
 
 /**
  * 安裝時要做的事
@@ -66,7 +66,7 @@ browser.runtime.onMessage.addListener(message => {
 const checkUpdate = async() => {
     const [vLocal = "", vRemote] = await Promise.all([
         getData("updateDate"),
-        fetch(remoteDocRoot + "/UpdateDate.txt").then(res => res.text())
+        fetch(remoteDocRoot + "/kong0107/mojLawSplitJSON@gh-pages/UpdateDate.txt", {cache: "no-cache"}).then(res => res.text())
     ]);
     if(vLocal > vRemote || !/^\d{8}$/.test(vRemote)) throw new SyntaxError("UpdateDate format error");
     await setData({
@@ -88,8 +88,8 @@ const update = async() => {
     if(!vRemote) return;
 
     const [mojData, aliases] = await Promise.all([
-        fetch(remoteDocRoot + "/index.json").then(res => res.json()),
-        fetch("/data/aliases.json").then(res => res.json())
+        fetch(remoteDocRoot + "/kong0107/mojLawSplitJSON@gh-pages/index.json", {cache: "no-cache"}).then(res => res.json()),
+        fetch(remoteDocRoot + "/g0v/laweasyread-front@v1.x/data/aliases.json", {cache: "no-cache"}).then(res => res.json())
     ]);
     await setData({
         updateDate: vRemote,

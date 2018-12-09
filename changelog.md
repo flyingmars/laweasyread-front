@@ -2,7 +2,7 @@
 
 Developers may also see [`changelog-dev.md`](changelog-dev.md) to know more.
 
-## 1.3.0
+## 1.3.1
 2018-12-09
 * 在右鍵選單新增「列出本頁所有法律資料」及「找出滑鼠框選處所提到的法律資料」的功能，可於當前頁面中一次列出並檢視該頁提到的所有法律資料。
 

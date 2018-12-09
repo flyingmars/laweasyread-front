@@ -73,7 +73,7 @@ const reject = node => {
 
     const text = node.textContent;
     if(text.length < 2) return true;
-    if(/^[\x20-\xff]*$/.test(text)) return true; //< 如果只有字母 ASCII
+    if(/^[\x20-\xff]+$/.test(text)) return true; //< 如果只有字母 ASCII
     if(!/[\u4E00-\u9FFF]{2}/.test(text)) return true; //< 如果沒有連續的「中日韓統一表意文字」
     return false;
 };
