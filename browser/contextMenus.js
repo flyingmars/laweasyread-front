@@ -1,27 +1,29 @@
 "use strict";
 
-const sendParseMessage = (tab, selection) => 
-    browser.tabs.sendMessage(tab.id, {
-        command: "parseText", selection: selection
-    })
-;
-
 const contextMenuItems = [
     {
         props: {
-            id: "parseAll",
-            title: "列出本頁所有法律資料",
-            contexts: ["page"]
+            id: "parseDocument",
+            title: "將本頁的法條加上連結",
+            contexts: ["all"]
         },
-        click: (info, tab) => sendParseMessage(tab)
+        click: (info, tab) => browser.tabs.sendMessage(tab.id, {command: "parseDocument"})
+    },
+    {
+        props: {
+            id: "parseContent",
+            title: "列出本頁的法律資料",
+            contexts: ["all"]
+        },
+        click: (info, tab) => browser.tabs.sendMessage(tab.id, {command: "parseText"})
     },
     {
         props: {
             id: "parseSelection",
-            title: "找出「%s」的法律資料",
+            title: "分析「%s」的法律資料",
             contexts: ["selection"]
         },
-        click: (info, tab) => sendParseMessage(tab, info.selectionText)
+        click: (info, tab) => browser.tabs.sendMessage(tab.id, {command: "parseText", selection: info.selectionText})
     }
 ];
 

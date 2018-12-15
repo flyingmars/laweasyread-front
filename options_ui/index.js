@@ -22,22 +22,11 @@ setContent("#version", browser.runtime.getManifest().version);
  * 自己刻一個簡單的 router
  */
 const routes = [
-    {
-        name: "general",
-        title: "選項"
-    },
-    {
-        name: "exclusion",
-        title: "例外"
-    },
-    {
-        name: "update",
-        title: "更新"
-    },
-    {
-        name: "docs",
-        title: "關於"
-    }
+    {title: "選項", name: "general"},
+    {title: "例外", name: "exclusion"},
+    {title: "更新", name: "update"},
+    {title: "關於", name: "docs"},
+    {title: "工具", name: "tool"}
 ];
 
 let activeTab;

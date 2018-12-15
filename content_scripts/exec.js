@@ -26,9 +26,18 @@ if(typeof LER == "object" && document.body && window.innerWidth && window.innerH
                 LER.parse(document.body);
                 break;
             case "parseText":
+                if(window != window.top) break;
                 let text = message.selection;
                 if(typeof text !== "string") {
                     const bodyClone = document.body.cloneNode(true);
+
+                    // 把所有 iframe 裡的東西也複製近來——前提是有存取權限
+                    document.querySelectorAll("iframe").forEach(ie => {
+                        const d = ie.contentDocument;
+                        if(!d) return;
+                        bodyClone.append(...d.body.cloneNode(true).childNodes);
+                    });
+
                     bodyClone.querySelectorAll("script, style, .LER-modal-container").forEach(con => con.remove());
                     text = bodyClone.textContent;
                 }

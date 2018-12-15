@@ -176,6 +176,11 @@ const loadArticles = async(pcode, compRanges) => {
         `https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages/FalVMingLing/${pcode}.json`
     ).catch(errorHandler);
 
+    if(!law || !law["法規名稱"]) {
+        errorHandler("沒找到法規資料！？");
+        return [];
+    }
+
     const header = e("header", {className: "LER-modal-header"},
         e("div", null,
             e("div", {className: "LER-modal-title"}, law["法規名稱"]),
