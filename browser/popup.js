@@ -41,3 +41,6 @@ $("#updateSpan").addEventListener("click", event => {
     browser.runtime.sendMessage({command: "update"})
     .then(() => self.remove());
 });
+
+// 如果是 Firefox ，就隱藏立法院的搜尋表單（因為不知道怎麼讓他運作）
+if(navigator.userAgent.indexOf("Firefox") > -1) $("#formLy").remove();
