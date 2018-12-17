@@ -225,16 +225,23 @@
 
 #LER-float-box > section:not(:first-child) {
     padding-top: 0.5em;
+    margin-top: 0.5em;
 }
 
 #LER-float-box > section:not(:last-child) {
     border-bottom: 2px solid gray;
+    padding-bottom: 0.5em;
 }
 
 #LER-float-box .LER-modal-title {
     font-size: 16px;
+    font-weight: bold;
 }
 
 #LER-float-box a[href] {
     color: yellow;
+}
+
+#LER-float-box .LER-modal-pin {
+    display: none;
 }

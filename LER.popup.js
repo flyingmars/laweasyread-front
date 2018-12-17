@@ -25,6 +25,14 @@
 {
 // 語法糖
 const e = domCrawler.createElement;
+const link = (text, href, className = "") => e(
+    "a", {
+        href: href,
+        target: "_blank",
+        className: className
+    },
+    text
+);
 
 // 建立空白樣板的函式
 const createModal = () =>
@@ -183,7 +191,7 @@ const loadArticles = async(pcode, compRanges) => {
 
     const header = e("header", {className: "LER-modal-header"},
         e("div", null,
-            e("div", {className: "LER-modal-title"}, law["法規名稱"]),
+            link(law["法規名稱"], `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${pcode}`, "LER-modal-title"),
             e("div", {className: "LER-modal-date"},
                 "最新異動",
                 e("time", null, law["最新異動日期"])
@@ -195,6 +203,7 @@ const loadArticles = async(pcode, compRanges) => {
     const articles = law["法規內容"].filter(article => {
         if(!article["條號"]) return false;
         const am = /(\d+)(-(\d+))?/.exec(article["條號"]);
+        article.numberText = am[0]; // 待會用於生成連結
         const artNum = parseInt(am[1]) * 100 + parseInt(am[2] ? am[3] : 0);
         for(let i = 0; i < ranges.length; ++i) {
             const r = ranges[i];
@@ -206,7 +215,9 @@ const loadArticles = async(pcode, compRanges) => {
         }
         return false;
     }).map(article => e("dl", null,
-        e("dt", {className: "LER-skip"}, article["條號"]),
+        e("dt", {className: "LER-skip"},
+            link(article["條號"], `https://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=${pcode}&FLNO=${article.numberText}`)
+        ),
         e("dd", null, createList(lawtext2obj(article["條文內容"])))
     ));
     const body = e("div", {className: "LER-modal-body"}, ...articles);
@@ -226,18 +237,15 @@ const loadJYI = async(jyiNum, skipReasoning) => {
     ).catch(errorHandler);
 
     if(!jyi) return [e("div", null,
-        e("div", {className: "LER-modal-title LER-skip"}, `釋字第${jyiNum}號`),
+        e("div", {className: "LER-modal-title LER-skip"}, `釋字第 ${jyiNum} 號`),
         "遠端資料庫還沒更新到這，建議手動",
-        e("a", {
-            target: "_blank",
-            href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyiNum}`
-        }, "到司法院網站確認")
+        link("到司法院網站確認", `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyiNum}`)
     )];
 
     const header = e("header", {className: "LER-modal-header"},
         e("div", null,
             e("div", {className: "LER-modal-title"},
-                e("div", {className: "LER-skip"}, `釋字第${jyiNum}號`),
+                link(`釋字第 ${jyiNum} 號`, `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyiNum}`, "LER-skip"),
                 e("div", null, jyi.title || "")
             ),
             e("div", {className: "LER-modal-date"},
@@ -274,14 +282,14 @@ const loadJYI = async(jyiNum, skipReasoning) => {
 /****************
  * 不一樣的複合顯示。
  * 不是上面那種，而是固定在畫面右邊的。還沒想到好名字。
- * 
+ *
  * 注意如下的例子中，兩個條號的物件必須被併進民法的區塊中：
  * [
- *  {type: "law", law: {PCode: "A0000001", name: "憲法"}}, 
- *  {type: "law", law: {PCode: "B0000001", name: "民法"}}, 
+ *  {type: "law", law: {PCode: "A0000001", name: "憲法"}},
+ *  {type: "law", law: {PCode: "B0000001", name: "民法"}},
  *  {type: "articles", ...},
- *  {type: "law", law: {PCode: "C0000001", name: "刑法"}}, 
- *  {type: "law", law: {PCode: "B0000001", name: "民法"}}, 
+ *  {type: "law", law: {PCode: "C0000001", name: "刑法"}},
+ *  {type: "law", law: {PCode: "B0000001", name: "民法"}},
  *  {type: "articles", ...},
  * ]
  */
@@ -293,7 +301,7 @@ LER.popupComplex = arr => {
         if(typeof item === "string") return;
         switch(item.type) {
             case "law":
-                theLaw = laws.find(ex => ex.type === "law" && ex.law.PCode === item.law.PCode);
+                theLaw = laws.find(ex => ex.law.PCode === item.law.PCode);
                 if(!theLaw) {
                     laws.push(theLaw = item);
                     theLaw.artRanges = [];
@@ -326,38 +334,48 @@ LER.popupComplex = arr => {
             container.lastChild.remove();
     }
     else {
-        container = e("div", {id: "LER-float-box"}, 
-            e("header", null, 
+        container = e("div", {id: "LER-float-box"},
+            e("header", null,
                 e("span"),
                 e("span", {
-                    onclick: () => container.style.display = "none",
+                    onclick: () => container.remove(),
                     style: {cursor: "pointer"},
                     title: "關閉"
                 }, "\xD7")
             )
         );
-        document.body.append(container);
     }
-    container.style.display = "none";
-    
-    if(!laws.length && !jyis.length) {
-        container.append("沒有偵測到法律資料");
-        container.style.display = "";
-        return;
-    }
-    // TODO: 只有提到法規名稱但沒有提到條文時的情形。
+    document.body.append(container);
 
-    Promise.all([
-        Promise.all(
-            laws.filter(law => law.artRanges.length)
-            .map(law => loadArticles(law.law.PCode, law.artRanges))
-        ),
-        Promise.all(jyis.map(jyi => loadJYI(jyi, true)))
-    ]).then(([lawSections, jyiSections]) => {
-        container.append(...lawSections.map(nodes => e("section", null, ...nodes)));
-        container.append(...jyiSections.map(nodes => e("section", null, ...nodes)));
-        container.querySelectorAll(".LER-modal-pin").forEach(node => node.remove());
-        container.style.display = "";
+    if(!laws.length && !jyis.length)
+        return container.append("沒有偵測到法律資料");
+
+    laws.forEach(item => {
+        const lawContainer = e("section", null,
+            e("header", {className: "LER-modal-header"},
+                link(item.law.name, `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${item.law.PCode}`, "LER-modal-title")
+            )
+        );
+        container.append(lawContainer);
+
+        // 只有提到法規名稱但沒有提到條文時，就不用去找資料了。
+        if(!item.artRanges.length)  return;
+
+        lawContainer.append(e("div", {className: "LER-modal-body"}, "資料下載中…"));
+        loadArticles(item.law.PCode, item.artRanges)
+        .then(nodes => lawContainer.replaceWith(e("section", null, ...nodes)));
+    });
+
+    jyis.forEach(jyi => {
+        const jyiContainer = e("section", null,
+            e("header", {className: "LER-modal-header"},
+                link(`釋字第 ${jyi} 號`, `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`, "LER-modal-title")
+            ),
+            e("div", {className: "LER-modal-body"}, "資料下載中…")
+        );
+        container.append(jyiContainer);
+        loadJYI(jyi, true)
+        .then(nodes => jyiContainer.replaceWith(e("section", null, ...nodes)));
     });
 };
 
