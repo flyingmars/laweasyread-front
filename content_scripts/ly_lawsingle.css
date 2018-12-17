@@ -1,5 +1,4 @@
 .LER-stratum-3 > li {
-    list-style-type: none;
     padding-left: 0.5em;
 }
 .LER-stratum-3 > li > p:first-child {
@@ -7,7 +6,6 @@
 }
 
 .LER-stratum-4 > li {
-    list-style-type: none;
     padding-left: 0em;
 }
 .LER-stratum-4 > li > p:first-child {
@@ -15,13 +13,8 @@
 }
 
 .LER-stratum-5 > li {
-    list-style-type: none;
     padding-left: 0em;
 }
 .LER-stratum-5 > li > p:first-child {
     text-indent: -1em;
-}
-
-.arti {
-    padding-left: 1em;
 }

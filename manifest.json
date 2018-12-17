@@ -2,7 +2,7 @@
 "manifest_version": 2,
 "name": "法規亦毒氣",
 "description": "將網頁中的法規與條號都轉變成連結，讓您快速查閱指定條文。",
-"version": "1.3.2",
+"version": "1.3.3",
 "author": "kong0107",
 "homepage_url": "https://g0v.github.io/laweasyread-front/",
 "options_ui": {
@@ -66,9 +66,14 @@
         "all_frames": true
     },
     {
-        "matches": ["*://lis.ly.gov.tw/*"],
-        "js": ["content_scripts/lis.ly.js"],
-        "css": ["content_scripts/lis.ly.css"],
+        "matches": ["https://lis.ly.gov.tw/lglawc/lglawkm"],
+        "js": ["content_scripts/ly_lglawkm.js"],
+        "all_frames": true
+    },
+    {
+        "matches": ["https://lis.ly.gov.tw/lglawc/lawsingle?*"],
+        "js": ["content_scripts/ly_lawsingle.js"],
+        "css": ["content_scripts/ly_lawsingle.css"],
         "all_frames": true
     },
     {

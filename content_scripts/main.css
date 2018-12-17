@@ -2,6 +2,7 @@
 [class*=" LER-stratum-"] {
     margin: 0 0 0 1em !important;
     padding: 0;
+    list-style-type: none;
 }
 
 [class^="LER-stratum-"] > li,
@@ -27,7 +28,6 @@
 }
 
 .LER-stratum-1 > li {
-    list-style-type: none;
     padding-left: 3em;
 }
 
@@ -36,7 +36,6 @@
 }
 
 .LER-stratum-2 > li {
-    list-style-type: none;
     padding-left: 1em;
 }
 .LER-stratum-2 > li > p:first-child {
@@ -47,7 +46,6 @@
  * 本專案以全國法規資料庫的資料為優先，「目」的括號是全形；但留意立法院法律系統中的括號是半形。
  */
 .LER-stratum-3 > li {
-    list-style-type: none;
     padding-left: 2em;
 }
 .LER-stratum-3 > li > p:first-child {
@@ -55,7 +53,6 @@
 }
 
 .LER-stratum-4 > li {
-    list-style-type: none;
     padding-left: 0em;
 }
 .LER-stratum-4 > li > p:first-child {
@@ -63,7 +60,6 @@
 }
 
 .LER-stratum-5 > li {
-    list-style-type: none;
     padding-left: 1.5em;
 }
 .LER-stratum-5 > li > p:first-child {
