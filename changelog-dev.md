@@ -13,6 +13,7 @@
   * `overflow: visible auto` 不如預期，垂直方向實際也變成 `visible` 。
   * `manifest.json` 中只支援 `options_page` 。幸好其他瀏覽器也允許同時存在 `options_ui` ，沒有因為兩個值同時存在而報錯。
   * 沒有 `trimStart` 和 `trimEnd` ，幸好還有 `trimStart` 和 `trimEnd` 。 （目前僅實際用於 `lawtext2obj` ）
+* 整理 `LER.popup.js` 。
 
 ## 1.3.5
 2018-12-18

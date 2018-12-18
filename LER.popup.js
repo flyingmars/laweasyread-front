@@ -25,6 +25,11 @@
 {
 // 語法糖
 const e = domCrawler.createElement;
+const cdnLaw = pcode => `https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages/FalVMingLing/${pcode}.json`;
+const cdnJYI = jyi => `https://cdn.jsdelivr.net/gh/kong0107/jyi@gh-pages/json/${jyi}.json`;
+const linkLaw = pcode => `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${pcode}`;
+const linkJYI = jyi => `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`;
+const linkArticle = (pcode, artNum) => `https://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=${pcode}&FLNO=${artNum}`;
 const link = (text, href, className = "") => e(
     "a", {
         href: href,
@@ -33,6 +38,7 @@ const link = (text, href, className = "") => e(
     },
     text
 );
+
 
 // 建立空白樣板的函式
 const createModal = () =>
@@ -180,10 +186,7 @@ const loadArticles = async(pcode, compRanges) => {
         })
     ;
 
-    const law = await fetchJSON(
-        `https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages/FalVMingLing/${pcode}.json`
-    ).catch(errorHandler);
-
+    const law = await fetchJSON(cdnLaw(pcode)).catch(errorHandler);
     if(!law || !law["法規名稱"]) {
         errorHandler("沒找到法規資料！？");
         return [];
@@ -191,7 +194,7 @@ const loadArticles = async(pcode, compRanges) => {
 
     const header = e("header", {className: "LER-modal-header"},
         e("div", null,
-            link(law["法規名稱"], `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${pcode}`, "LER-modal-title"),
+            link(law["法規名稱"], linkLaw(pcode), "LER-modal-title"),
             e("div", {className: "LER-modal-date"},
                 "最新異動",
                 e("time", null, law["最新異動日期"])
@@ -216,7 +219,7 @@ const loadArticles = async(pcode, compRanges) => {
         return false;
     }).map(article => e("dl", null,
         e("dt", {className: "LER-skip"},
-            link(article["條號"], `https://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=${pcode}&FLNO=${article.numberText}`)
+            link(article["條號"], linkArticle(pcode, article.numberText))
         ),
         e("dd", null, createList(lawtext2obj(article["條文內容"])))
     ));
@@ -232,20 +235,21 @@ const loadArticles = async(pcode, compRanges) => {
  */
 LER.popupJYI = jyi => popupWrapper(loadJYI, jyi);
 const loadJYI = async(jyiNum, skipReasoning) => {
-    const jyi = await fetchJSON(
-        `https://cdn.jsdelivr.net/gh/kong0107/jyi@gh-pages/json/${jyiNum}.json`
-    ).catch(errorHandler);
-
-    if(!jyi) return [e("div", null,
-        e("div", {className: "LER-modal-title LER-skip"}, `釋字第 ${jyiNum} 號`),
-        "遠端資料庫還沒更新到這，建議手動",
-        link("到司法院網站確認", `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyiNum}`)
-    )];
+    const jyi = await fetchJSON(cdnJYI(jyiNum)).catch(errorHandler);
+    if(!jyi) return [
+        e("header", {className: "LER-modal-header"},
+            link(`釋字第 ${jyiNum} 號`, linkJYI(jyiNum), "LER-skip"),
+        ),
+        e("div", {className: "LER-modal-body"},
+            "遠端資料庫還沒更新到這，建議手動",
+            link("到司法院網站確認", linkJYI(jyiNum))
+        )
+    ];
 
     const header = e("header", {className: "LER-modal-header"},
         e("div", null,
             e("div", {className: "LER-modal-title"},
-                link(`釋字第 ${jyiNum} 號`, `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyiNum}`, "LER-skip"),
+                link(`釋字第 ${jyiNum} 號`, linkJYI(jyiNum), "LER-skip"),
                 e("div", null, jyi.title || "")
             ),
             e("div", {className: "LER-modal-date"},
@@ -353,7 +357,7 @@ LER.popupComplex = arr => {
     laws.forEach(item => {
         const lawContainer = e("section", null,
             e("header", {className: "LER-modal-header"},
-                link(item.law.name, `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${item.law.PCode}`, "LER-modal-title")
+                link(item.law.name, linkLaw(item.law.PCode), "LER-modal-title")
             )
         );
         container.append(lawContainer);
@@ -369,7 +373,7 @@ LER.popupComplex = arr => {
     jyis.forEach(jyi => {
         const jyiContainer = e("section", null,
             e("header", {className: "LER-modal-header"},
-                link(`釋字第 ${jyi} 號`, `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`, "LER-modal-title")
+                link(`釋字第 ${jyi} 號`, linkJYI(jyi), "LER-modal-title")
             ),
             e("div", {className: "LER-modal-body"}, "資料下載中…")
         );
