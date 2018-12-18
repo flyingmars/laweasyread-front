@@ -21,8 +21,8 @@
   - [ ] 主流瀏覽器
     - [x] [Chrome](https://chrome.google.com/webstore/detail/iedodmlnmhobigohbkalkkjlbmdkjalj)
     - [x] [Firefox](https://addons.mozilla.org/zh-TW/firefox/addon/laweasyread/)
+    - [x] Opera: 搭配 [Install Chrome Extensions](https://addons.opera.com/en/extensions/details/install-chrome-extensions/)
     - [ ] Edge
-    - [x] Opera
   - [x] 常用站台排版
     - [x] 全國法規資料庫的排版
     - [x] 立法院法律系統的排版
