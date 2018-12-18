@@ -128,7 +128,7 @@
     border: 1px solid gray;
     background-color: #fff;
     padding: 0 0.5em 0.5em 0.5em;
-    overflow: visible auto;
+    overflow: auto;
     max-height: 270px;
 }
 .LER-modal p {

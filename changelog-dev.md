@@ -2,6 +2,18 @@
 
 這是給程式設計師看的版本。一般使用者請參閱 [`changelog.md`](changelog.md) 。
 
+## 1.3.6
+2018-12-19
+* 本來想支援 Microsoft Edge 44 ，但想起它之後要換成 Chrominum 核心，不確定給外掛的 API 會變動多少。
+  為避免之後「只更新外掛但沒更新 Edge 的，反而變得不能用了」的困擾，決定等新版的 Edge 公布後再說。
+  但還是記錄一下發現的事：
+  * `domCrawler` 和 `LER` 順利相容，問題幾乎都出在 browser API 。
+  * `mozilla/webextension-polyfill` 只針對 `chrome` 包成 `browser` ，但 Edge 是用 `browser` ，而其內有許多是回呼函式。
+    理想上也許就是改寫 `webextension-polyfill` ，改寫成「 `browser` 包成 `browser2` （或別的名字）」。
+  * `overflow: visible auto` 不如預期，垂直方向實際也變成 `visible` 。
+  * `manifest.json` 中只支援 `options_page` 。幸好其他瀏覽器也允許同時存在 `options_ui` ，沒有因為兩個值同時存在而報錯。
+  * 沒有 `trimStart` 和 `trimEnd` ，幸好還有 `trimStart` 和 `trimEnd` 。 （目前僅實際用於 `lawtext2obj` ）
+
 ## 1.3.5
 2018-12-18
 * 改善立法院法律系統的版面分析的程式碼可讀性。
