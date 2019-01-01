@@ -2,6 +2,10 @@
 
 Developers may also see [`changelog-dev.md`](changelog-dev.md) to know more.
 
+## 1.4.0
+2019-01-01
+* 因應「全國法規資料庫」網站改版，進行程式調整。
+
 ## 1.3.5
 2018-12-18
 * 改善「列出本頁（或選取處）的法律資料」的速度，並讓資料標題也是連結。

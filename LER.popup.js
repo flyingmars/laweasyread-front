@@ -27,9 +27,9 @@
 const e = domCrawler.createElement;
 const cdnLaw = pcode => `https://cdn.jsdelivr.net/gh/kong0107/mojLawSplitJSON@gh-pages/FalVMingLing/${pcode}.json`;
 const cdnJYI = jyi => `https://cdn.jsdelivr.net/gh/kong0107/jyi@gh-pages/json/${jyi}.json`;
-const linkLaw = pcode => `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${pcode}`;
+const linkLaw = pcode => `https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=${pcode}`;
 const linkJYI = jyi => `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`;
-const linkArticle = (pcode, artNum) => `https://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=${pcode}&FLNO=${artNum}`;
+const linkArticle = (pcode, artNum) => `https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=${pcode}&flno=${artNum}`;
 const link = (text, href, className = "") => e(
     "a", {
         href: href,

@@ -72,14 +72,14 @@
 ## Important Cases
 
 * 不符合中央法規標準法所定的格式：
-  * [所得稅法第4條（第1項第16款第2段、第22款第3段）、第14條（第1項第9類第1款第2段）、第17條（第1項第2款第3目之6.(2)）](https://law.moj.gov.tw/LawClass/LawSearchNoIf.aspx?PC=G0340003&DF=&SNo=4%2c14%2c17)
-  * [土地法第2條](https://law.moj.gov.tw/LawClass/LawSingleIf.aspx?Pcode=D0060001&FLNO=2)
+  * 所得稅法第4條（第1項第16款第2段、第22款第3段）、第14條（第1項第9類第1款第2段）、第17條（第1項第2款第3目之6.(2)）
+  * 土地法第2條
 * 多個條文引用，且條文引用包含「前段」、「但書」等字樣：
-  * [行政訴訟法第131條](https://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=A0030154&FLNO=131)
+  * 行政訴訟法第131條
 * 條文中的算式：
-  * [全民健康保險藥物給付項目及支付標準第75條](https://law.moj.gov.tw/LawClass/LawSingleIf.aspx?Pcode=L0060035&FLNO=75)
+  * 全民健康保險藥物給付項目及支付標準第75條
 * 原始資料缺漏一些標點符號：
-  * [中央研究院組織法 第7條](https://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=A0010016&FLNO=7)第2款
+  * 中央研究院組織法 第7條
 
 
 # License
@@ -89,7 +89,7 @@
 * 陳述被授權人對於一個以上之公共議題之立場；或
 * 附上與其立場類似之文章之永久連結。
 
-此軟體此版本設定之公共議題為「性別」，立場為「性解放」，支持十歲以上智識者均得自主與人發生性行為與性交易，「性忠貞」並不是「道德」的一部份。（參閱[反守貞地圖．哲學哲學雞蛋糕](http://phiphicake.blogspot.tw/2013/06/blog-post_4.html)。惟亦請留意諸多國家規定與未達法定年齡者合意性交、性交易仍需受刑事或行政處罰。於中華民國，與未滿十六歲者合意猥褻或性交、引誘未滿十八歲者為猥褻或性交，以及與任何人為有對價之性交或猥褻行為，均為法律所禁止。參閱[刑法第227條](http://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=C0000001&FLNO=227)、[兒童及少年福利與權益保障法第2條、第49條第9款、第97條第1項](http://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=D0050001&SNo=2,49,97)、[兒童及少年性剝削防制條例第2條、第31條](http://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=D0050023&SNo=2,31)、[社會秩序維護法第80條](http://law.moj.gov.tw/LawClass/LawSingle.aspx?Pcode=D0080067&FLNO=80)。）
+此軟體此版本設定之公共議題為「性別」，立場為「性解放」，支持十歲以上智識者均得自主與人發生性行為與性交易，「性忠貞」並不是「道德」的一部份。（參閱[反守貞地圖．哲學哲學雞蛋糕](http://phiphicake.blogspot.tw/2013/06/blog-post_4.html)。惟亦請留意諸多國家規定與未達法定年齡者合意性交、性交易仍需受刑事或行政處罰。於中華民國，與未滿十六歲者合意猥褻或性交、引誘未滿十八歲者為猥褻或性交，以及與任何人為有對價之性交或猥褻行為，均為法律所禁止。參閱刑法第227條、兒童及少年福利與權益保障法第2條、第49條第9款、第97條第1項、兒童及少年性剝削防制條例第2條、第31條、社會秩序維護法第80條。）
 
 
 ## License Explanation

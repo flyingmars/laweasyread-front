@@ -2,6 +2,13 @@
 
 這是給程式設計師看的版本。一般使用者請參閱 [`changelog.md`](changelog.md) 。
 
+## 1.4.0
+2019-01-01
+* 因應「全國法規資料庫」網站改版，調整：
+  * `popup.html` 的表單與連結
+  * `LER.js` 和 `LER.popup.js` 生成連結的字串樣板
+  * `.LER-stratum-*` 的 margin 跟 padding 。
+
 ## 1.3.6
 2018-12-19
 * 本來想支援 Microsoft Edge 44 ，但想起它之後要換成 Chrominum 核心，不確定給外掛的 API 會變動多少。

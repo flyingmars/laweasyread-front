@@ -276,7 +276,7 @@ const objArr2nodes = (arr, textNode) => {
                 const law = item.law;
                 return e(isInA ? "SPAN" : "A", {
                     target: "_blank",
-                    href: `https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=${law.PCode}`,
+                    href: `https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=${law.PCode}`,
                     title: law.fullName || law.name,
                     "data-pcode": law.PCode
                 }, item.text || law.name);
@@ -297,7 +297,7 @@ const objArr2nodes = (arr, textNode) => {
                 return e(isInA ? "SPAN" : "A", {
                     title: item.raw,
                     target: "_blank",
-                    href: `https://law.moj.gov.tw/LawClass/LawSearchNo.aspx?PC=${theLaw.PCode}&SNo=${item.rangeText}`,
+                    href: `https://law.moj.gov.tw/LawClass/LawSearchContent.aspx?pcode=${theLaw.PCode}&norge=${item.rangeText}`,
                     onmouseenter: LER.popupArticles(theLaw.PCode, item.ranges)
                 }, item.text);
             }

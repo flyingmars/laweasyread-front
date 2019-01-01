@@ -1,6 +1,6 @@
 [class^="LER-stratum-"],
 [class*=" LER-stratum-"] {
-    margin: 0 0 0 1em !important;
+    margin: 0 0 0 2em !important;
     padding: 0;
     list-style-type: none;
 }
@@ -28,15 +28,15 @@
 }
 
 .LER-stratum-1 > li {
-    padding-left: 3em;
+    padding-left: 2.5em;
 }
 
 .LER-stratum-1 > li > p:first-child {
-    text-indent: -4em;
+    text-indent: -4.5em;
 }
 
 .LER-stratum-2 > li {
-    padding-left: 1em;
+    padding-left: 0em;
 }
 .LER-stratum-2 > li > p:first-child {
     text-indent: -2em;
@@ -46,7 +46,7 @@
  * 本專案以全國法規資料庫的資料為優先，「目」的括號是全形；但留意立法院法律系統中的括號是半形。
  */
 .LER-stratum-3 > li {
-    padding-left: 2em;
+    padding-left: 1em;
 }
 .LER-stratum-3 > li > p:first-child {
     text-indent: -3em;
@@ -60,7 +60,7 @@
 }
 
 .LER-stratum-5 > li {
-    padding-left: 1.5em;
+    padding-left: 0.5em;
 }
 .LER-stratum-5 > li > p:first-child {
     text-indent: -2.5em;
@@ -178,13 +178,13 @@
 }
 .LER-modal-body dd {
     width: auto;
-    margin: 0 0 1em 1em;
+    margin: 0 0 1em 0;
 }
 
 .LER-jyi-reasoning-list {
     list-style-type: decimal;
     padding: 0;
-    margin: 0 0 0 0.3em;
+    margin: 0 0 0 1em;
 }
 
 .LER-modal iframe {
@@ -244,4 +244,8 @@
 
 #LER-float-box .LER-modal-pin {
     display: none;
+}
+
+#LER-float-box dt {
+    font-weight: bold;
 }

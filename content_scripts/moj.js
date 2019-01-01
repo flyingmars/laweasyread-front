@@ -22,10 +22,15 @@ const rules = [
     };
 }).filter(rule => rule && rule.minLength > 0);
 
-document.querySelectorAll(".TableLawAll td:nth-of-type(3) pre").forEach(pre => {
-    const elem = createList(lawtext2obj(pre.textContent));
+document.querySelectorAll(".text-pre").forEach(div => {
+    const text = Array.prototype.filter.call(
+        div.childNodes, (elem => elem.nodeName === "#text")
+    ).map(textNode => textNode.textContent).join("\n");
+    const elem = createList(lawtext2obj(text));
     domCrawler.replaceTexts(rules, elem);
-    pre.replaceWith(elem);
+    while(div.hasChildNodes()) div.lastChild.remove();
+    div.classList.remove("text-pre");
+    div.append(elem);
 });
 
 

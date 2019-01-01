@@ -32,16 +32,12 @@
         </section>
         <section>
             <div>
-                <a href="https://law.moj.gov.tw/Law/LawSearchLaw.aspx">全國法規資料庫</a>
+                <a href="https://law.moj.gov.tw/Law/LawSearchAll.aspx">全國法規資料庫</a>
             </div>
-            <form method="get" action="http://law.moj.gov.tw/Law/LawSearchResult.aspx">
-                <input type="text" name="k1">
-                <input type="hidden" name="p" value="A">
-                <input type="hidden" name="t" value="E1F1A1A2">
-                <input type="submit" value="法規檢索">
-                <label title="如果勾選，則不會檢索到已廢止的法規。">
-                    <input type="checkbox" name="fei" value="0">限施行中
-                </label>
+            <form method="get" action="https://law.moj.gov.tw/Law/LawSearchResult.aspx">
+                <input type="hidden" name="ty" value="ONEBAR">
+                <input type="text" name="kw">
+                <input type="submit" value="整合查詢">
             </form>
         </section>
         <section>
