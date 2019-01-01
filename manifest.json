@@ -59,6 +59,11 @@
         "all_frames": true
     },
     {
+        "matches": ["*://law.moj.gov.tw/*"],
+        "css": ["content_scripts/moj.css"],
+        "all_frames": true
+    },
+    {
         "matches": ["*://law.moj.gov.tw/LawClass/*"],
         "exclude_matches": ["*://law.moj.gov.tw/LawClass/LawHistory.aspx*"],
         "js": ["content_scripts/moj.js"],

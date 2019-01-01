@@ -8,4 +8,3 @@ if(!location.search) {
     if(input && input.value)
         document.getElementsByName("_IMG_檢索")[0].click();
 }
-console.log("haha");

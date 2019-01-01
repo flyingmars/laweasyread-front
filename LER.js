@@ -297,7 +297,9 @@ const objArr2nodes = (arr, textNode) => {
                 return e(isInA ? "SPAN" : "A", {
                     title: item.raw,
                     target: "_blank",
-                    href: `https://law.moj.gov.tw/LawClass/LawSearchContent.aspx?pcode=${theLaw.PCode}&norge=${item.rangeText}`,
+                    href: /^\d+(\.\d+)?$/.test(item.rangeText) // 因應是單條或多條，而連向不同格式的頁面。
+                      ? `https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=${theLaw.PCode}&flno=${item.rangeText.replace('.', '-')}`
+                      : `https://law.moj.gov.tw/LawClass/LawSearchContent.aspx?pcode=${theLaw.PCode}&norge=${item.rangeText}`,
                     onmouseenter: LER.popupArticles(theLaw.PCode, item.ranges)
                 }, item.text);
             }
