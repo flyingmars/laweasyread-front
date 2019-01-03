@@ -2,6 +2,10 @@
 
 Developers may also see [`changelog-dev.md`](changelog-dev.md) to know more.
 
+## 1.4.1
+2019-01-03
+* 修正「全國法規資料庫」排版問題
+
 ## 1.4.0
 2019-01-01
 * 因應「全國法規資料庫」網站改版，進行程式調整。
