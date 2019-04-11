@@ -2,6 +2,10 @@
 
 Developers may also see [`changelog-dev.md`](changelog-dev.md) to know more.
 
+## 1.5.0
+2019-04-11
+* 因應「司法院大法官」新版網站
+
 ## 1.4.1
 2019-01-03
 * 修正「全國法規資料庫」排版問題

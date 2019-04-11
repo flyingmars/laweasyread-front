@@ -15,8 +15,9 @@ const errorHandler = error =>
  */
 const fetchJSON = (...args) =>
     fetch(...args).then(response =>
-        new Promise((resolve, reject) =>
-            response.ok ? resolve(response.json()) : reject(response)
+        new Promise((resolve, reject) => response.ok
+            ? response.json().then(resolve, reject)
+            : reject(new ReferenceError(response.statusText))
         )
     )
 ;

@@ -308,7 +308,7 @@ const objArr2nodes = (arr, textNode) => {
                 item.jyis.forEach((jyi, index) => {
                     if(index) nodes.push(item.conjs[index - 1]);
                     nodes.push(e(isInA ? "SPAN" : "A", {
-                        href: `https://www.judicial.gov.tw/constitutionalcourt/p03_01.asp?expno=${jyi}`,
+                        href: `http://cons.judicial.gov.tw/jcc/zh-tw/jep03/show?expno=${jyi}`,
                         target: "_blank",
                         onmouseenter: LER.popupJYI(jyi)
                     }, `第${jyi}號`));
